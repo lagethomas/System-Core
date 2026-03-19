@@ -1,0 +1,255 @@
+:root {
+    /* Base Colors - Adminator Aesthetics */
+    --bg-dark: #f9fafb;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --bg-sidebar: #ffffff;
+
+    /* Brand Colors - Adminator Blue */
+    --primary: #2196f3;
+    --primary-light: #4dabf5;
+    --primary-rgb: 33, 150, 243;
+    --accent: #4b5563;
+    --accent-rgb: 75, 85, 99;
+
+    /* Interface Colors */
+    --success: #4caf50;
+    --warning: #ff9800;
+    --danger: #f44336;
+    --info: #00bcd4;
+
+    /* Text Colors */
+    --text-main: #374151;
+    --text-muted: #6b7280;
+    --text-on-primary: #ffffff;
+    --text-color: #ffffff;
+
+    /* Border & Glass */
+    --border: #e5e7eb;
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: #e5e7eb;
+
+    /* Effects */
+    --calendar-filter: none;
+}
+
+body {
+    font-family: 'Roboto', 'Inter', sans-serif !important;
+    background-color: var(--bg-dark);
+}
+
+/* ==========================================================================
+   Adminator Light Theme Overrides
+   ========================================================================== */
+
+/* 1. Sidebar Styling */
+.sidebar {
+    background-color: var(--bg-sidebar) !important;
+    border-right: 1px solid var(--border) !important;
+    width: 280px !important;
+}
+
+.sidebar-header {
+    height: 65px;
+    padding: 0 24px !important;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.sidebar-header .logo span {
+    color: #1f2937 !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.025em;
+}
+
+.sidebar-nav {
+    padding-top: 20px !important;
+}
+
+.sidebar-nav li a {
+    color: #4b5563 !important;
+    padding: 14px 24px !important;
+    border-left: 3px solid transparent;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.sidebar-nav li a i {
+    color: #9ca3af;
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-nav li a:hover {
+    background: #f8fafc !important;
+    color: var(--primary) !important;
+    border-left-color: var(--primary);
+}
+
+.sidebar-nav li.active a {
+    background: #f8fafc !important;
+    color: var(--primary) !important;
+    border-left-color: var(--primary);
+}
+
+.sidebar-nav li.active a i {
+    color: var(--primary);
+}
+
+.sidebar-nav li.active a::before {
+    display: none !important;
+}
+
+.nav-divider {
+    padding: 16px 24px 8px !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #9ca3af !important;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: none !important;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+    background: #ffffff !important;
+    border-top: 1px solid var(--border) !important;
+    padding: 16px 24px !important;
+}
+
+.user-profile:hover {
+    background: #f8fafc !important;
+}
+
+/* 2. Top Navigation */
+.top-nav {
+    background: #ffffff !important;
+    border-bottom: 1px solid var(--border) !important;
+    height: 65px !important;
+}
+
+.top-nav .page-title h1 {
+    color: #374151 !important;
+    font-weight: 700;
+    font-size: 1.125rem;
+}
+
+.search-bar {
+    background: #f3f4f6 !important;
+    border: none !important;
+    border-radius: 9999px !important;
+}
+
+/* 3. Dashboard Stat Cards */
+.stats-grid {
+    gap: 24px !important;
+}
+
+.stat-card {
+    border-radius: 4px !important;
+    border: 1px solid #edf2f7 !important;
+    border-top: 2px solid var(--primary) !important;
+    /* Default blue for Adminator */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+    padding: 24px !important;
+}
+
+/* N-child border colors for variety like in the mockup */
+.stats-grid .stat-card:nth-child(2) {
+    border-top-color: #9333ea !important;
+}
+
+/* purple */
+.stats-grid .stat-card:nth-child(3) {
+    border-top-color: #14b8a6 !important;
+}
+
+/* teal */
+.stats-grid .stat-card:nth-child(4) {
+    border-top-color: #f97316 !important;
+}
+
+/* orange */
+
+.stat-info h3 {
+    font-size: 10px;
+    font-weight: 800;
+    color: #9ca3af !important;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.stat-info .value {
+    color: #1f2937 !important;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.stat-icon {
+    display: none !important;
+    /* Adminator doesn't use large icons in the mockup */
+}
+
+/* 4. Tables */
+.premium-table {
+    border: 1px solid #f3f4f6;
+    border-radius: 4px;
+}
+
+.premium-table thead tr {
+    background: #f9fafb !important;
+}
+
+.premium-table th {
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #6b7280 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 16px !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+}
+
+.premium-table td {
+    padding: 16px !important;
+    color: #4b5563 !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+}
+
+/* 5. Buttons */
+.btn-primary {
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+}
+
+.btn-secondary {
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 4px !important;
+    color: #374151 !important;
+}
+
+/* 6. Form Elements */
+.form-control {
+    border-radius: 4px !important;
+    border-color: #d1d5db !important;
+}
+
+/* 7. Extra details */
+.card {
+    border-radius: 4px !important;
+    border: 1px solid #f3f4f6 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.status-badge {
+    border-radius: 4px !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    text-transform: uppercase;
+}

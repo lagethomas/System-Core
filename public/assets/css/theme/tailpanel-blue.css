@@ -1,0 +1,352 @@
+:root {
+    /* Base Colors - TailPanel Aesthetics */
+    --bg-dark: #f3f4f6;
+    /* slate-100/gray-100 */
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --bg-sidebar: #0f172a;
+    /* slate-900 */
+
+    /* Brand Colors - Premium Blue */
+    --primary: #2563eb;
+    /* blue-600 */
+    --primary-light: #3b82f6;
+    /* blue-500 */
+    --primary-rgb: 37, 99, 235;
+    --accent: #1e293b;
+    /* slate-800 */
+    --accent-rgb: 30, 41, 59;
+
+    /* Interface Colors */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+
+    /* Text Colors */
+    --text-main: #111827;
+    /* slate-900 text */
+    --text-muted: #6b7280;
+    /* gray-500 */
+    --text-on-primary: #ffffff;
+    --text-color: #ffffff;
+
+    /* Border & Glass */
+    --border: #e2e8f0;
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: #e2e8f0;
+
+    /* Effects */
+    --calendar-filter: none;
+}
+
+body {
+    font-family: 'Inter', 'Outfit', sans-serif !important;
+}
+
+/* ==========================================================================
+   Hybrid Theme Overrides (Dark Sidebar + Light Content)
+   ========================================================================== */
+
+/* 1. Sidebar Styling */
+.sidebar {
+    background-color: var(--bg-sidebar) !important;
+    border-right: 1px solid #1e293b !important;
+}
+
+.sidebar-header {
+    border-bottom: 1px solid #1e293b;
+    padding-bottom: 30px !important;
+}
+
+.sidebar-header .logo span {
+    color: #ffffff !important;
+    font-weight: 800;
+}
+
+/* Sidebar Navigation Items */
+.sidebar-nav li a {
+    color: #94a3b8 !important;
+    /* slate-400 */
+    margin: 4px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 12px 16px !important;
+}
+
+.sidebar-nav li a i {
+    color: #64748b;
+    /* slate-500 */
+    width: 20px;
+}
+
+.sidebar-nav li a:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.sidebar-nav li.active a {
+    color: #ffffff !important;
+    background: var(--primary) !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.sidebar-nav li.active a i {
+    color: #ffffff;
+}
+
+.sidebar-nav li.active a::before {
+    display: none !important;
+    /* Remove original vertical bar */
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+    background: var(--bg-sidebar) !important;
+    border-top: 1px solid #1e293b !important;
+}
+
+.user-profile:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.sidebar-footer .user-name {
+    color: #ffffff !important;
+}
+
+.sidebar-footer .user-role {
+    color: #64748b !important;
+}
+
+.btn-logout {
+    color: #64748b !important;
+}
+
+.btn-logout:hover {
+    color: #ffffff !important;
+}
+
+/* 2. Main Layout (Header & Content) */
+.main-content {
+    background-color: var(--bg-dark);
+}
+
+.top-nav {
+    background: #ffffff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    height: 64px !important;
+    display: flex;
+    align-items: center;
+}
+
+.top-nav .page-title h1 {
+    color: #0f172a !important;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.top-nav-container {
+    padding: 0 24px !important;
+}
+
+/* Search Bar in Top Nav */
+.search-bar {
+    background: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.search-bar input {
+    color: #0f172a !important;
+}
+
+.search-bar i {
+    color: #94a3b8;
+}
+
+/* 3. Dashboard UI Components */
+.stat-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    padding: 24px !important;
+}
+
+.stat-icon {
+    background: #eff6ff !important;
+    /* blue-50 */
+    color: var(--primary) !important;
+    border-radius: 10px !important;
+}
+
+.stat-info h3 {
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: #64748b !important;
+    margin-bottom: 6px !important;
+}
+
+.stat-info .value {
+    color: #0f172a !important;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+/* 4. Tables UI */
+.premium-table {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+.premium-table thead tr {
+    background: #f8fafc !important;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.premium-table th {
+    color: #475569 !important;
+    /* slate-600 */
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    padding: 16px 20px !important;
+}
+
+.premium-table td {
+    padding: 16px 20px !important;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.premium-table tr:hover {
+    background: #f8fafc !important;
+}
+
+/* 5. Status Badges */
+.status-badge {
+    padding: 6px 12px !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.status-active {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+}
+
+.status-pending {
+    background: #fef9c3 !important;
+    color: #854d0e !important;
+}
+
+.status-danger,
+.status-cancelled {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+}
+
+/* 6. Form Elements */
+.form-control {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+    border-radius: 10px !important;
+    padding: 12px 14px !important;
+}
+
+.form-control:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1) !important;
+}
+
+.form-label {
+    color: #475569 !important;
+    font-weight: 700 !important;
+    margin-bottom: 6px !important;
+}
+
+/* 7. Buttons */
+.btn-primary {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primary:hover {
+    background: #1d4ed8 !important;
+    /* blue-700 */
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+    font-weight: 600 !important;
+}
+
+.btn-secondary:hover {
+    background: #f8fafc !important;
+    border-color: #94a3b8 !important;
+}
+
+/* 8. Extra Details From Diffs */
+.item-name {
+    color: var(--primary) !important;
+    font-weight: 700;
+}
+
+.plan-billing-value {
+    color: var(--primary) !important;
+    font-weight: 800;
+}
+
+.tab-btn.active {
+    color: var(--primary) !important;
+    border-bottom: 2px solid var(--primary);
+}
+
+.user-dropdown {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+.user-dropdown-item {
+    color: #334155 !important;
+}
+
+.user-dropdown-item:hover {
+    background: #f1f5f9 !important;
+    color: var(--primary) !important;
+}
+
+/* Tom Select Refinement */
+.ts-control {
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+    border-radius: 10px !important;
+}
+
+.ts-dropdown {
+    background: #ffffff !important;
+    border-color: #e2e8f0 !important;
+}
+
+.ts-dropdown .option {
+    color: #334155 !important;
+}
+
+.ts-dropdown .active {
+    background: #eff6ff !important;
+    color: var(--primary) !important;
+}

@@ -1,0 +1,383 @@
+/* Dashboard Module Styles */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+@media (max-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashboard-card-subtitle {
+    color: var(--text-muted);
+    margin-top: 10px;
+}
+
+.dashboard-action-group {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+}
+
+.dashboard-list-title {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.dashboard-list-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.latest-join-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+}
+
+.latest-join-icon {
+    width: 30px;
+    height: 30px;
+    background: var(--primary);
+    color: black;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.latest-join-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.latest-join-name {
+    font-weight: 600;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.latest-join-date {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+/* Stat Icon Color Variants */
+.stat-icon.success {
+    background: rgba(0, 255, 127, 0.1);
+    color: #00ff7f;
+}
+
+.stat-icon.info {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+}
+
+.stat-icon.warning {
+    background: rgba(255, 165, 0, 0.1);
+    color: #ffa500;
+}
+
+.stat-icon.danger {
+    background: rgba(255, 77, 77, 0.1);
+    color: #ff4d4d;
+}
+
+.stat-icon.primary {
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+}
+
+.welcome-header {
+    margin-bottom: 30px;
+}
+
+.welcome-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 5px;
+    background: linear-gradient(135deg, var(--primary) 0%, #fff 300%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.welcome-header p {
+    color: var(--text-muted);
+    font-size: 16px;
+    -webkit-text-fill-color: var(--text-muted);
+}
+
+.stat-icon-box {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.stat-title {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.card-text {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.card-list {
+    color: var(--text-muted);
+    font-size: 14px;
+    padding-left: 20px;
+}
+
+.quick-link-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    transition: var(--transition);
+}
+
+.quick-link-item:hover {
+    background: rgba(var(--primary-rgb), 0.05);
+    border-color: var(--primary);
+    transform: translateX(5px);
+}
+
+/* Alerts and Special Cards */
+.alert-card-urgent {
+    margin-bottom: 20px;
+    border-left: 4px solid #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.alert-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.alert-card-title {
+    color: #ef4444;
+    margin-bottom: 5px;
+}
+
+.alert-card-text {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.btn-urgent {
+    background: #ef4444 !important;
+    border-color: #ef4444 !important;
+    color: white !important;
+}
+
+/* Share Link Card */
+.share-link-card {
+    margin-bottom: 30px;
+    border-left: 4px solid var(--primary);
+    background: rgba(var(--primary-rgb), 0.05);
+}
+
+.share-link-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.share-link-title {
+    color: var(--primary);
+    margin-bottom: 5px;
+}
+
+.share-link-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    flex: 1;
+    max-width: 500px;
+}
+
+.share-link-url {
+    color: var(--text-main);
+    font-size: 14px;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Appointments Table & Header */
+.dashboard-table-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.table-empty-msg {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-muted);
+}
+
+/* Birthday Widget */
+.birthday-card {
+    border-left: 4px solid #ff69b4;
+    background: rgba(255, 105, 180, 0.03);
+}
+
+.birthday-title {
+    color: #ff69b4;
+}
+
+.birthday-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.birthday-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 105, 180, 0.1);
+    border-radius: 12px;
+}
+
+.birthday-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.birthday-avatar {
+    width: 35px;
+    height: 35px;
+    background: #ff69b4;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.birthday-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.birthday-name {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.birthday-phone {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.btn-whatsapp {
+    padding: 6px 12px;
+    font-size: 11px;
+    background: #25d366 !important;
+    border-color: #25d366 !important;
+    color: white !important;
+}
+
+/* Products List */
+.product-highlight-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+}
+
+.product-img-placeholder {
+    width: 40px;
+    height: 40px;
+    color: black;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.product-info {
+    flex: 1;
+}
+
+.product-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.product-stock {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.product-price {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.dashboard-btn-full {
+    margin-top: 25px;
+    justify-content: center;
+}

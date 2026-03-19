@@ -1,0 +1,207 @@
+:root {
+    /* Base Colors */
+    --bg-dark: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --bg-sidebar: #ffffff;
+
+    /* Brand Colors - Minimal White */
+    --primary: #0f172a;
+    --primary-light: #334155;
+    --primary-rgb: 15, 23, 42;
+    --accent: #64748b;
+    --accent-rgb: 100, 116, 139;
+
+    /* Interface Colors */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+
+    /* Text Colors */
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-on-primary: #ffffff;
+    --text-color: #ffffff;
+
+    /* Border & Glass */
+    --border: #e2e8f0;
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --glass-border: #e2e8f0;
+
+    /* Effects */
+    --calendar-filter: none;
+}
+
+/* Specific overrides for light theme contrast */
+.page-title h1,
+.plan-billing-value,
+.plan-header-title {
+    color: var(--primary) !important;
+}
+.item-name{color:var(--primary) !important}
+.tab-btn:hover {
+    color: var(--primary) !important;
+}
+
+.plan-stat-box {
+    background-color: rgba(var(--primary-rgb), 0.05) !important;
+}
+
+.plan-wrapper {
+    background: var(--bg-card) !important;
+}
+
+.slot-btn.disabled {
+    color: #cbd5e1 !important;
+}
+
+.slot-btn:hover:not(.disabled) {
+    background: #ffffff !important;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+input:checked+.slider:before,
+.media-preview {
+    background-color: var(--bg-card) !important;
+}
+
+.agenda-tab-btn.active {
+    color: #ffffff !important;
+}
+
+.media-preview i {
+    color: var(--primary) !important;
+}
+
+/* Sidebar Specific Adjustments */
+.sidebar-nav li a:hover {
+    color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.05);
+}
+
+.sidebar-nav li.active a {
+    color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.08);
+}
+
+.sidebar-footer {
+    border-top: 1px solid var(--border);
+    background: var(--bg-sidebar);
+}
+
+.sidebar-header .logo span {
+    color: var(--primary) !important;
+}
+
+/* Table refinements */
+.premium-table th {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.premium-table tr:hover {
+    background: rgba(var(--primary-rgb), 0.01);
+}
+
+/* Button Refinements */
+.btn-secondary {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+}
+
+.btn-secondary:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: var(--primary);
+}
+
+/* User Dropdown Profile */
+.user-dropdown {
+    background: #ffffff;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border);
+}
+
+.user-dropdown-item {
+    color: #1e293b;
+}
+
+.user-dropdown-item:hover {
+    background: #f1f5f9;
+    color: var(--primary);
+}
+
+.user-dropdown-divider {
+    background: #e2e8f0;
+}
+
+.user-dropdown div[style*="color: #fff"] {
+    color: var(--text-main) !important;
+}
+
+/* Forms */
+.form-control {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+}
+
+.form-control:focus {
+    background: #ffffff;
+    border-color: var(--primary);
+}
+
+/* Tom Select Refinements */
+.ts-control {
+    background: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+
+.ts-dropdown {
+    background: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+}
+
+.ts-dropdown .option {
+    color: #1e293b !important;
+}
+
+.ts-dropdown .active {
+    background: rgba(var(--primary-rgb), 0.05) !important;
+    color: var(--primary) !important;
+}
+
+/* Badges */
+.status-badge {
+    border: 1px solid transparent;
+}
+
+/* Dashboard Stat Cards */
+.stat-card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.stat-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+}
+
+/* Success/Warning/Danger/Info Refinements */
+.status-active {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.status-pending {
+    background: #fffbeb;
+    color: #d97706;
+}
+
+.status-cancelled {
+    background: #fef2f2;
+    color: #dc2626;
+}

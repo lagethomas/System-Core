@@ -1,0 +1,99 @@
+/* Auth Module CSS */
+:root {
+    --bg-auth: var(--bg-dark, #0a0a0c);
+}
+
+body.auth-wrapper {
+    background: radial-gradient(circle at center, var(--bg-sidebar) 0%, var(--bg-dark) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Outfit', 'Inter', sans-serif;
+    color: var(--text-main, #fff);
+}
+
+.auth-card {
+    background: var(--bg-surface, #111114);
+    padding: 40px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.05));
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.auth-logo-box {
+    width: 50px;
+    height: 50px;
+    background: var(--primary);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+.auth-logo-box i {
+    font-size: 24px;
+    color: #fff;
+}
+
+.auth-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.auth-subtitle {
+    color: var(--text-muted, #888);
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.auth-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted, #aaa);
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.mt-4 {
+    margin-top: 1.5rem !important;
+}
+
+.mr-2 {
+    margin-right: 0.5rem !important;
+}
+
+.ml-2 {
+    margin-left: 0.5rem !important;
+}
+
+.btn-loader i {
+    font-size: 1.1rem;
+}

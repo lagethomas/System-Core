@@ -1,0 +1,126 @@
+/* ==============================================================
+   PLATFORM SETTINGS MODULE STYLES
+   ============================================================== */
+
+.platform-settings-header {
+    margin-bottom: 30px;
+}
+
+.settings-tab-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: #16191e;
+    margin-bottom: 30px;
+    border-radius: 12px 12px 0 0;
+    overflow-x: auto;
+}
+
+.nav-link-tab {
+    padding: 15px 25px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    transition: 0.2s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-link-tab:hover {
+    color: var(--primary);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.nav-link-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.05);
+}
+
+.settings-section-header {
+    margin-bottom: 30px;
+}
+
+.settings-section-header h5 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.settings-section-header p {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin: 0;
+}
+
+.settings-row-info {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.settings-row-info h6 {
+    margin: 0;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.settings-row-info p {
+    margin: 5px 0 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.settings-box-luxury {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+}
+
+.settings-box-luxury h6 {
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.settings-footer-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-settings-save {
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: 600;
+}
+
+.webhook-copy-container {
+    display: flex;
+    gap: 10px;
+}
+
+.webhook-input {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-muted);
+}
+
+.copy-btn {
+    padding: 0 15px;
+    height: 45px;
+}

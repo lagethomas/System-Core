@@ -1,0 +1,109 @@
+/* Logs Module Styles */
+
+.logs-filter-bar {
+    margin-bottom: 24px;
+}
+
+.logs-filter-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.logs-filter-form .form-group {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.logs-filter-btn {
+    margin-left: auto;
+}
+
+.logs-filter-btn,
+.logs-reset-btn {
+    padding: 10px 25px;
+    height: 42px;
+}
+
+.logs-reset-btn {
+    padding: 10px 20px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.log-filter-card {
+    margin-bottom: 25px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+}
+
+.log-list-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid var(--border);
+}
+
+.log-action-tag {
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.logs-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Table Specifics */
+.log-date-cell {
+    white-space: nowrap;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.log-user-name {
+    font-weight: 600;
+    color: #fff;
+}
+
+.log-action-badge {
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+.log-details-cell {
+    font-size: 13px;
+}
+
+.log-ip-cell {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+    .logs-filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .logs-filter-btn,
+    .logs-reset-btn {
+        width: 100%;
+    }
+}

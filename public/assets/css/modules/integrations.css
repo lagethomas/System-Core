@@ -1,0 +1,52 @@
+/* Integrations Module Styles */
+.integration-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid var(--border);
+}
+
+.integration-header {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.integration-header h5 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.integration-subtitle {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 25px;
+}
+
+.alert-success-custom {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.integration-footer {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn-integration-save {
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.btn-integration-test {
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 700;
+}

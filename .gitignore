@@ -1,0 +1,5 @@
+.agentrules
+.env
+logs/*.log
+logs/cache/*
+!.gitkeep

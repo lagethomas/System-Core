@@ -1,0 +1,184 @@
+:root {
+    /* Base Colors */
+    --bg-dark: #f1f5f9;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --bg-sidebar: #0f172a;
+
+    /* Brand Colors */
+    --primary: #3b82f6;
+    --primary-light: #60a5fa;
+    --primary-rgb: 59, 130, 246;
+    --accent: #1e293b;
+    --accent-rgb: 30, 41, 59;
+
+    /* Interface Colors */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+
+    /* Text Colors */
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-on-primary: #ffffff;
+    --text-on-sidebar: #ffffff;
+    --sidebar-icon-color: #ffffff;
+
+    /* Border & Glass */
+    --border: #e2e8f0;
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: #e2e8f0;
+
+    /* Effects */
+    --calendar-filter: none;
+}
+
+body {
+    font-family: 'Inter', 'Outfit', sans-serif !important;
+}
+
+.modal-header{
+    background-color: var(--bg-dark) !important;
+}
+/* ==========================================================================
+   Sidebar Styling (Customized with user colors)
+   ========================================================================== */
+
+.sidebar {
+    background-color: var(--bg-sidebar) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.sidebar-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 30px !important;
+}
+
+.sidebar-header .logo span {
+    color: var(--text-on-sidebar) !important;
+    font-weight: 800;
+}
+
+/* Sidebar Navigation Items */
+.sidebar-nav li a {
+    color: var(--text-on-sidebar) !important;
+    margin: 4px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 12px 16px !important;
+    opacity: 0.85;
+}
+
+.sidebar-nav li a i {
+    color: var(--sidebar-icon-color) !important;
+    width: 20px;
+}
+
+.sidebar-nav li a:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    opacity: 1;
+}
+
+.sidebar-nav li.active a {
+    color: #ffffff !important;
+    background: var(--primary) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    opacity: 1;
+}
+
+.sidebar-nav li.active a i {
+    color: #ffffff !important;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+    background: var(--bg-sidebar) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.user-profile:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.sidebar-footer .user-name {
+    color: var(--text-on-sidebar) !important;
+}
+
+.sidebar-footer .user-role {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.btn-logout {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.btn-logout:hover {
+    color: #ffffff !important;
+}
+
+/* 2. Main Layout (Header & Content) */
+.main-content {
+    background-color: var(--bg-dark);
+}
+
+.top-nav {
+    background: #ffffff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    height: 64px !important;
+    display: flex;
+    align-items: center;
+}
+
+.top-nav .page-title h1 {
+    color: #0f172a !important;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* 3. Dashboard UI Components */
+.stat-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.stat-icon {
+    background: #eff6ff !important;
+    color: var(--primary) !important;
+}
+
+/* 4. Tables UI */
+.premium-table {
+    border: 1px solid #e2e8f0;
+}
+
+.premium-table thead tr {
+    background: #f8fafc !important;
+}
+
+/* 6. Form Elements */
+.form-control {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+.form-control:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* 7. Buttons */
+.btn-primary {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+}
+
+.btn-primary:hover {
+    filter: brightness(0.9);
+    transform: translateY(-1px);
+}

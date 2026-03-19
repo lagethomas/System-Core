@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /
+
+# Tenta servir o arquivo ou diretório real
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Se não existir, manda tudo para o index.php
+RewriteRule ^ index.php [L,QSA]

@@ -1,0 +1,48 @@
+:root {
+    /* Base Colors */
+    --bg-dark: #f3f4f6;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --bg-sidebar: #ffffff;
+
+    /* Brand Colors - Rubi White */
+    --primary: #ef4444;
+    --primary-light: #f87171;
+    --primary-rgb: 239, 68, 68;
+    --accent: #b91c1c;
+    --accent-rgb: 185, 28, 28;
+
+    /* Interface Colors */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+
+    /* Text Colors */
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --text-on-primary: #ffffff;
+    --text-color: #ffffff;
+
+    /* Border & Glass */
+    --border: #e5e7eb;
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(229, 231, 235, 1);
+
+    /* Effects */
+    --calendar-filter: none;
+}
+
+.page-title h1,.plan-billing-value,.plan-header-title{
+    color: var(--primary) !important;
+}
+.tab-btn:hover{color: var(--primary) !important;}
+.plan-stat-box{ background-color: var(--primary-rgb) !important;}
+.plan-wrapper{background:var(--bg-card) !important;}
+.slot-btn.disabled{color: #FFFFFF !important}
+.slot-btn:hover:not(.disabled){background:#ffffff !important; color: var(--primary)}
+input:checked+.slider:before,.media-preview{background-color:var(--bg-card) !important}
+.agenda-tab-btn.active{color: #ffffff !important}
+.media-preview i{color:var(--primary) !important;}
+.product-item .p-name{ color: var(--text-main) !important;}
+.item-name{color:var(--primary) !important;}
