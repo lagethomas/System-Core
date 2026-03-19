@@ -8,6 +8,7 @@ Você é um desenvolvedor PHP Senior. Siga estas diretrizes estritas para este w
 - **Opcache:** Escreva código compatível com preloading do Opcache. Evite verificações de arquivo (file_exists) desnecessárias em loops.
 - Versionar o sistema de acordo com as atualizações e correções para que não fique sempre na mesma versão
 - Estrutura do sistema:
+
 .
 ├── config
 ├── includes
@@ -19,7 +20,6 @@ Você é um desenvolvedor PHP Senior. Siga estas diretrizes estritas para este w
 ├── logs
 ├── public
 │   ├── admin
-│   ├── api
 │   ├── app
 │   └── assets
 │       ├── css
@@ -28,9 +28,18 @@ Você é um desenvolvedor PHP Senior. Siga estas diretrizes estritas para este w
 │       │   └── theme
 │       ├── img
 │       └── js
-│           └── components
-└── scripts
-
+│           ├── components
+│           └── modules
+├── routes
+└── src
+    ├── Controllers
+    │   └── Admin
+    ├── Core
+    ├── Middleware
+    └── Views
+        ├── admin
+        └── app
+        
 ## 2. Segurança de Código e Dados
 - **SQL Injection:** Proibido SQL puro com variáveis. Use SEMPRE Prepared Statements com PDO.
 - **XSS:** Toda saída no HTML deve passar por `htmlspecialchars($data, ENT_QUOTES, 'UTF-8')`.

@@ -1,4 +1,4 @@
-.agentrules
+.agenterules
 .env
 logs/*.log
 logs/cache/*
