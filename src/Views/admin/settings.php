@@ -37,7 +37,13 @@
                         <?php if (!empty($settings['system_logo'])): ?>
                             <img src="<?php echo SITE_URL . $settings['system_logo']; ?>" style="height: 40px; border-radius: 4px; border: 1px solid var(--border);">
                         <?php endif; ?>
-                        <input type="file" name="system_logo" class="form-control" accept="image/*">
+                        <div class="modern-upload" style="flex: 1;">
+                            <input type="file" name="system_logo" id="logo-input" accept="image/*" onchange="document.getElementById('logo-preview-text').innerText = this.files[0].name">
+                            <label for="logo-input">
+                                <i class="fas fa-image"></i>
+                                <span id="logo-preview-text">Selecionar Logo</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -47,7 +53,13 @@
                         <?php if (!empty($settings['cardapio_bg'])): ?>
                             <div style="width: 40px; height: 40px; background: url('<?php echo SITE_URL . $settings['cardapio_bg']; ?>') center/cover; border-radius: 4px; border: 1px solid var(--border);"></div>
                         <?php endif; ?>
-                        <input type="file" name="cardapio_bg" class="form-control" accept="image/*">
+                        <div class="modern-upload" style="flex: 1;">
+                            <input type="file" name="cardapio_bg" id="bg-input" accept="image/*" onchange="document.getElementById('bg-preview-text').innerText = this.files[0].name">
+                            <label for="bg-input">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span id="bg-preview-text">Selecionar Imagem</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>

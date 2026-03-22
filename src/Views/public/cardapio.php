@@ -193,6 +193,8 @@ $bgImage = !empty($platform_settings['cardapio_bg']) ? $SITE_URL . $platform_set
             transform: scale(1.1);
         }
 
+
+
         .product-image-placeholder {
             width: 100%;
             height: 100%;
@@ -260,13 +262,18 @@ $bgImage = !empty($platform_settings['cardapio_bg']) ? $SITE_URL . $platform_set
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.92);
             backdrop-filter: blur(20px);
             z-index: 9999;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            transition: opacity 0.3s ease;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        #modal-overlay.active {
+            opacity: 1;
         }
 
         .modern-modal {
@@ -277,12 +284,12 @@ $bgImage = !empty($platform_settings['cardapio_bg']) ? $SITE_URL . $platform_set
             max-width: 600px;
             overflow: hidden;
             box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(40px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        #modal-overlay.active .modern-modal {
+            transform: translateY(0) scale(1);
         }
 
         @keyframes fadeInDown {
@@ -357,10 +364,20 @@ $bgImage = !empty($platform_settings['cardapio_bg']) ? $SITE_URL . $platform_set
         @media (max-width: 600px) {
             .container { padding: 15px; }
             header { padding: 40px 10px; }
-            .menu-grid { grid-template-columns: 1fr; gap: 20px; }
-            .modal-hero { height: 250px; }
-            .modal-body { padding: 25px; }
-            .modal-body h2 { font-size: 26px; }
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+            }
+            .product-image-wrapper { height: 140px !important; }
+            .product-info { padding: 12px !important; }
+            .product-info h3 { font-size: 14px !important; margin-bottom: 5px !important; }
+            .product-info p { display: none !important; }
+            .price-badge { font-size: 13px !important; padding: 4px 10px !important; bottom: 10px !important; right: 10px !important; }
+            .view-btn { font-size: 11px !important; }
+            
+            .modal-hero { height: 200px !important; }
+            .modal-body { padding: 25px !important; }
+            .modal-body h2 { font-size: 24px !important; }
         }
     </style>
 </head>
@@ -450,29 +467,39 @@ $bgImage = !empty($platform_settings['cardapio_bg']) ? $SITE_URL . $platform_set
 
 <script>
 function openDetails(p) {
+    const hero = document.getElementById('modal-hero');
+    const img = document.getElementById('modal-img');
+    const overlay = document.getElementById('modal-overlay');
+
+    // Pre-set data
     document.getElementById('modal-name').innerText = p.nome;
     document.getElementById('modal-cat').innerText = p.categoria;
     document.getElementById('modal-desc').innerText = p.descricao || 'Nenhuma descrição detalhada disponível para este item.';
     document.getElementById('modal-price').innerText = 'R$ ' + parseFloat(p.preco).toLocaleString('pt-BR', {minimumFractionDigits: 2});
-    
-    const hero = document.getElementById('modal-hero');
-    const img = document.getElementById('modal-img');
     
     if (p.imagem) {
         img.src = '<?php echo $SITE_URL; ?>' + p.imagem;
         hero.style.display = 'block';
     } else {
         hero.style.display = 'none';
+        img.src = '';
     }
 
-    const overlay = document.getElementById('modal-overlay');
+    // Show with transition
     overlay.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }, 10);
 }
 
 function closeDetails() {
-    document.getElementById('modal-overlay').style.display = 'none';
-    document.body.style.overflow = 'auto';
+    const overlay = document.getElementById('modal-overlay');
+    overlay.classList.remove('active');
+    setTimeout(() => {
+        overlay.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }, 400);
 }
 
 function filterCategory(cat, btn) {

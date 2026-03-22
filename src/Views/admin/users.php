@@ -101,11 +101,11 @@ function openUserModal(data = null) {
                 </div>
             </div>
 
-            <div class="form-group mb-3 relative">
+            <div class="form-group mb-3">
                 <label class="form-label">Senha ${data ? '(opcional)' : ''}</label>
-                <div class="relative">
+                <div class="password-toggle-wrapper relative">
                     <input type="password" name="password" id="modal-password" class="form-control w-100 pr-80" ${data ? '' : 'required'}>
-                    <button type="button" onclick="UI.generatePassword ? UI.generatePassword('modal-password') : null" class="btn-generate-password" title="Gerar Senha" style="right: 10px;">
+                    <button type="button" onclick="UI.generatePassword ? UI.generatePassword('modal-password') : null" class="btn-generate-password" title="Gerar Senha">
                         <i class="fas fa-random"></i>
                     </button>
                 </div>

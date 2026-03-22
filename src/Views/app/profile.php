@@ -44,8 +44,8 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Nova Senha</label>
-                    <div class="relative">
-                        <input type="password" name="password" id="profile-password" class="form-control w-100 pr-5" placeholder="Deixe em branco para manter">
+                    <div class="password-toggle-wrapper relative">
+                        <input type="password" name="password" id="profile-password" class="form-control w-100 pr-80" placeholder="Deixe em branco para manter">
                         <button type="button" onclick="UI.generatePassword('profile-password')" class="btn-generate-password" title="Gerar Senha">
                             <i class="fas fa-random"></i>
                         </button>
