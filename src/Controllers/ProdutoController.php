@@ -10,9 +10,17 @@ use App\Helpers\Logger;
 class ProdutoController extends Controller {
     
     public function index(): void {
-        $produtos = Database::fetchAll("SELECT * FROM cp_produtos ORDER BY nome ASC");
+        $produtos = Database::fetchAll("
+            SELECT p.*, c.nome as categoria_nome 
+            FROM cp_produtos p 
+            LEFT JOIN cp_categorias c ON p.categoria_id = c.id 
+            ORDER BY p.nome ASC
+        ");
+        $categorias = Database::fetchAll("SELECT * FROM cp_categorias ORDER BY nome ASC");
+        
         $this->render('app/produtos', [
             'produtos' => $produtos,
+            'categorias' => $categorias,
             'nonces' => [
                 'save' => \Nonce::create('save_produto'),
                 'delete' => \Nonce::create('delete_produto')
@@ -58,6 +66,7 @@ class ProdutoController extends Controller {
             'nome' => $nome,
             'preco' => (float)$preco,
             'categoria' => $categoria,
+            'categoria_id' => !empty($_POST['categoria_id']) ? (int)$_POST['categoria_id'] : null,
             'codigo' => $codigo,
             'descricao' => $descricao,
             'disponivel_cardapio' => $disponivel

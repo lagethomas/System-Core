@@ -168,6 +168,11 @@ $unread_count = count($unread_notifications);
                             <i class="fas fa-cogs"></i> <span>Configurações</span>
                         </a>
                     </li>
+                    <li class="<?php echo ($current_page == 'categorias' || $current_page == 'admin/categorias') ? 'active' : ''; ?>">
+                        <a href="<?php echo SITE_URL; ?>/admin/categorias">
+                            <i class="fas fa-tags"></i> <span>Categorias</span>
+                        </a>
+                    </li>
                     <?php endif; ?>
                 </ul>
             </nav>

@@ -8,11 +8,27 @@ use App\Core\Database;
 
 class CardapioController extends Controller {
     public function index(): void {
-        $produtos = Database::fetchAll("SELECT * FROM cp_produtos WHERE disponivel_cardapio = 1 ORDER BY categoria ASC, nome ASC");
+        // Fetch only categories that HAVE products available in menu
+        $categorias = Database::fetchAll("
+            SELECT DISTINCT c.* 
+            FROM cp_categorias c
+            INNER JOIN cp_produtos p ON p.categoria_id = c.id
+            WHERE p.disponivel_cardapio = 1
+            ORDER BY c.ordem ASC, c.nome ASC
+        ");
+
+        $produtos = Database::fetchAll("
+            SELECT p.*, c.nome as categoria_nome, c.slug as categoria_slug
+            FROM cp_produtos p
+            LEFT JOIN cp_categorias c ON p.categoria_id = c.id
+            WHERE p.disponivel_cardapio = 1
+            ORDER BY c.ordem ASC, p.nome ASC
+        ");
         
         $this->render('public/cardapio', [
             'produtos' => $produtos,
+            'categorias' => $categorias,
             'title' => 'Nosso Cardápio'
-        ], false); // false to not use the main layout if it's public, or use it depending on design. User says "Página pública", I'll make it standalone but beautiful.
+        ], false); 
     }
 }

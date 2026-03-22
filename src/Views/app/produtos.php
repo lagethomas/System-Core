@@ -30,35 +30,43 @@
             </thead>
             <tbody>
                 <?php if (empty($produtos)): ?>
-                    <tr><td colspan="7" class="text-center" style="padding: 40px; color: var(--text-muted);">Nenhum produto cadastrado.</td></tr>
+                    <tr><td colspan="5" class="text-center" style="padding: 40px; color: var(--text-muted);">Nenhum produto cadastrado.</td></tr>
                 <?php else: ?>
                     <?php foreach ($produtos as $p): ?>
-                        <tr>
-                            <td>
-                                <div style="width: 40px; height: 40px; border-radius: 8px; overflow: hidden; background: rgba(255,255,255,0.05); border:1px solid var(--border); display:flex; align-items:center; justify-content:center;">
+                    <tr>
+                        <td>
+                            <div class="product-info-cell">
+                                <div class="product-image-mini">
                                     <?php if ($p['imagem']): ?>
-                                        <img src="<?php echo SITE_URL . $p['imagem']; ?>" alt="" style="width:100%; height:100%; object-fit:cover;">
+                                        <img src="<?php echo SITE_URL . $p['imagem']; ?>" alt="">
                                     <?php else: ?>
-                                        <i class="fas fa-image" style="opacity: 0.2;"></i>
+                                        <i class="fas fa-image"></i>
                                     <?php endif; ?>
                                 </div>
-                            </td>
-                            <td><code style="background: rgba(var(--primary-rgb), 0.1); color: var(--primary); padding: 4px 8px; border-radius: 6px; font-weight: 700;">#<?php echo $p['codigo'] ?? '---'; ?></code></td>
-                            <td style="font-weight: 700; color: var(--text-main);"><?php echo htmlspecialchars($p['nome']); ?></td>
-                            <td><span class="badge badge-primary"><?php echo htmlspecialchars($p['categoria']); ?></span></td>
-                            <td>
-                                <?php if ($p['disponivel_cardapio'] == 1): ?>
-                                    <span class="badge status-active" style="padding: 2px 8px; font-size: 10px;"><i class="fas fa-check"></i> Sim</span>
-                                <?php else: ?>
-                                    <span class="badge status-danger" style="padding: 2px 8px; font-size: 10px;"><i class="fas fa-times"></i> Não</span>
-                                <?php endif; ?>
-                            </td>
-                            <td style="color: var(--primary); font-weight: 700;">R$ <?php echo number_format($p['preco'], 2, ',', '.'); ?></td>
-                            <td class="text-right">
-                                <button onclick="openProdutoModal(<?php echo htmlspecialchars(json_encode($p)); ?>)" class="btn-user-action" title="Editar"><i class="fas fa-edit"></i></button>
-                                <button onclick="deleteProduto(<?php echo $p['id']; ?>)" class="btn-user-action btn-user-delete" title="Remover"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
+                                <div>
+                                    <div class="product-name"><?php echo htmlspecialchars($p['nome']); ?></div>
+                                    <div class="product-code">#<?php echo htmlspecialchars($p['codigo']); ?></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge" style="background: rgba(var(--primary-rgb), 0.1); color: var(--primary);">
+                                <?php echo htmlspecialchars($p['categoria_nome'] ?: ($p['categoria'] ?: 'Sem Categoria')); ?>
+                            </span>
+                        </td>
+                        <td style="color: var(--primary); font-weight: 700;">R$ <?php echo number_format($p['preco'], 2, ',', '.'); ?></td>
+                        <td>
+                            <?php if ($p['disponivel_cardapio'] == 1): ?>
+                                <span class="badge status-active" style="padding: 2px 8px; font-size: 10px;"><i class="fas fa-check"></i> Sim</span>
+                            <?php else: ?>
+                                <span class="badge status-danger" style="padding: 2px 8px; font-size: 10px;"><i class="fas fa-times"></i> Não</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-right">
+                            <button onclick="openProdutoModal(<?php echo htmlspecialchars(json_encode($p)); ?>)" class="btn-user-action" title="Editar"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteProduto(<?php echo $p['id']; ?>)" class="btn-user-action btn-user-delete" title="Remover"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>
@@ -67,13 +75,14 @@
 </div>
 
 <script>
-const PROD_NONCES = <?php echo json_encode($nonces); ?>;
+    const PRODUCT_NONCES = <?php echo json_encode($nonces); ?>;
+    const CATEGORIAS = <?php echo json_encode($categorias); ?>;
 
-function openProdutoModal(data = null) {
+    function openProdutoModal(data = null) {
     const html = `
         <form id="form-produto" enctype="multipart/form-data">
             <input type="hidden" name="id" value="${data ? data.id : ''}">
-            <input type="hidden" name="nonce" value="${PROD_NONCES.save}">
+            <input type="hidden" name="nonce" value="${PRODUCT_NONCES.save}">
             
             <div class="form-grid-2 mb-3">
                 <div class="form-group">
@@ -82,11 +91,11 @@ function openProdutoModal(data = null) {
                 </div>
                 <div class="form-group">
                     <label class="form-label">Categoria</label>
-                    <select name="categoria" class="form-control">
-                        <option value="Bebidas" ${data && data.categoria === 'Bebidas' ? 'selected' : ''}>Bebidas</option>
-                        <option value="Comida" ${data && data.categoria === 'Comida' ? 'selected' : ''}>Comida</option>
-                        <option value="Doces" ${data && data.categoria === 'Doces' ? 'selected' : ''}>Doces</option>
-                        <option value="Diversos" ${data && (data.categoria === 'Diversos' || !data.categoria) ? 'selected' : ''}>Diversos</option>
+                    <select name="categoria_id" class="form-control">
+                        <option value="">Selecione uma Categoria...</option>
+                        ${CATEGORIAS.map(cat => `
+                            <option value="${cat.id}" ${data && data.categoria_id == cat.id ? 'selected' : ''}>${cat.nome}</option>
+                        `).join('')}
                     </select>
                 </div>
             </div>

@@ -135,19 +135,20 @@ $bgImage = !empty($platform_settings['cardapio_bg']) ? $SITE_URL . $platform_set
         }
 
         .category-title {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 28px;
+            font-weight: 800;
             color: var(--primary);
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
+            letter-spacing: -0.5px;
         }
         .category-title::after {
             content: '';
             flex: 1;
             height: 1px;
-            background: linear-gradient(90deg, var(--border), transparent);
+            background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.3), transparent);
         }
 
         .menu-grid {
@@ -155,24 +156,28 @@ $bgImage = !empty($platform_settings['cardapio_bg']) ? $SITE_URL . $platform_set
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 30px;
         }
-
+        
+        /* Staggered entry animation for products */
         .product-card {
             background: var(--bg-card);
             backdrop-filter: blur(15px);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             overflow: hidden;
-            transition: var(--transition);
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                        border-color 0.4s ease, 
+                        box-shadow 0.4s ease;
             display: flex;
             flex-direction: column;
             cursor: pointer;
             position: relative;
+            transform-origin: center;
         }
 
         .product-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: rgba(var(--primary-rgb), 0.4);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transform: translateY(-8px) scale(1.01);
+            border-color: rgba(var(--primary-rgb), 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
         }
 
         .product-image-wrapper {
@@ -396,15 +401,14 @@ $bgImage = !empty($platform_settings['cardapio_bg']) ? $SITE_URL . $platform_set
         <p>Explore nosso menu exclusivo preparado com os melhores ingredientes.</p>
     </header>
 
-    <?php 
-    $categorias = array_unique(array_column($produtos, 'categoria'));
-    if (!empty($categorias)):
-    ?>
+    <?php if (!empty($categorias)): ?>
     <nav class="category-nav">
-        <a href="#" class="category-link active" onclick="filterCategory('all', this)">Todos</a>
+        <a href="javascript:void(0)" class="category-link active" onclick="filterCategory('all', this)">
+            <i class="fas fa-th-large" style="margin-right: 8px; opacity: 0.5;"></i> Todos
+        </a>
         <?php foreach ($categorias as $cat): ?>
-            <a href="#<?php echo urlencode($cat); ?>" class="category-link" onclick="filterCategory('<?php echo htmlspecialchars($cat); ?>', this)">
-                <?php echo htmlspecialchars($cat); ?>
+            <a href="javascript:void(0)" class="category-link" data-cat="<?php echo $cat['slug']; ?>" onclick="filterCategory('<?php echo $cat['slug']; ?>', this)">
+                <i class="fas <?php echo $cat['icone'] ?: 'fa-tag'; ?>" style="margin-right: 8px; opacity: 0.5;"></i> <?php echo htmlspecialchars($cat['nome']); ?>
             </a>
         <?php endforeach; ?>
     </nav>
@@ -412,14 +416,14 @@ $bgImage = !empty($platform_settings['cardapio_bg']) ? $SITE_URL . $platform_set
 
     <div id="products-container">
         <?php 
-        $last_category = '';
+        $current_category = '';
         foreach ($produtos as $p): 
-            if ($p['categoria'] !== $last_category):
-                if ($last_category !== '') echo "</div></div>"; // Fecha grid anterior
-                $last_category = $p['categoria'];
+            if ($p['categoria_slug'] !== $current_category):
+                if ($current_category !== '') echo "</div></div>";
+                $current_category = $p['categoria_slug'];
         ?>
-            <div class="category-section" data-category="<?php echo htmlspecialchars($p['categoria']); ?>">
-                <h2 class="category-title"><?php echo htmlspecialchars($p['categoria']); ?></h2>
+            <div class="category-section" data-category="<?php echo $p['categoria_slug']; ?>">
+                <h2 class="category-title"><?php echo htmlspecialchars($p['categoria_nome']); ?></h2>
                 <div class="menu-grid">
         <?php endif; ?>
                 <div class="product-card" onclick='openDetails(<?php echo json_encode($p); ?>)'>
@@ -507,18 +511,35 @@ function filterCategory(cat, btn) {
     btn.classList.add('active');
 
     const sections = document.querySelectorAll('.category-section');
-    sections.forEach(s => {
-        if (cat === 'all' || s.getAttribute('data-category') === cat) {
-            s.style.display = 'block';
-        } else {
-            s.style.display = 'none';
+    
+    // Quick fade out
+    document.getElementById('products-container').style.opacity = '0';
+    document.getElementById('products-container').style.transform = 'translateY(10px)';
+    
+    setTimeout(() => {
+        sections.forEach(s => {
+            if (cat === 'all' || s.getAttribute('data-category') === cat) {
+                s.style.display = 'block';
+            } else {
+                s.style.display = 'none';
+            }
+        });
+        
+        // Refined Fade In
+        document.getElementById('products-container').style.transition = 'all 0.5s ease';
+        document.getElementById('products-container').style.opacity = '1';
+        document.getElementById('products-container').style.transform = 'translateY(0)';
+        
+        if (cat !== 'all') {
+            const firstVisible = document.querySelector('.category-section[style*="display: block"]');
+            if (firstVisible) {
+                window.scrollTo({ top: firstVisible.offsetTop - 100, behavior: 'smooth' });
+            }
         }
-    });
-
-    if (cat !== 'all') {
-        window.scrollTo({ top: btn.getBoundingClientRect().top + window.scrollY - 20, behavior: 'smooth' });
-    }
+    }, 300);
 }
+
+document.getElementById('products-container').style.transition = 'all 0.5s ease';
 
 // Fechar com ESC
 document.addEventListener('keydown', (e) => {

@@ -32,6 +32,10 @@ $router->add('POST', '/admin/settings', ['controller' => 'Admin\\SettingsControl
 $router->add('GET', '/settings', ['controller' => 'Admin\\SettingsController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);
 $router->add('POST', '/settings', ['controller' => 'Admin\\SettingsController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);
 
+$router->add('GET', '/admin/categorias', ['controller' => 'Admin\\CategoriasController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);
+$router->add('POST', '/api/admin/categorias/save', ['controller' => 'Admin\\CategoriasController', 'method' => 'save', 'middlewares' => [$auth, $admin]]);
+$router->add('POST', '/api/admin/categorias/delete', ['controller' => 'Admin\\CategoriasController', 'method' => 'delete', 'middlewares' => [$auth, $admin]]);
+
 $router->add('GET', '/api/notifications/read/{id}', ['controller' => 'NotificationController', 'method' => 'read', 'middlewares' => [$auth]]);
 $router->add('GET', '/api/notifications/read_all', ['controller' => 'NotificationController', 'method' => 'readAll', 'middlewares' => [$auth]]);
 $router->add('GET', '/api/notifications/clear_all', ['controller' => 'NotificationController', 'method' => 'clearAll', 'middlewares' => [$auth]]);

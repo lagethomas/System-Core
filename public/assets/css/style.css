@@ -2105,9 +2105,8 @@ input:checked+.slider:before {
     color: var(--primary);
 }
 
-/* Ensure generate button doesn't overlap eye */
 .password-toggle-wrapper .btn-generate-password {
-    right: 45px !important;
+    right: 12px !important;
 }
 
 /* Role Badges */
