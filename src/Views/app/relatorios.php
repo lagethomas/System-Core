@@ -161,12 +161,20 @@ $lucroBruto    = $totalEntradas - $totalSaidas;
                                     R$ <?php echo number_format((float)$c['lucro'], 2, ',', '.'); ?>
                                 </td>
                                 <td style="padding-right: 20px; text-align: center;">
-                                    <button class="btn-primary" 
-                                            style="padding: 6px; border-radius: 6px; width: 34px; height: 34px; font-size: 14px; background: rgba(var(--primary-rgb), 0.1); color: var(--primary); border: 1px solid rgba(var(--primary-rgb), 0.2);"
-                                            title="Ver Detalhes" 
-                                            onclick='showCaixaDetail(<?php echo json_encode($c); ?>)'>
-                                        <i class="fas fa-eye"></i>
-                                    </button>
+                                    <div style="display:flex; gap:6px; justify-content:center;">
+                                        <button class="btn-primary" 
+                                                style="padding: 6px; border-radius: 6px; width: 34px; height: 34px; font-size: 14px; background: rgba(var(--primary-rgb), 0.1); color: var(--primary); border: 1px solid rgba(var(--primary-rgb), 0.2);"
+                                                title="Ver Resumo" 
+                                                onclick='showCaixaDetail(<?php echo json_encode($c); ?>)'>
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn-primary" 
+                                                style="padding: 6px; border-radius: 6px; width: 34px; height: 34px; font-size: 14px; background: rgba(14,165,233,0.1); color: #0ea5e9; border: 1px solid rgba(14,165,233,0.2);"
+                                                title="Fluxo do Turno" 
+                                                onclick='showFluxoTurno(<?php echo (int)$c['id']; ?>, "<?php echo htmlspecialchars($c['usuario_nome']); ?>", "<?php echo date('d/m H:i', strtotime($c['data_abertura'])); ?>")'>
+                                            <i class="fas fa-file-alt"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -249,9 +257,69 @@ function showCaixaDetail(c) {
         <div class="modal-footer" style="padding-top:20px; border-top: 1px solid var(--border);">
             <button class="btn-secondary" onclick="UI.closeModal()"><i class="fas fa-times"></i> Fechar Detalhes</button>
         </div>
-    `;
+    `;\n\n    UI.showModal(`Detalhes do Caixa — #${c.id}`, html);
+}
 
-    UI.showModal(`Detalhes do Caixa — #${c.id}`, html);
+async function showFluxoTurno(caixaId, operador, abertura) {
+    UI.showModal(`📋 Fluxo do Turno — ${operador}`, `<div style="text-align:center;padding:30px;color:var(--text-muted);"><i class="fas fa-spinner fa-spin fa-2x"></i><p style="margin-top:10px">Carregando movimentações...</p></div>`);
+    
+    try {
+        const res = await fetch(`<?php echo SITE_URL; ?>/api/relatorios/fluxo/${caixaId}`);
+        const data = await res.json();
+        
+        if (!data.success) throw new Error(data.message || 'Erro ao carregar');
+        
+        const fmoeda = (v, tipo) => {
+            const val = parseFloat(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            return tipo === 'entrada' ? `<span style="color:#10b981;font-weight:800">+ R$ ${val}</span>` : `<span style="color:#ef4444;font-weight:800">- R$ ${val}</span>`;
+        };
+        
+        const rows = data.itens.length === 0 
+            ? `<tr><td colspan="3" style="text-align:center;padding:30px;color:var(--text-muted);">Nenhuma movimentação encontrada neste turno.</td></tr>`
+            : data.itens.map(i => `
+                <tr>
+                    <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;padding-left:20px">${new Date(i.data_movimentacao).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</td>
+                    <td style="font-size:13px;padding:12px 15px">${i.descricao || '—'}</td>
+                    <td style="text-align:right;padding-right:20px">${fmoeda(i.valor, i.tipo)}</td>
+                </tr>
+            `).join('');
+        
+        const total = data.itens.filter(i=>i.tipo==='entrada').reduce((s,i)=>s+parseFloat(i.valor||0),0);
+        
+        const html = `
+            <div class="modal-body-scroll" style="padding:0">
+                <div style="padding:20px;background:rgba(var(--primary-rgb),0.05);border-bottom:1px solid var(--border);">
+                    <small style="color:var(--text-muted);display:block;margin-bottom:5px">FLUXO DO TURNO</small>
+                    <strong style="font-size:16px;">${operador}</strong>
+                    <span style="color:var(--text-muted);font-size:13px;display:block">Abertura: ${abertura}</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="premium-table" style="min-width:400px">
+                        <thead>
+                            <tr>
+                                <th style="padding-left:20px">Hora</th>
+                                <th>Descrição</th>
+                                <th class="text-right" style="padding-right:20px">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                        <tfoot>
+                            <tr style="background:rgba(var(--primary-rgb),0.05)">
+                                <td colspan="2" style="padding:15px 20px;font-weight:800;text-align:right">TOTAL ENTRADAS:</td>
+                                <td style="padding:15px 20px;font-weight:900;color:#10b981;text-align:right">R$ ${total.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:20px;border-top:1px solid var(--border)">
+                <button class="btn-secondary" onclick="UI.closeModal()"><i class="fas fa-times"></i> Fechar</button>
+            </div>
+        `;
+        UI.showModal(`📋 Fluxo do Turno — ${operador}`, html);
+    } catch(e) {
+        UI.showToast('Erro ao carregar fluxo: ' + e.message, 'error');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

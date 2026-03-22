@@ -86,13 +86,30 @@ class RelatorioController extends Controller {
 
         $this->render('app/relatorios', [
             'movimentacoes' => $movimentacoes,
-            'metodos' => $metodos,
-            'topProdutos' => $topProdutos,
-            'caixas' => $caixas,
-            'filters' => [
+            'metodos'       => $metodos,
+            'topProdutos'   => $topProdutos,
+            'caixas'        => $caixas,
+            'filters'       => [
                 'start_date' => $start_date,
-                'end_date' => $end_date
+                'end_date'   => $end_date
             ]
         ]);
+    }
+
+    /**
+     * API: Retorna o fluxo detalhado de um caixa para o modal de turno
+     */
+    public function fluxo(string $caixaId): void {
+        \Auth::requireRole('caixa');
+        
+        $itens = Database::fetchAll(
+            "SELECT descricao, valor, tipo, metodo_pagamento, data_movimentacao 
+             FROM cp_financeiro 
+             WHERE caixa_id = :cid 
+             ORDER BY data_movimentacao ASC",
+            ['cid' => (int)$caixaId]
+        );
+
+        $this->jsonResponse(['success' => true, 'itens' => $itens]);
     }
 }

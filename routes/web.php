@@ -76,3 +76,4 @@ $router->add('GET', '/api/caixa/status', ['controller' => 'CaixaController', 'me
 
 // --- Relatórios ---
 $router->add('GET', '/app/relatorios', ['controller' => 'RelatorioController', 'method' => 'index', 'middlewares' => [$auth]]);
+$router->add('GET', '/api/relatorios/fluxo/{caixaId}', ['controller' => 'RelatorioController', 'method' => 'fluxo', 'middlewares' => [$auth]]);
