@@ -36,7 +36,7 @@
                             <div class="user-email-info"><?php echo htmlspecialchars($u['email']); ?></div>
                         </td>
                         <td>
-                            <span class="badge badge-primary">
+                            <span class="badge badge-<?php echo strtolower($u['role']); ?>">
                                 <?php echo htmlspecialchars($u['role']); ?>
                             </span>
                         </td>
@@ -61,10 +61,13 @@
 </div>
 
 <script>
+const USER_NONCES = <?php echo json_encode($nonces); ?>;
+
 function openUserModal(data = null) {
     const html = `
         <form action="<?php echo SITE_URL; ?>/api/admin/users/save" class="ajax-form">
             <input type="hidden" name="id" value="${data ? data.id : ''}">
+            <input type="hidden" name="nonce" value="${USER_NONCES.save}">
             
             <div class="form-group mb-3">
                 <label class="form-label">Nome Completo</label>
@@ -91,6 +94,8 @@ function openUserModal(data = null) {
                     <label class="form-label">Papel</label>
                     <select name="role" class="form-control w-100">
                         <option value="usuario" ${data && data.role === 'usuario' ? 'selected' : ''}>Usuário Comum</option>
+                        <option value="atendente" ${data && data.role === 'atendente' ? 'selected' : ''}>Atendente</option>
+                        <option value="caixa" ${data && data.role === 'caixa' ? 'selected' : ''}>Caixa</option>
                         <option value="administrador" ${data && data.role === 'administrador' ? 'selected' : ''}>Administrador</option>
                     </select>
                 </div>
@@ -99,8 +104,8 @@ function openUserModal(data = null) {
             <div class="form-group mb-3 relative">
                 <label class="form-label">Senha ${data ? '(opcional)' : ''}</label>
                 <div class="relative">
-                    <input type="password" name="password" id="modal-password" class="form-control w-100 pr-5" ${data ? '' : 'required'}>
-                    <button type="button" onclick="UI.generatePassword('modal-password')" class="btn-generate-password" title="Gerar Senha">
+                    <input type="password" name="password" id="modal-password" class="form-control w-100 pr-80" ${data ? '' : 'required'}>
+                    <button type="button" onclick="UI.generatePassword ? UI.generatePassword('modal-password') : null" class="btn-generate-password" title="Gerar Senha" style="right: 10px;">
                         <i class="fas fa-random"></i>
                     </button>
                 </div>
@@ -161,7 +166,7 @@ function suggestUsername(name) {
 
 async function deleteUser(id) {
     if (await UI.confirm('Deseja realmente remover este usuário?')) {
-        const res = await UI.request('<?php echo SITE_URL; ?>/api/admin/users/delete', { id });
+        const res = await UI.request('<?php echo SITE_URL; ?>/api/admin/users/delete', { id, nonce: USER_NONCES.delete });
         if (res && res.success) {
             UI.showToast('Usuário removido');
             window.location.reload();

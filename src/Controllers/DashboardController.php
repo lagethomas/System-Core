@@ -9,6 +9,22 @@ use PDO;
 
 class DashboardController extends Controller {
     public function index(): void {
+        try {
+            \App\Core\Database::query("ALTER TABLE cp_produtos ADD COLUMN disponivel_cardapio TINYINT DEFAULT 1");
+        } catch (\Exception $e) {}
+        try {
+            \App\Core\Database::query("ALTER TABLE cp_produtos ADD COLUMN descricao TEXT");
+        } catch (\Exception $e) {}
+        try {
+            \App\Core\Database::query("ALTER TABLE cp_users MODIFY COLUMN role VARCHAR(50) DEFAULT 'usuario'");
+        } catch (\Exception $e) {}
+        try {
+            \App\Core\Database::query("ALTER TABLE cp_financeiro ADD COLUMN taxa_servico DECIMAL(10, 2) DEFAULT 0.00");
+        } catch (\Exception $e) {}
+        try {
+            \App\Core\Database::query("ALTER TABLE cp_financeiro ADD COLUMN cover DECIMAL(10, 2) DEFAULT 0.00");
+        } catch (\Exception $e) {}
+
         $user_name = $_SESSION['user_name'] ?? 'Usuário';
         $total_users = 0;
         $total_logs = 0;

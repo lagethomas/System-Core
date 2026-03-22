@@ -36,7 +36,22 @@ class Auth {
      * Check if user is a global administrator
      */
     public static function isAdmin(): bool {
-        return self::isLoggedIn() && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'administrador';
+        return self::isLoggedIn() && isset($_SESSION['user_role']) && strtolower($_SESSION['user_role']) === 'administrador';
+    }
+
+    public static function isCaixa(): bool {
+        return self::isAdmin() || (isset($_SESSION['user_role']) && strtolower($_SESSION['user_role']) === 'caixa');
+    }
+
+    public static function isAtendente(): bool {
+        return self::isCaixa() || (isset($_SESSION['user_role']) && strtolower($_SESSION['user_role']) === 'atendente');
+    }
+
+    public static function hasPermission(string $roleRequired): bool {
+        if ($roleRequired === 'administrador') return self::isAdmin();
+        if ($roleRequired === 'caixa') return self::isCaixa();
+        if ($roleRequired === 'atendente') return self::isAtendente();
+        return false;
     }
 
     /**
@@ -44,7 +59,18 @@ class Auth {
      */
     public static function requireLogin(): void {
         if (!self::isLoggedIn()) {
-            header("Location: " . SITE_URL . "/login.php");
+            header("Location: " . SITE_URL . "/login");
+            exit;
+        }
+    }
+
+    /**
+     * Require Specific Role access
+     */
+    public static function requireRole(string $role): void {
+        self::requireLogin();
+        if (!self::hasPermission($role)) {
+            header("Location: " . SITE_URL . "/dashboard");
             exit;
         }
     }
@@ -53,11 +79,7 @@ class Auth {
      * Require Global Admin access
      */
     public static function requireAdmin(): void {
-        self::requireLogin();
-        if (!self::isAdmin()) {
-            header("Location: " . SITE_URL . "/dashboard");
-            exit;
-        }
+        self::requireRole('administrador');
     }
 
     /**
@@ -76,6 +98,40 @@ class Auth {
         // Security markers
         $_SESSION['secure_ua'] = $_SERVER['HTTP_USER_AGENT'] ?? '';
         $_SESSION['secure_ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
+
+        // Update last login and session ID in DB
+        global $pdo;
+        $stmt = $pdo->prepare("UPDATE cp_users SET last_login = NOW(), current_session_id = ?, last_pulse = NOW() WHERE id = ?");
+        $stmt->execute([session_id(), $user['id']]);
+    }
+
+    /**
+     * Single Session Enforcement: Check if user already has an active session elsewhere
+     */
+    public static function hasActiveSession(int $userId): bool {
+        global $pdo;
+        $stmt = $pdo->prepare("SELECT current_session_id, last_pulse FROM cp_users WHERE id = ?");
+        $stmt->execute([$userId]);
+        $res = $stmt->fetch();
+
+        if ($res && !empty($res['current_session_id'])) {
+            // Check if session is actually still active (last pulse < 10 mins)
+            $lastPulse = strtotime($res['last_pulse'] ?? '0');
+            if ((time() - $lastPulse) < 600) {
+                // If it's the SAME session, don't block
+                if ($res['current_session_id'] === session_id()) {
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function clearSessionFromDB(int $userId): void {
+        global $pdo;
+        $stmt = $pdo->prepare("UPDATE cp_users SET current_session_id = NULL WHERE id = ?");
+        $stmt->execute([$userId]);
     }
 
     /**
@@ -110,6 +166,13 @@ class Auth {
             self::logout();
         }
         $_SESSION['last_activity'] = time();
+    }
+
+    /**
+     * Get current user ID
+     */
+    public static function id(): ?int {
+        return isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
     }
 }
 

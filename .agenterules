@@ -3,11 +3,12 @@
 Você é um desenvolvedor PHP Senior. Siga estas diretrizes estritas para este workspace:
 
 ## 1. Arquitetura e Início de Projeto
-- **Referência Core:** Sempre analise os arquivos na pasta `/core` (ou sua pasta definida) antes de criar novos componentes. Use as classes existentes para manter a consistência.
+- **Referência Core:** do nosso sistema base para iniciar novos projetos. nele temos defininodo alguns módulos iniciais, estilos e funcionalidades.
 - **Namespaces:** Utilize PSR-4 para todos os novos arquivos.
 - **Opcache:** Escreva código compatível com preloading do Opcache. Evite verificações de arquivo (file_exists) desnecessárias em loops.
 - Versionar o sistema de acordo com as atualizações e correções para que não fique sempre na mesma versão
 - Sempre construir para versão 8+ do php, nunca com funções e códigos antigos
+- Sempre use carregamentos ajax em tempo real sem refresh para todas as ações
 - Seguir sempre a estrutura MVC que criamos
 - Estrutura do sistema:
 .
@@ -84,3 +85,85 @@ Você é um desenvolvedor PHP Senior. Siga estas diretrizes estritas para este w
 
 ## 9. Formulŕios
 - Adicionar o ícone (Use uma chave) para revelar e ocultar a senha no campo do login.
+
+## 10. Banco de dados 
+- Sempre criar as regras de migrations em migrations.php
+- Semroe atualziar o database.sql com as novas tabelas
+- sempre Criar os Indexes.
+
+## 11. Tabelas 
+- Sempre adicionar scroll nas tabelas para que elas não expremam as informações nas colunas.
+-- O scroll deve sermpre seguir o padrão de barra fina e com a cor de destaque do sistema de forma suave
+- Sempre mantenha as tabelas com scroll para formato mobile, assim, mantemos o layoute e temos o croll para vermos as informações
+
+## 12. Logs
+-  Sempre que criamos módulos e novas funcionalidades que tem ações (Delete, Update, Crete) adicionar essas ações nos logs Globais.
+
+## 13. Tabs
+-- As tabs do sistema devem sempre seguir o mesmo padrão e estilo que temos na página de configurações
+
+## 14. Estilos css
+- Todo css do sistema dos módulos devem ser criados e aplicados atraves de folhas de estilo, não usar <style></style> ou css inline no sistema, a não ser que seja muito especifico.
+
+## 15. Popups
+-- Os popups devem sempre seguir o estilo,
+-- header (Titulo) - fixo
+-- content (Conteúdo com Scroll para quando ficar com muitas informações) - sroll
+-- footer (botões de ações) - fixo
+
+mdoelo
+<div class="modal-content">
+    <div class="modal-header">
+        <h3 id="modal-title"></h3>
+        <button class="close-modal" onclick="UI.closeModal()"></button>
+    </div>
+
+    <div id="modal-body">
+        <form class="ajax-form" id="form-finance" action="">
+            <input type="hidden" name="tipo" value="">
+
+            <div class="form-group mb-3">
+                <label class="form-label"></label>
+                <input type="text" name="descricao" class="form-control" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="form-label"></label>
+                <input type="text" name="valor" class="form-control mask-money" required>
+            </div>
+
+            <div class="form-group mb-4">
+                <label class="form-label"></label>
+                <select name="metodo_pagamento" class="form-control w-100">
+                    <option value=""></option>
+                    <option value=""></option>
+                    <option value=""></option>
+                    <option value=""></option>
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <div id="modal-footer" class="modal-footer" style="display: flex;">
+        <button type="button" class="btn-secondary" onclick="UI.closeModal()"></button>
+        <button type="submit" class="btn-danger" form="form-finance"></button>
+    </div>
+</div>
+
+## 16. Segurança
+- Sempre criar em configurações a aba Securença com as configurações.
+-- Retenção de Histórico:
+    Adicionei campos para definir por quantos dias os logs devem ser mantidos.
+    Opção de limite de registros (quantidade total) para evitar sobrecarga no banco de dados.
+    Proteção contra Brute Force (Login):
+-- Configuração de máximo de tentativas erradas antes do bloqueio.
+    Definição do tempo de bloqueio (em minutos).
+    Opção para ativar a exigência de Senhas Fortes em todo o sistema.
+    Gerenciamento de Sessão:
+
+-- Tempo de Inatividade: Desloga o usuário automaticamente após X minutos parados.
+    Sessão Única: Quando ativado, derruba qualquer login anterior do mesmo usuário ao entrar em um novo dispositivo.
+    Bloqueio de IP: Proteção global que trava o IP do atacante após sucessivos erros.
+
+## 17. Campos de media (Upload)
+- Os campos de upload devem seguir o padrão do sistema com ícone de upload, bordas tracejadas.

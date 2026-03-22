@@ -1,3 +1,23 @@
+/* Global Scrollbar Reset */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 20px;
+    border: 1px solid transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary);
+}
+
 :root {
     /* Layout & Structure */
     --radius: 12px;
@@ -554,6 +574,124 @@ body {
     box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3);
 }
 
+/* Action Buttons (CRUD icons) */
+.btn-user-action {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    color: var(--text-muted) !important;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-user-action:hover {
+    color: var(--primary) !important;
+    border-color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.1);
+}
+
+.btn-user-delete:hover {
+    color: #ff4d4d !important;
+    border-color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.1);
+}
+
+/* Modern Upload Field */
+.modern-upload {
+    position: relative;
+    width: 100%;
+}
+
+.modern-upload input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+/* Dashboard Grid & Layout Utils */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    width: 100%;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.stat-card span {
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.stat-card strong {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.modern-upload label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    background: rgba(255,255,255,0.02);
+}
+
+.modern-upload label:hover {
+    border-color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.05);
+}
+
+.modern-upload i {
+    font-size: 24px;
+    color: var(--primary);
+}
+
+.modern-upload span {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
 /* Page Content moved to page-content.css */
 
 /* Dashboard Cards */
@@ -604,8 +742,17 @@ body {
     font-weight: 700;
 }
 
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
 .premium-table {
     width: 100%;
+    min-width: 900px;
     border-collapse: collapse;
 }
 
@@ -615,11 +762,13 @@ body {
     border-bottom: 1px solid var(--border);
     color: var(--text-muted);
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .premium-table td {
     padding: 16px;
     border-bottom: 1px solid var(--border);
+    white-space: nowrap;
 }
 
 .status-badge {
@@ -1860,4 +2009,160 @@ input:checked+.slider:before {
 
 .bg-warning {
     background-color: #f59e0b !important;
+}
+/* Switch Toggle Components */
+.switch-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    margin: 10px 0;
+}
+
+.switch-container input {
+    display: none;
+}
+
+.switch-slider {
+    position: relative;
+    width: 44px;
+    height: 22px;
+    background-color: rgba(255,255,255,0.1);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    transition: var(--transition);
+}
+
+.switch-slider::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: var(--text-muted);
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.switch-container input:checked + .switch-slider {
+    background-color: rgba(var(--primary-rgb), 0.2);
+    border-color: var(--primary);
+}
+
+.switch-container input:checked + .switch-slider::before {
+    transform: translateX(22px);
+    background-color: var(--primary);
+    box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5);
+}
+
+/* Dashboard & Reports Responsivity */
+@media (max-width: 992px) {
+    .dashboard-charts-container {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Modal Details Mobile Fix - Force Vertical Cards */
+@media (max-width: 600px) {
+    .modal-body-scroll div[style*="display:grid"],
+    .modal-body-scroll div[style*="display: grid"] {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .stats-cards-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Role Badges */
+.badge-caixa { background: #3b82f6; color: #fff; }
+.badge-atendente { background: #6366f1; color: #fff; }
+.badge-administrador { background: var(--primary); color: #000; }
+.badge-usuario { background: #64748b; color: #fff; }
+
+/* Password Field Fixes */
+.pr-80 {
+    padding-right: 80px !important;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+    z-index: 10;
+    transition: var(--transition);
+}
+
+.password-toggle-btn:hover {
+    color: var(--primary);
+}
+
+/* Ensure generate button doesn't overlap eye */
+.password-toggle-wrapper .btn-generate-password {
+    right: 45px !important;
+}
+
+/* Role Badges */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.badge-caixa { background: #3b82f6 !important; color: #fff !important; }
+.badge-atendente { background: #6366f1 !important; color: #fff !important; }
+.badge-administrador { background: var(--primary) !important; color: #000 !important; }
+.badge-usuario { background: #64748b !important; color: #fff !important; }
+
+/* Neon Finance Buttons */
+.btn-finance-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid transparent;
+}
+
+.btn-finance-entrada {
+    background: rgba(16, 185, 129, 0.05) !important;
+    color: #10b981 !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+.btn-finance-entrada:hover {
+    background: #10b981 !important;
+    color: #000 !important;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-finance-saida {
+    background: rgba(239, 68, 68, 0.05) !important;
+    color: #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+}
+
+.btn-finance-saida:hover {
+    background: #ef4444 !important;
+    color: #fff !important;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+    transform: translateY(-2px);
 }

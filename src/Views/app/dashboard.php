@@ -54,13 +54,29 @@
     </div>
 
     <div class="card" style="background: var(--bg-card); border-radius: 12px; padding: 25px; border: 1px solid var(--border);">
-        <h3 style="margin-top: 0;">Link Rápido</h3>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
+        <h3 style="margin-top: 0; font-size: 18px; margin-bottom: 20px;">Link do Cardápio Público</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="background: rgba(255,255,255,0.03); border: 1px dashed var(--border); padding: 15px; border-radius: 10px; text-align: center;">
+                <i class="fas fa-utensils mb-2" style="color: var(--primary); font-size: 24px; display: block;"></i>
+                <small style="color: var(--text-muted); display: block; margin-bottom: 10px;">Compartilhe seu cardápio com os clientes</small>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-primary" style="flex: 1; padding: 10px; font-size: 13px; border-radius: 8px;" onclick="UI.copyToClipboard('<?php echo SITE_URL; ?>/cardapio')">
+                        <i class="fas fa-copy"></i> Copiar Link
+                    </button>
+                    <button class="btn-secondary" style="flex: 1; padding: 10px; font-size: 13px; border-radius: 8px;" onclick="UI.showQRModal('<?php echo SITE_URL; ?>/cardapio', 'Seu Cardápio Digital')">
+                        <i class="fas fa-qrcode"></i> QRCode
+                    </button>
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 10px 0;">
+
+            <h3 style="margin-top: 0; font-size: 16px; margin-bottom: 15px;">Links Rápidos</h3>
             <a href="<?php echo SITE_URL; ?>/admin/users" class="btn-secondary" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
                 <i class="fas fa-user-plus"></i> Gerenciar Usuários
             </a>
             <a href="<?php echo SITE_URL; ?>/profile" class="btn-secondary" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
-                <i class="fas fa-user-circle"></i> Meu Perfil Maroto
+                <i class="fas fa-user-circle"></i> Meu Perfil
             </a>
             <a href="<?php echo SITE_URL; ?>/admin/logs" class="btn-secondary" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
                 <i class="fas fa-list"></i> Ver Logs Globais

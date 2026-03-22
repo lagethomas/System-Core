@@ -1,0 +1,384 @@
+/* ==============================================================
+   COMANDA MODULE STYLES
+   Segue exatamente o padrão do sistema (ver users.css, dashboard.css)
+   Todas as cores e estilos via variáveis do tema.
+   ============================================================== */
+
+/* Expande o modal global quando a comanda está aberta */
+#global-modal .modal-content:has(.comanda-modal-layout) {
+    max-width: 1000px !important;
+}
+
+/* Estilos globais de ações (copiados do core para consistência) */
+.btn-user-action {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-left: 5px;
+}
+.btn-user-action:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.1);
+}
+.btn-user-delete:hover {
+    color: #ff4d4d;
+    border-color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.1);
+}
+
+/* Grid de Mesas */
+.mesas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+}
+
+/* Card de Mesa */
+.mesa-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-remove-mesa {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 77, 77, 0.1);
+    color: var(--danger);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    opacity: 0;
+    z-index: 10;
+}
+
+.mesa-card:hover .btn-remove-mesa {
+    opacity: 1;
+}
+
+.btn-remove-mesa:hover {
+    background: var(--danger);
+    color: white;
+    transform: scale(1.1);
+}
+
+.mesa-card:hover {
+    border-color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.04);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.mesa-card.ocupada {
+    border-top: 3px solid var(--danger);
+}
+
+.mesa-card.livre {
+    border-top: 3px solid var(--success);
+}
+
+.mesa-icon {
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+.mesa-card.livre .mesa-icon { color: var(--success); }
+.mesa-card.ocupada .mesa-icon { color: var(--danger); }
+
+.mesa-numero {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.mesa-status-badge {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.mesa-card.livre .mesa-status-badge {
+    background: rgba(0, 255, 127, 0.1);
+    color: var(--success);
+}
+
+.mesa-card.ocupada .mesa-status-badge {
+    background: rgba(255, 77, 77, 0.1);
+    color: var(--danger);
+}
+
+.mesa-total {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.mesa-itens {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* Comanda Panel (lado direito do modal global expandido) */
+.comanda-modal-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 0;
+    min-height: 500px;
+}
+
+.comanda-itens-list {
+    padding: 10px 20px 20px 0;
+    border-right: 1px solid var(--border);
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+/* Scrollbar estilizada */
+.comanda-itens-list::-webkit-scrollbar,
+.quick-add-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+.comanda-itens-list::-webkit-scrollbar-thumb,
+.quick-add-scroll::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 10px;
+}
+
+.comanda-actions-panel {
+    padding: 0 0 0 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.quick-add-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-right: 5px;
+}
+
+.comanda-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+}
+
+.comanda-item-info {
+    flex: 1;
+}
+
+.comanda-item-nome {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    display: block;
+}
+
+.comanda-item-qtd {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.comanda-item-preco {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--primary);
+    white-space: nowrap;
+}
+
+.btn-remove-item {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 6px;
+    transition: var(--transition);
+    font-size: 13px;
+}
+
+.btn-remove-item:hover {
+    color: var(--danger);
+    background: rgba(255, 77, 77, 0.1);
+}
+
+.comanda-total-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: rgba(var(--primary-rgb), 0.06);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-top: 10px;
+}
+
+.comanda-total-label {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.comanda-total-valor {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.btn-produto-rapido {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 10px 12px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 13px;
+    text-align: left;
+    gap: 10px;
+}
+
+.btn-produto-rapido:hover {
+    border-color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.08);
+    transform: translateX(4px);
+}
+
+.btn-produto-preco {
+    color: var(--primary);
+    font-weight: 700;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.comanda-actions-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+    margin-top: 10px;
+    display: block;
+}
+
+.empty-comanda {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.empty-comanda i {
+    font-size: 40px;
+    margin-bottom: 10px;
+    opacity: 0.2;
+    display: block;
+    color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    .comanda-modal-layout {
+        grid-template-columns: 1fr;
+    }
+    .comanda-itens-list {
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+    .comanda-actions-panel {
+        padding-left: 0;
+    }
+    .mesas-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
+}
+
+/* ==============================================================
+   PAYMENT MODAL (Standardized with PDV)
+   ============================================================== */
+
+.payment-methods-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.pay-method-opt { cursor: pointer; }
+.pay-method-opt input { display: none; }
+.pay-method-opt span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-weight: 600;
+    transition: 0.3s;
+    color: var(--text-muted);
+}
+
+.pay-method-opt i { font-size: 24px; }
+.pay-method-opt input:checked + span {
+    background: rgba(var(--primary-rgb), 0.1);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+#dinheiro-fields {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 15px;
+    border: 1px dashed var(--border);
+}
+
+#troco-display {
+    margin-top:20px; 
+    text-align:center; 
+    padding: 15px; 
+    background: rgba(var(--primary-rgb), 0.1); 
+    border-radius: 12px;
+}

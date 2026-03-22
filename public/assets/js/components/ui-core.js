@@ -266,6 +266,37 @@ const UI = {
                 btn.style.right = '45px'; 
             }
         });
+    },
+
+    copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            this.showToast('Link copiado para a área de transferência!');
+        }).catch(err => {
+            console.error('Erro ao copiar: ', err);
+            this.showToast('Erro ao copiar link', 'error');
+        });
+    },
+
+    showQRModal(url, title = 'QRCode de Acesso') {
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
+        const html = `
+            <div style="text-align: center; padding: 20px;">
+                <div style="background: #fff; padding: 20px; border-radius: 15px; display: inline-block; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                    <img src="${qrUrl}" alt="QRCode" style="width: 200px; height: 200px; display: block;">
+                </div>
+                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Aponte a câmera do celular para acessar o cardápio.</p>
+                <div class="form-group mb-4">
+                    <input type="text" class="form-control" value="${url}" readonly style="text-align: center; background: rgba(255,255,255,0.03);">
+                </div>
+                <button class="btn-primary" onclick="UI.copyToClipboard('${url}')" style="width: 100%;">
+                    <i class="fas fa-copy"></i> COPIAR LINK
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" style="width: 100%;" onclick="UI.closeModal()">FECHAR</button>
+            </div>
+        `;
+        this.showModal(title, html);
     }
 };
 

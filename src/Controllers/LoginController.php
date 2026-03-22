@@ -5,6 +5,7 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use Auth;
+use App\Helpers\Logger;
 
 class LoginController extends Controller {
 
@@ -69,7 +70,7 @@ class LoginController extends Controller {
 
                 try {
                     require_once __DIR__ . '/../../includes/logs.php';
-                    \Logger::log('login', 'Login realizado via rota MVC.');
+                    Logger::log('login', 'Login realizado via rota MVC.');
                 } catch (\Exception $e) {}
 
                 header('Location: ' . SITE_URL . '/dashboard');
@@ -89,7 +90,7 @@ class LoginController extends Controller {
     public function logout(): void {
         try {
             require_once __DIR__ . '/../../includes/logs.php';
-            \Logger::log('logout', 'Logout realizado.');
+            Logger::log('logout', 'Logout realizado.');
         } catch (\Exception $e) {}
 
         Auth::logout();

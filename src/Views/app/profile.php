@@ -18,6 +18,7 @@
     </div>
 
     <form action="<?php echo SITE_URL; ?>/api/profile/save" class="ajax-form" id="profileForm" enctype="multipart/form-data">
+        <input type="hidden" name="nonce" value="<?php echo $nonce; ?>">
         <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display: none;" onchange="UI.uploadProfilePicture(this)">
         <div class="profile-form-grid">
             <div class="form-group">

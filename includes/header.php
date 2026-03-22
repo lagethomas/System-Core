@@ -31,13 +31,19 @@ $page_titles = [
     'users.php' => 'Usuários',
     'users' => 'Usuários',
     'logs.php' => 'Logs Globais',
-    'logs' => 'Logs Globais',
+    'logs' => 'Logs do Sistema',
     'settings.php' => 'Configurações',
     'settings' => 'Configurações',
     'profile.php' => 'Meu Perfil',
     'profile' => 'Meu Perfil',
     'integrations.php' => 'Integrações',
-    'integrations' => 'Integrações'
+    'integrations' => 'Integrações',
+    'comanda' => 'Mapa de Mesas',
+    'produtos' => 'Gestão de Produtos',
+    'financeiro' => 'Módulo Financeiro',
+    'pdv' => 'Frente de Caixa (PDV)',
+    'caixa' => 'Controle de Caixa',
+    'relatorios' => 'Relatórios e Análises'
 ];
 
 // Fetch Notifications
@@ -100,6 +106,36 @@ $unread_count = count($unread_notifications);
                     <li class="<?php echo ($current_page == 'dashboard.php' || $current_page == 'dashboard') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/dashboard">
                             <i class="fas fa-th-large"></i> <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="<?php echo ($current_page == 'comanda') ? 'active' : ''; ?>">
+                        <a href="<?php echo SITE_URL; ?>/app/comanda">
+                            <i class="fas fa-th"></i> <span>Mapa de Mesas</span>
+                        </a>
+                    </li>
+                    <li class="<?php echo ($current_page == 'pdv') ? 'active' : ''; ?>">
+                        <a href="<?php echo SITE_URL; ?>/app/pdv">
+                            <i class="fas fa-shopping-cart"></i> <span>Frente de Caixa (PDV)</span>
+                        </a>
+                    </li>
+                    <li class="<?php echo ($current_page == 'caixa') ? 'active' : ''; ?>">
+                        <a href="<?php echo SITE_URL; ?>/app/caixa">
+                            <i class="fas fa-cash-register"></i> <span>Controle de Caixa</span>
+                        </a>
+                    </li>
+                    <li class="<?php echo ($current_page == 'produtos') ? 'active' : ''; ?>">
+                        <a href="<?php echo SITE_URL; ?>/app/produtos">
+                            <i class="fas fa-box"></i> <span>Produtos</span>
+                        </a>
+                    </li>
+                    <li class="<?php echo ($current_page == 'financeiro') ? 'active' : ''; ?>">
+                        <a href="<?php echo SITE_URL; ?>/app/financeiro">
+                            <i class="fas fa-wallet"></i> <span>Financeiro</span>
+                        </a>
+                    </li>
+                    <li class="<?php echo ($current_page == 'relatorios') ? 'active' : ''; ?>">
+                        <a href="<?php echo SITE_URL; ?>/app/relatorios">
+                            <i class="fas fa-chart-bar"></i> <span>Relatórios</span>
                         </a>
                     </li>
                     

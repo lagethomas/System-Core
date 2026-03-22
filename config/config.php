@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Configuration Loader - High Compatibility Version
  */
-define('SYSTEM_VERSION', 'v2.1.1');
+define('SYSTEM_VERSION', 'v2.2.0');
 
 // --- AUTOLOADER (Rule 1) ---
 require_once __DIR__ . '/../includes/autoloader.php';

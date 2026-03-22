@@ -95,4 +95,86 @@ INSERT INTO `cp_settings` (`setting_key`, `setting_value`) VALUES
 ('security_log_days', '30'),
 ('security_log_limit', '10000');
 
+-- ----------------------------
+-- Table structure for cp_mesas
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `cp_mesas` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `numero` INT NOT NULL UNIQUE,
+  `status` ENUM('livre', 'ocupada') DEFAULT 'livre',
+  `criado_em` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cp_comanda_itens
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `cp_comanda_itens` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `mesa_id` INT NOT NULL,
+  `produto_nome` VARCHAR(255) NOT NULL,
+  `preco` DECIMAL(10, 2) NOT NULL,
+  `quantidade` INT DEFAULT 1,
+  `criado_em` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`mesa_id`) REFERENCES `cp_mesas`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cp_produtos
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `cp_produtos` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `codigo` VARCHAR(50) UNIQUE NOT NULL,
+  `nome` VARCHAR(255) NOT NULL,
+  `preco` DECIMAL(10, 2) NOT NULL,
+  `categoria` VARCHAR(100) DEFAULT 'Diversos',
+  `imagem` VARCHAR(255) DEFAULT NULL,
+  `criado_em` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cp_financeiro
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `cp_financeiro` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `descricao` VARCHAR(255) NOT NULL,
+  `valor` DECIMAL(10, 2) NOT NULL,
+  `tipo` ENUM('entrada', 'saida') NOT NULL,
+  `metodo_pagamento` VARCHAR(50) DEFAULT 'Diversos' COMMENT 'Dinheiro, PIX, Cartão...',
+  `data_movimentacao` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `referencia_id` INT DEFAULT NULL COMMENT 'ID da comanda/transação externa se houver',
+  `caixa_id` INT DEFAULT NULL COMMENT 'Sessão de caixa vinculada'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cp_caixas
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `cp_caixas` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT NOT NULL,
+  `status` ENUM('aberto', 'fechado') DEFAULT 'fechado',
+  `saldo_inicial` DECIMAL(10, 2) DEFAULT 0.00,
+  `saldo_final` DECIMAL(10, 2) DEFAULT NULL,
+  `data_abertura` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `data_fechamento` TIMESTAMP NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Initial Data for Produtos
+-- ----------------------------
+INSERT INTO `cp_produtos` (`nome`, `preco`, `categoria`) VALUES 
+('Cerveja 600ml', 15.00, 'Bebidas'),
+('Refrigerante', 8.00, 'Bebidas'),
+('Água Mineral', 5.00, 'Bebidas'),
+('Batata Frita', 25.00, 'Porções'),
+('Hambúrguer Casa', 35.00, 'Lanches'),
+('Pizza Grande', 65.00, 'Pizzas');
+
+-- ----------------------------
+-- Initial Data for Mesas
+-- ----------------------------
+INSERT INTO `cp_mesas` (`numero`, `status`) VALUES 
+(1, 'livre'), (2, 'livre'), (3, 'livre'), (4, 'livre'),
+(5, 'livre'), (6, 'livre'), (7, 'livre'), (8, 'livre'),
+(9, 'livre'), (10, 'livre'), (11, 'livre'), (12, 'livre');
+
 SET FOREIGN_KEY_CHECKS = 1;
