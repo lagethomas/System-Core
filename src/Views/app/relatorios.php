@@ -257,7 +257,9 @@ function showCaixaDetail(c) {
         <div class="modal-footer" style="padding-top:20px; border-top: 1px solid var(--border);">
             <button class="btn-secondary" onclick="UI.closeModal()"><i class="fas fa-times"></i> Fechar Detalhes</button>
         </div>
-    `;\n\n    UI.showModal(`Detalhes do Caixa — #${c.id}`, html);
+    `;
+
+    UI.showModal(`Detalhes do Caixa — #${c.id}`, html);
 }
 
 async function showFluxoTurno(caixaId, operador, abertura) {

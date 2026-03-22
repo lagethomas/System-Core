@@ -65,6 +65,10 @@ $unread_count = count($unread_notifications);
     ?>
     <title><?php echo htmlspecialchars(($page_titles[$current_page] ?? 'Início') . ' | ' . ($system_name ?? 'SaaSFlow')); ?></title>
     
+    <?php if (!empty($platform_settings['system_logo'])): ?>
+        <link rel="icon" type="image/webp" href="<?php echo SITE_URL . $platform_settings['system_logo']; ?>">
+    <?php endif; ?>
+    
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/style.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/theme/' . $theme_slug . '.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/notifications.css'); ?>">
@@ -93,7 +97,11 @@ $unread_count = count($unread_notifications);
             <div class="sidebar-header">
                 <a href="<?php echo SITE_URL; ?>/dashboard" class="logo">
                     <div class="sidebar-logo-icon">
-                        <i class="fas fa-layer-group"></i>
+                        <?php if (!empty($platform_settings['system_logo'])): ?>
+                            <img src="<?php echo SITE_URL . $platform_settings['system_logo']; ?>" style="width: 100%; height: 100%; object-fit: contain;">
+                        <?php else: ?>
+                            <i class="fas fa-layer-group"></i>
+                        <?php endif; ?>
                     </div>
                     <span><?php echo htmlspecialchars($system_name); ?></span>
                 </a>

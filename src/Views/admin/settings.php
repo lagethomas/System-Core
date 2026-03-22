@@ -18,19 +18,41 @@
 
 <div class="card settings-main-card">
     <?php if ($active_tab === 'general'): ?>
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             <input type="hidden" name="nonce" value="<?php echo $nonces['general']; ?>">
             <div class="settings-header-box">
                 <h5><i class="fas fa-cog text-primary"></i> Configurações Gerais</h5>
                 <p>Configurações básicas de identidade e comportamento do sistema.</p>
             </div>
             
-            <div class="form-group mb-4">
-                <label class="form-label">Nome do Sistema</label>
-                <input type="text" name="system_name" value="<?php echo htmlspecialchars($settings['system_name'] ?? ''); ?>" class="form-control w-100">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div class="form-group mb-4">
+                    <label class="form-label">Nome do Sistema</label>
+                    <input type="text" name="system_name" value="<?php echo htmlspecialchars($settings['system_name'] ?? ''); ?>" class="form-control w-100">
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label">Logo do Sistema (WebP Recomendado)</label>
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <?php if (!empty($settings['system_logo'])): ?>
+                            <img src="<?php echo SITE_URL . $settings['system_logo']; ?>" style="height: 40px; border-radius: 4px; border: 1px solid var(--border);">
+                        <?php endif; ?>
+                        <input type="file" name="system_logo" class="form-control" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label">Fundo do Cardápio (Página Pública)</label>
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <?php if (!empty($settings['cardapio_bg'])): ?>
+                            <div style="width: 40px; height: 40px; background: url('<?php echo SITE_URL . $settings['cardapio_bg']; ?>') center/cover; border-radius: 4px; border: 1px solid var(--border);"></div>
+                        <?php endif; ?>
+                        <input type="file" name="cardapio_bg" class="form-control" accept="image/*">
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group mb-4">
+            <div class="form-group mb-4 mt-2">
                 <label class="switch-label" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
                     <div>
                         <h6 class="mb-0">Ativar Logs do Sistema</h6>

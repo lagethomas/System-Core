@@ -2,85 +2,163 @@
 /** @var array $produtos */
 /** @var string $SITE_URL */
 /** @var array $platform_settings */
+
+$systemName = $platform_settings['system_name'] ?? 'Nosso Cardápio';
+$primaryColor = $platform_settings['system_color'] ?? '#e6c152';
+$primaryRGB = $platform_settings['system_color_rgb'] ?? '230, 193, 82';
+$systemLogo = !empty($platform_settings['system_logo']) ? $SITE_URL . $platform_settings['system_logo'] : null;
+$bgImage = !empty($platform_settings['cardapio_bg']) ? $SITE_URL . $platform_settings['cardapio_bg'] : null;
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $platform_settings['system_name'] ?? 'Nosso Cardápio'; ?></title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <title><?php echo htmlspecialchars($systemName); ?></title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: <?php echo $platform_settings['system_color'] ?? '#e6c152'; ?>;
-            --primary-rgb: <?php echo $platform_settings['system_color_rgb'] ?? '230, 193, 82'; ?>;
-            --bg-dark: #0f1115;
-            --bg-card: #16191e;
+            --primary: <?php echo $primaryColor; ?>;
+            --primary-rgb: <?php echo $primaryRGB; ?>;
+            --bg-dark: #0a0c10;
+            --bg-card: rgba(22, 25, 30, 0.8);
             --text-main: #f1f5f9;
             --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.08);
-            --radius: 16px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --border: rgba(255, 255, 255, 0.1);
+            --radius: 20px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
 
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
-            padding: 20px;
             min-height: 100vh;
+            overflow-x: hidden;
+            <?php if ($bgImage): ?>
+            background: linear-gradient(rgba(10, 12, 16, 0.85), rgba(10, 12, 16, 0.95)), url('<?php echo $bgImage; ?>') center/cover fixed no-repeat;
+            <?php endif; ?>
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
+            padding: 20px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 40px;
-            padding: 40px 0;
-            background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.1) 0%, rgba(15, 17, 21, 0) 100%);
-            border-radius: var(--radius);
+            padding: 60px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo-container {
+            margin-bottom: 25px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .logo-container img {
+            height: 80px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.3));
+        }
+
+        .logo-container .icon-placeholder {
+            font-size: 50px;
+            color: var(--primary);
+            width: 80px;
+            height: 80px;
+            background: rgba(var(--primary-rgb), 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(var(--primary-rgb), 0.2);
         }
 
         header h1 {
-            font-size: 36px;
+            font-size: clamp(32px, 5vw, 42px);
             font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 16px;
+            font-size: 18px;
+            max-width: 600px;
+            font-weight: 300;
+        }
+
+        /* Categorias */
+        .category-nav {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 0 0 30px;
+            margin-bottom: 40px;
+            scrollbar-width: none;
+            justify-content: center;
+        }
+        .category-nav::-webkit-scrollbar { display: none; }
+
+        .category-link {
+            padding: 10px 24px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .category-link:hover, .category-link.active {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.3);
+            transform: translateY(-2px);
+        }
+
+        .category-section {
+            margin-bottom: 60px;
         }
 
         .category-title {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
             color: var(--primary);
-            margin: 40px 0 20px;
-            padding-left: 15px;
-            border-left: 4px solid var(--primary);
+            margin-bottom: 30px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+        }
+        .category-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border), transparent);
         }
 
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
         }
 
         .product-card {
             background: var(--bg-card);
+            backdrop-filter: blur(15px);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             overflow: hidden;
@@ -88,173 +166,201 @@
             display: flex;
             flex-direction: column;
             cursor: pointer;
+            position: relative;
         }
 
         .product-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--primary);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(var(--primary-rgb), 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
-        .product-image {
-            width: 100%;
-            height: 200px;
-            background: rgba(255,255,255,0.02);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .product-image-wrapper {
             position: relative;
+            width: 100%;
+            height: 220px;
             overflow: hidden;
         }
 
-        .product-image img {
+        .product-image-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: var(--transition);
         }
 
-        .product-card:hover .product-image img {
+        .product-card:hover .product-image-wrapper img {
             transform: scale(1.1);
         }
 
-        .product-image i {
-            font-size: 40px;
-            opacity: 0.1;
+        .product-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.05);
+            font-size: 50px;
+        }
+
+        .price-badge {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: var(--primary);
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 2;
         }
 
         .product-info {
-            padding: 20px;
+            padding: 25px;
             flex: 1;
             display: flex;
             flex-direction: column;
         }
 
         .product-info h3 {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: var(--text-main);
         }
 
-        .product-info .price {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-top: auto;
+        .product-info p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 20px;
         }
 
-        .product-details-btn {
-            margin-top: 15px;
-            background: rgba(var(--primary-rgb), 0.1);
-            color: var(--primary);
-            border: 1px solid rgba(var(--primary-rgb), 0.2);
-            padding: 10px;
-            border-radius: 12px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            transition: var(--transition);
+        .view-btn {
+            margin-top: auto;
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .product-card:hover .product-details-btn {
-            background: var(--primary);
-            color: #000;
-        }
-
-        /* Modal Details */
-        #product-modal {
+        /* Modal Moderno */
+        #modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(20px);
             z-index: 9999;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            transition: opacity 0.3s ease;
         }
 
-        .modal-content {
+        .modern-modal {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 24px;
+            border-radius: 30px;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-hero {
             position: relative;
-            animation: modalIn 0.3s ease;
-        }
-
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .modal-header-img {
             width: 100%;
-            height: 300px;
-            background: var(--bg-dark);
+            height: 350px;
         }
-        .modal-header-img img { width: 100%; height: 100%; object-fit: cover; }
-
-        .modal-body {
-            padding: 30px;
-        }
-
+        .modal-hero img { width: 100%; height: 100%; object-fit: cover; }
         .close-modal {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 40px;
-            height: 40px;
+            top: 20px; right: 20px;
+            width: 45px; height: 45px;
             background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
+            font-size: 18px;
             cursor: pointer;
             z-index: 10;
+            transition: var(--transition);
         }
+        .close-modal:hover { background: #ef4444; transform: rotate(90deg); }
 
-        .modal-body h2 {
-            font-size: 24px;
+        .modal-body {
+            padding: 40px;
+        }
+        .modal-body .cat-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(var(--primary-rgb), 0.1);
             color: var(--primary);
-            margin-bottom: 5px;
-        }
-        .modal-body .modal-category {
-            font-size: 14px;
-            color: var(--text-muted);
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
             margin-bottom: 20px;
-            display: block;
         }
-        .modal-body .description {
-            color: var(--text-main);
-            line-height: 1.6;
-            margin-bottom: 25px;
-            font-size: 16px;
+        .modal-body h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: #fff;
         }
-        .modal-body .price-line {
+        .modal-body .desc {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 17px;
+            margin-bottom: 40px;
+        }
+        .modal-footer {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-top: 20px;
+            padding-top: 30px;
             border-top: 1px solid var(--border);
         }
-        .modal-body .price-line .price {
-            font-size: 28px;
+        .modal-footer .price {
+            font-size: 32px;
             font-weight: 800;
             color: var(--primary);
         }
 
-        @media (max-width: 480px) {
-            header h1 { font-size: 28px; }
-            .menu-grid { grid-template-columns: 1fr; }
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            header { padding: 40px 10px; }
+            .menu-grid { grid-template-columns: 1fr; gap: 20px; }
+            .modal-hero { height: 250px; }
+            .modal-body { padding: 25px; }
+            .modal-body h2 { font-size: 26px; }
         }
     </style>
 </head>
@@ -262,57 +368,80 @@
 
 <div class="container">
     <header>
-        <h1><?php echo $platform_settings['system_name'] ?? 'Nosso Cardápio'; ?></h1>
-        <p>Experimente nossas delícias preparadas com carinho.</p>
+        <div class="logo-container">
+            <?php if ($systemLogo): ?>
+                <img src="<?php echo $systemLogo; ?>" alt="Logo">
+            <?php else: ?>
+                <div class="icon-placeholder"><i class="fas fa-utensils"></i></div>
+            <?php endif; ?>
+        </div>
+        <h1><?php echo htmlspecialchars($systemName); ?></h1>
+        <p>Explore nosso menu exclusivo preparado com os melhores ingredientes.</p>
     </header>
 
     <?php 
-    $last_category = '';
-    foreach ($produtos as $p): 
-        if ($p['categoria'] !== $last_category):
-            echo "<h2 class='category-title'><i class='fas fa-utensils'></i> " . htmlspecialchars($p['categoria']) . "</h2>";
-            echo "<div class='menu-grid'>";
-            $last_category = $p['categoria'];
-        endif;
+    $categorias = array_unique(array_column($produtos, 'categoria'));
+    if (!empty($categorias)):
     ?>
-        <div class="product-card" onclick='openDetails(<?php echo json_encode($p); ?>)'>
-            <div class="product-image">
-                <?php if ($p['imagem']): ?>
-                    <img src="<?php echo $SITE_URL . $p['imagem']; ?>" alt="">
-                <?php else: ?>
-                    <i class="fas fa-image"></i>
-                <?php endif; ?>
-            </div>
-            <div class="product-info">
-                <h3><?php echo htmlspecialchars($p['nome']); ?></h3>
-                <div class="price">R$ <?php echo number_format((float)$p['preco'], 2, ',', '.'); ?></div>
-                <button class="product-details-btn">
-                    <i class="fas fa-eye"></i> Detalhes
-                </button>
-            </div>
-        </div>
-    <?php 
-        // End grid if next is different or it's last
-        $next = next($produtos);
-        if (!$next || $next['categoria'] !== $last_category) echo "</div>";
-        prev($produtos); next($produtos); // Restore pointer for loop
-    endforeach; ?>
+    <nav class="category-nav">
+        <a href="#" class="category-link active" onclick="filterCategory('all', this)">Todos</a>
+        <?php foreach ($categorias as $cat): ?>
+            <a href="#<?php echo urlencode($cat); ?>" class="category-link" onclick="filterCategory('<?php echo htmlspecialchars($cat); ?>', this)">
+                <?php echo htmlspecialchars($cat); ?>
+            </a>
+        <?php endforeach; ?>
+    </nav>
+    <?php endif; ?>
+
+    <div id="products-container">
+        <?php 
+        $last_category = '';
+        foreach ($produtos as $p): 
+            if ($p['categoria'] !== $last_category):
+                if ($last_category !== '') echo "</div></div>"; // Fecha grid anterior
+                $last_category = $p['categoria'];
+        ?>
+            <div class="category-section" data-category="<?php echo htmlspecialchars($p['categoria']); ?>">
+                <h2 class="category-title"><?php echo htmlspecialchars($p['categoria']); ?></h2>
+                <div class="menu-grid">
+        <?php endif; ?>
+                <div class="product-card" onclick='openDetails(<?php echo json_encode($p); ?>)'>
+                    <div class="product-image-wrapper">
+                        <?php if ($p['imagem']): ?>
+                            <img src="<?php echo $SITE_URL . $p['imagem']; ?>" alt="<?php echo htmlspecialchars($p['nome']); ?>" loading="lazy">
+                        <?php else: ?>
+                            <div class="product-image-placeholder"><i class="fas fa-image"></i></div>
+                        <?php endif; ?>
+                        <div class="price-badge">R$ <?php echo number_format((float)$p['preco'], 2, ',', '.'); ?></div>
+                    </div>
+                    <div class="product-info">
+                        <h3><?php echo htmlspecialchars($p['nome']); ?></h3>
+                        <p><?php echo htmlspecialchars($p['descricao'] ?? 'Sabor e qualidade incomparáveis.'); ?></p>
+                        <div class="view-btn">
+                            Ver detalhes <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+        <?php endforeach; ?>
+        <?php if (!empty($produtos)) echo "</div></div>"; ?>
+    </div>
 </div>
 
-<div id="product-modal" onclick="closeDetails(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
+<!-- Modal Detalhes -->
+<div id="modal-overlay" onclick="closeDetails()">
+    <div class="modern-modal" onclick="event.stopPropagation()">
         <div class="close-modal" onclick="closeDetails()">
             <i class="fas fa-times"></i>
         </div>
-        <div class="modal-header-img" id="modal-img-container">
+        <div class="modal-hero" id="modal-hero">
             <img id="modal-img" src="" alt="">
         </div>
         <div class="modal-body">
-            <span class="modal-category" id="modal-category">Categoria</span>
-            <h2 id="modal-name">Nome do Produto</h2>
-            <p class="description" id="modal-description">Descrição do produto vai aqui.</p>
-            <div class="price-line">
-                <span>Valor:</span>
+            <span class="cat-badge" id="modal-cat">Categoria</span>
+            <h2 id="modal-name">Nome</h2>
+            <p class="desc" id="modal-desc">Descrição...</p>
+            <div class="modal-footer">
+                <span class="label">Valor:</span>
                 <span class="price" id="modal-price">R$ 0,00</span>
             </div>
         </div>
@@ -322,25 +451,52 @@
 <script>
 function openDetails(p) {
     document.getElementById('modal-name').innerText = p.nome;
-    document.getElementById('modal-category').innerText = p.categoria;
-    document.getElementById('modal-description').innerText = p.descricao || 'Sem descrição disponível.';
+    document.getElementById('modal-cat').innerText = p.categoria;
+    document.getElementById('modal-desc').innerText = p.descricao || 'Nenhuma descrição detalhada disponível para este item.';
     document.getElementById('modal-price').innerText = 'R$ ' + parseFloat(p.preco).toLocaleString('pt-BR', {minimumFractionDigits: 2});
     
-    const imgCont = document.getElementById('modal-img-container');
+    const hero = document.getElementById('modal-hero');
     const img = document.getElementById('modal-img');
+    
     if (p.imagem) {
         img.src = '<?php echo $SITE_URL; ?>' + p.imagem;
-        imgCont.style.display = 'block';
+        hero.style.display = 'block';
     } else {
-        imgCont.style.display = 'none';
+        hero.style.display = 'none';
     }
 
-    document.getElementById('product-modal').style.display = 'flex';
+    const overlay = document.getElementById('modal-overlay');
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 }
 
-function closeDetails(e) {
-    document.getElementById('product-modal').style.display = 'none';
+function closeDetails() {
+    document.getElementById('modal-overlay').style.display = 'none';
+    document.body.style.overflow = 'auto';
 }
+
+function filterCategory(cat, btn) {
+    document.querySelectorAll('.category-link').forEach(l => l.classList.remove('active'));
+    btn.classList.add('active');
+
+    const sections = document.querySelectorAll('.category-section');
+    sections.forEach(s => {
+        if (cat === 'all' || s.getAttribute('data-category') === cat) {
+            s.style.display = 'block';
+        } else {
+            s.style.display = 'none';
+        }
+    });
+
+    if (cat !== 'all') {
+        window.scrollTo({ top: btn.getBoundingClientRect().top + window.scrollY - 20, behavior: 'smooth' });
+    }
+}
+
+// Fechar com ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDetails();
+});
 </script>
 
 </body>
