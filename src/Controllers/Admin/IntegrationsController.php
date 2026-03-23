@@ -61,6 +61,10 @@ class IntegrationsController extends Controller {
             $sent = (bool)Mailer::send($email, $subject, $body);
 
             if ($sent) {
+                try {
+                    require_once __DIR__ . '/../../includes/logs.php';
+                    \Logger::log('security_email', 'Teste de configuração SMTP realizado com sucesso para: ' . $email);
+                } catch (\Exception $e) {}
                 $this->jsonResponse(['success' => true, 'message' => 'E-mail de teste enviado com sucesso! Verifique sua caixa de entrada.']);
                 return;
             } else {

@@ -13,6 +13,13 @@ class LogsController extends Controller {
         
         global $pdo;
         require_once __DIR__ . '/../../../includes/repositories/LogRepository.php';
+
+        // --- CLEAR LOGS REQUEST (User Request) ---
+        if (isset($_GET['clear']) && $_GET['clear'] === '1') {
+            $pdo->exec("TRUNCATE TABLE cp_logs");
+            header("Location: " . SITE_URL . "/logs?msg=cleared");
+            exit;
+        }
         
         $start_date = $_GET['start_date'] ?? '';
         $end_date = $_GET['end_date'] ?? '';

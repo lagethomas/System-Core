@@ -12,68 +12,6 @@
     <link rel="icon" type="image/png" href="<?php echo SITE_URL; ?>/assets/img/icon-192.png">
 
     <style>
-        .alert-session {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(245, 158, 11, 0.06));
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            border-left: 4px solid #f59e0b;
-            border-radius: 10px;
-            padding: 16px 18px;
-            margin-bottom: 20px;
-            color: #b45309;
-            font-size: 0.9rem;
-            animation: slideIn 0.3s ease;
-        }
-        .alert-session .alert-icon {
-            font-size: 1.3rem;
-            margin-bottom: 8px;
-            display: block;
-        }
-        .alert-session strong {
-            display: block;
-            font-size: 0.95rem;
-            margin-bottom: 4px;
-            color: #92400e;
-        }
-        .alert-session p {
-            margin: 0 0 14px 0;
-            opacity: 0.85;
-        }
-        .btn-force {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            width: 100%;
-            justify-content: center;
-        }
-        .btn-force:hover {
-            background: linear-gradient(135deg, #d97706, #b45309);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(245,158,11,0.3);
-        }
-        .divider-or {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 14px 0 6px;
-            color: #9ca3af;
-            font-size: 0.75rem;
-        }
-        .divider-or::before,
-        .divider-or::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(156,163,175,0.3);
-        }
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(-8px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -105,37 +43,12 @@
             </div>
         <?php endif; ?>
 
-        <?php if ($warn_session): ?>
-            <!-- ── SESSÃO ATIVA: Bloquear e informar o usuário ── -->
-            <div class="alert-session">
-                <span class="alert-icon"><i class="fas fa-shield-alt"></i></span>
-                <strong>Sessão Ativa Detectada</strong>
-                <p>
-                    Este usuário já está conectado em outro dispositivo ou navegador.
-                    O sistema permite apenas <strong>uma sessão ativa por vez</strong>.
-                </p>
-                <!-- Formulário de força: reenvia as credenciais com flag force_login -->
-                <form method="POST" action="<?php echo SITE_URL; ?>/login" id="forceForm">
-                    <input type="hidden" name="csrf_token"  value="<?php echo $csrf_token; ?>">
-                    <input type="hidden" name="username"    value="<?php echo htmlspecialchars($pre_username); ?>">
-                    <input type="hidden" name="password"    value="<?php echo htmlspecialchars($pre_password); ?>">
-                    <input type="hidden" name="force_login" value="1">
-                    <button type="submit" class="btn-force" id="btnForce">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Encerrar sessão anterior e entrar
-                    </button>
-                </form>
-
-                <div class="divider-or">ou</div>
-            </div>
-        <?php endif; ?>
-
         <form method="POST" action="<?php echo SITE_URL; ?>/login" id="loginForm">
             <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
             <div class="form-group">
                 <label class="auth-label">Usuário</label>
                 <input type="text" name="username" class="form-control"
-                       value="<?php echo htmlspecialchars($pre_username); ?>"
+                       value="<?php echo htmlspecialchars($pre_username ?? ''); ?>"
                        placeholder="Seu usuário" required autofocus>
             </div>
 
@@ -150,6 +63,13 @@
                     <i class="fas fa-circle-notch fa-spin mr-2"></i> Processando...
                 </span>
             </button>
+
+            <?php if ($warn_session): ?>
+                <div class="alert-session-bottom" style="margin-top: 20px; padding: 12px; background: rgba(220, 38, 38, 0.1); border-radius: 8px; border: 1px solid rgba(220, 38, 38, 0.2); color: #ef4444; font-size: 0.85rem; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s ease;">
+                    <i class="fas fa-user-lock" style="font-size: 1.1rem;"></i>
+                    <span>Para se autenticar, encerre a outra sessão aberta.</span>
+                </div>
+            <?php endif; ?>
         </form>
     </div>
 
@@ -174,7 +94,6 @@
         }
 
         lockBtn('loginForm', 'btnLogin');
-        lockBtn('forceForm',  'btnForce');
     </script>
 </body>
 </html>

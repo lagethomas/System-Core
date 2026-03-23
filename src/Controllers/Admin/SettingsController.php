@@ -78,6 +78,19 @@ class SettingsController extends Controller {
 
                 Cache::delete('platform_settings');
                 
+                // NOTIFICATION (Rule 39)
+                try {
+                    require_once __DIR__ . '/../../../includes/repositories/NotificationRepository.php';
+                    $notifRepo = new \NotificationRepository($pdo);
+                    $notifRepo->create([
+                        'user_id' => 1,
+                        'title'   => '⚙️ Configurações Atualizadas',
+                        'message' => 'As configurações gerais do sistema foram modificadas.',
+                        'link'    => SITE_URL . '/admin/settings?tab=general',
+                        'type'    => 'info'
+                    ]);
+                } catch (\Exception $e) {}
+
                 $logRepo->create([
                     'user_id' => $_SESSION['user_id'] ?? 0,
                     'action' => 'Settings Updated',
@@ -137,6 +150,19 @@ class SettingsController extends Controller {
                     }
                 }
                 Cache::delete('platform_settings');
+
+                // NOTIFICATION (Rule 39)
+                try {
+                    require_once __DIR__ . '/../../../includes/repositories/NotificationRepository.php';
+                    $notifRepo = new \NotificationRepository($pdo);
+                    $notifRepo->create([
+                        'user_id' => 1,
+                        'title'   => '🛡️ Segurança Atualizada',
+                        'message' => 'As políticas de segurança e IPs bloqueados foram modificados.',
+                        'link'    => SITE_URL . '/admin/settings?tab=security',
+                        'type'    => 'warning'
+                    ]);
+                } catch (\Exception $e) {}
 
                 $logRepo->create([
                     'user_id' => $_SESSION['user_id'] ?? 0,

@@ -32,6 +32,12 @@ class DB {
 
         $is_production = (defined('APP_ENV') && APP_ENV === 'production');
         error_reporting(E_ALL);
+
+        // --- TIMEZONE CONFIGURATION (Priority to .env) ---
+        $app_tz = defined('APP_TIMEZONE') && !empty(APP_TIMEZONE) ? APP_TIMEZONE : 'America/Sao_Paulo';
+        date_default_timezone_set($app_tz);
+
+        if (!defined('APP_DATE_FORMAT')) define('APP_DATE_FORMAT', 'd/m/Y H:i');
         ini_set('display_errors', $is_production ? '0' : '1');
         ini_set('log_errors', '1');
         ini_set('error_log', $logsDir . '/php_errors.log');
@@ -57,6 +63,12 @@ class DB {
 
         try {
             self::$instance = new PDO($dsn, $db_user, $db_pass, $options);
+            
+            // Synchronize MySQL timezone with App (Force APP_TIMEZONE - Rule 39)
+            // Use the offset to ensure compatibility even without MySQL timezone tables
+            $tz_offset = date('P'); 
+            self::$instance->exec("SET time_zone = '{$tz_offset}'");
+            
         } catch (\PDOException $e) {
             error_log("Database Connection Error: " . $e->getMessage());
             die(self::showFatalError($e->getMessage()));
@@ -96,6 +108,16 @@ if ($platform_settings === null) {
         $platform_settings = [];
     }
 }
+
+// --- LIVE DEBUG LOG ---
+try {
+    if (isset($platform_settings['security_single_session']) && class_exists('Logger')) {
+        $st = $platform_settings['security_single_session'] === '1' ? 'LIGADO' : 'DESLIGADO';
+        // Only log once per request if needed, but here it's fine
+        // error_log("Settings Loader: security_single_session is $st");
+    }
+} catch (\Exception $e) {}
+// ----------------------
 
 // --- CONTROL SYSTEM LOGS ---
 $logsEnabled = ($platform_settings['enable_system_logs'] ?? '1') === '1';

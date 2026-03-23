@@ -35,7 +35,16 @@ class NotificationRepository {
 
     public function markAsRead(int $id, int $user_id): bool {
         $stmt = $this->pdo->prepare("UPDATE cp_notifications SET is_read = 1 WHERE id = ? AND user_id = ?");
-        return $stmt->execute([$id, $user_id]);
+        $success = $stmt->execute([$id, $user_id]);
+        $rows = $stmt->rowCount();
+        
+        try {
+            if (class_exists('Logger')) {
+                \Logger::log('debug_notif', "markAsRead Repository: ID=" . (string)$id . ", User=" . (string)$user_id . ", RowsAffected=" . (string)$rows);
+            }
+        } catch (\Exception $e) {}
+        
+        return $success && $rows > 0;
     }
 
     public function markAllAsRead(int $user_id): bool {

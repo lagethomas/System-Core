@@ -9,6 +9,20 @@ use PDO;
 
 class DashboardController extends Controller {
     public function index(): void {
+        // --- TEMPORARY MIGRATION (Rule 39 Logic) ---
+        try {
+            $pdo = \App\Core\Database::getInstance();
+            // Check if column exists, if not add them
+            $stmt = $pdo->query("SHOW COLUMNS FROM cp_users LIKE 'last_pulse'");
+            if (!$stmt->fetch()) {
+                $pdo->exec("ALTER TABLE cp_users ADD COLUMN current_session_id varchar(255) DEFAULT NULL COMMENT 'Active session ID for single-session enforcement'");
+                $pdo->exec("ALTER TABLE cp_users ADD COLUMN last_pulse datetime DEFAULT NULL COMMENT 'Last user activity heartbeat'");
+            }
+        } catch (\Exception $e) {
+            error_log("Dashboard Migration Note: " . $e->getMessage());
+        }
+        // ------------------------------------------
+
         $user_name = $_SESSION['user_name'] ?? 'Usuário';
         $total_users = 0;
         $total_logs = 0;

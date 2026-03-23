@@ -14,18 +14,26 @@ class Auth {
             return false;
         }
 
-        // --- SESSION HIJACKING PROTECTION (Rule 6) ---
-        // Validate User-Agent and IP to prevent stolen session usage
+        // --- SESSION HIJACKING PROTECTION ---
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
         $userIp = $_SERVER['REMOTE_ADDR'] ?? '';
 
         if (!isset($_SESSION['secure_ua']) || !isset($_SESSION['secure_ip'])) {
-            // First time check - should have been set at login
-            return false; 
+            return false;
         }
 
         if ($_SESSION['secure_ua'] !== $userAgent || $_SESSION['secure_ip'] !== $userIp) {
-            self::logout();
+            // Destroy LOCAL session only - do NOT clear DB session_id
+            // so the hasActiveSession check still works from another device
+            session_unset();
+            if (ini_get('session.use_cookies')) {
+                $params = session_get_cookie_params();
+                setcookie(session_name(), '', time() - 42000,
+                    $params['path'], $params['domain'],
+                    $params['secure'], $params['httponly']
+                );
+            }
+            session_destroy();
             return false;
         }
 
@@ -44,7 +52,7 @@ class Auth {
      */
     public static function requireLogin(): void {
         if (!self::isLoggedIn()) {
-            header("Location: " . SITE_URL . "/login.php");
+            header("Location: " . SITE_URL . "/login");
             exit;
         }
     }
@@ -60,35 +68,50 @@ class Auth {
         }
     }
 
-    /**
-     * Login user and initialize secure session markers
-     */
     public static function login(array $user): void {
-        // Regeneration on login (high security)
+        // 1. Set session data FIRST
+        $_SESSION['user_id']       = $user['id'];
+        $_SESSION['user_name']     = $user['name'];
+        $_SESSION['user_email']    = $user['email'];
+        $_SESSION['user_role']     = $user['role'];
+        $_SESSION['last_activity'] = time();
+        $_SESSION['secure_ua']     = $_SERVER['HTTP_USER_AGENT'] ?? '';
+        $_SESSION['secure_ip']     = $_SERVER['REMOTE_ADDR'] ?? '';
+
+        // 2. Regenerate session ID for security (keeps existing data)
         session_regenerate_id(true);
 
-        $pdo = \DB::getInstance();
+        // 3. Save new session ID to DB for single-session enforcement
         $sessionId = session_id();
+        try {
+            $pdo = \DB::getInstance();
+            $rowsAffected = $pdo->prepare('UPDATE cp_users SET current_session_id = ?, last_pulse = NOW() WHERE id = ?');
+            $rowsAffected->execute([$sessionId, $user['id']]);
 
-        // Update DB with current session ID for single-session enforcement
-        $stmt = $pdo->prepare('UPDATE cp_users SET current_session_id = ?, last_pulse = NOW() WHERE id = ?');
-        $stmt->execute([$sessionId, $user['id']]);
-
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_name'] = $user['name'];
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_role'] = $user['role'];
-        $_SESSION['last_activity'] = time();
-
-        // CSRF Marker and Security
-        $_SESSION['secure_ua'] = $_SERVER['HTTP_USER_AGENT'] ?? '';
-        $_SESSION['secure_ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
+            try {
+                if (class_exists('Logger')) {
+                    Logger::log('debug_session', "User ID {$user['id']} logado com Session ID: $sessionId (File: " . __FILE__ . ")");
+                }
+            } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+            error_log("Auth::login DB update failed: " . $e->getMessage());
+            try {
+                if (class_exists('Logger')) {
+                    Logger::log('debug_session_error', "Auth::login DB FALHOU para User ID {$user['id']}: " . $e->getMessage());
+                }
+            } catch (\Exception $ex) {}
+        }
     }
 
     /**
      * Logout user and clear session
      */
     public static function logout(): void {
+        // Clear from DB if logged in
+        if (isset($_SESSION['user_id'])) {
+            self::clearSessionFromDB((int)$_SESSION['user_id']);
+        }
+
         session_unset();
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
@@ -100,7 +123,7 @@ class Auth {
         session_destroy();
         
         if (!headers_sent()) {
-            header("Location: " . SITE_URL . "/login.php");
+            header("Location: " . SITE_URL . "/login");
             exit;
         }
     }
@@ -121,21 +144,33 @@ class Auth {
         $_SESSION['last_activity'] = time();
     }
 
-    /**
-     * Single Session Check: Check if user already has an active session
-     */
     public static function hasActiveSession(int $userId): bool {
-        $pdo = \DB::getInstance();
-        $stmt = $pdo->prepare('SELECT current_session_id, last_pulse FROM cp_users WHERE id = ?');
-        $stmt->execute([$userId]);
-        $user = $stmt->fetch();
+        try {
+            $pdo = \DB::getInstance();
+            // A session is only active if it has pulsed in the last 5 minutes
+            $stmt = $pdo->prepare("
+                SELECT current_session_id, last_pulse
+                FROM cp_users
+                WHERE id = ?
+                  AND current_session_id IS NOT NULL
+                  AND last_pulse >= (NOW() - INTERVAL 5 MINUTE)
+            ");
+            $stmt->execute([$userId]);
+            $res = $stmt->fetch();
 
-        if ($user && !empty($user['current_session_id'])) {
-            // Check if pulse is within last 5 minutes (user hasn't closed tab)
-            $lastPulse = strtotime($user['last_pulse'] ?? '');
-            if ((time() - $lastPulse) < 300) {
-                return true;
-            }
+            $isActive = (bool)($res && !empty($res['current_session_id']));
+
+            try {
+                if (class_exists('Logger')) {
+                    $status = $isActive ? "BLOQUEADO" : "LIVRE";
+                    $detail = $isActive ? "Sessão detectada: {$res['current_session_id']} (Pulso: {$res['last_pulse']})" : "Nenhuma sessão ativa recente.";
+                    \Logger::log('debug_session', "hasActiveSession User ID " . (string)$userId . ": $status. $detail");
+                }
+            } catch (\Exception $e) {}
+
+            return $isActive;
+        } catch (\Exception $e) {
+            error_log("Auth::hasActiveSession failed: " . $e->getMessage());
         }
         return false;
     }
@@ -202,4 +237,8 @@ class Auth {
 }
 
 // Global inactivity check
-Auth::checkInactivity();
+try {
+    Auth::checkInactivity();
+} catch (\Exception $e) {
+    error_log("Auth::checkInactivity failed: " . $e->getMessage());
+}

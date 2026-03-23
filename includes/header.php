@@ -147,8 +147,8 @@ $unread_count = count($unread_notifications);
                     <a href="<?php echo SITE_URL; ?>/profile" class="btn-secondary" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
                         <i class="fas fa-user-circle"></i> Meu Perfil Maroto
                     </a>
-                    <a href="<?php echo SITE_URL; ?>/logout.php" class="user-dropdown-item danger">
-                        <i class="fas fa-sign-out-alt"></i> Sair do Sistema
+                    <a href="<?php echo SITE_URL; ?>/logout" onclick="handleLogout(event)" class="user-dropdown-item danger">
+                        <i class="fas fa-sign-out-alt"></i> Sair
                     </a>
                 </div>
             </div>
@@ -187,16 +187,30 @@ $unread_count = count($unread_notifications);
                                 </div>
                             <?php else: ?>
                                 <?php foreach ($unread_notifications as $notif): ?>
-                                    <a href="<?php echo $notif['link'] ?: '#'; ?>" class="notif-item">
-                                        <div class="notif-icon primary">
-                                            <i class="<?php echo $notif['icon'] ?: 'fas fa-info-circle'; ?>"></i>
-                                        </div>
-                                        <div class="notif-content">
-                                            <span class="notif-title"><?php echo htmlspecialchars($notif['title']); ?></span>
-                                            <span class="notif-text"><?php echo htmlspecialchars($notif['message']); ?></span>
-                                            <span class="notif-time"><?php echo date('d/m H:i', strtotime($notif['created_at'])); ?></span>
-                                        </div>
-                                    </a>
+                                    <div class="notif-item-wrapper" id="notif-<?php echo $notif['id']; ?>">
+                                        <a href="<?php echo $notif['link'] ?: '#'; ?>" class="notif-item">
+                                            <div class="notif-icon <?php echo htmlspecialchars($notif['type'] ?? 'info'); ?>">
+                                                <?php 
+                                                // Icon mapping by type
+                                                $icon = 'fas fa-info-circle';
+                                                switch($notif['type'] ?? '') {
+                                                    case 'success': $icon = 'fas fa-check-circle'; break;
+                                                    case 'warning': $icon = 'fas fa-exclamation-triangle'; break;
+                                                    case 'danger':  $icon = 'fas fa-exclamation-circle'; break;
+                                                }
+                                                ?>
+                                                <i class="<?php echo $icon; ?>"></i>
+                                            </div>
+                                            <div class="notif-content">
+                                                <span class="notif-title"><?php echo htmlspecialchars($notif['title']); ?></span>
+                                                <span class="notif-text"><?php echo htmlspecialchars($notif['message']); ?></span>
+                                                <span class="notif-time"><?php echo date('d/m H:i', strtotime($notif['created_at'])); ?></span>
+                                            </div>
+                                        </a>
+                                        <button onclick="markRead(event, <?php echo $notif['id']; ?>)" class="notif-close-btn" title="Marcar como lido">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </div>
@@ -207,6 +221,20 @@ $unread_count = count($unread_notifications);
                 </div>
             </header>
             <div class="page-content">
+
+            <style>
+                .notif-item-wrapper { position: relative; display: flex; align-items: stretch; border-bottom: 1px solid var(--border); transition: all 0.2s ease; }
+                .notif-item-wrapper:hover { background: rgba(255,255,255,0.02); }
+                .notif-item-wrapper:last-child { border-bottom: none; }
+                .notif-item { flex: 1; padding: 12px 15px; text-decoration: none; color: inherit; display: flex; gap: 12px; }
+                .notif-close-btn { 
+                    background: transparent; border: none; color: #6b7280; padding: 0 15px; cursor: pointer; opacity: 0; 
+                    transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+                }
+                .notif-item-wrapper:hover .notif-close-btn { opacity: 1; }
+                .notif-close-btn:hover { color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+            </style>
+
 <script>
 
 // Dropdown de perfil
@@ -234,12 +262,52 @@ document.addEventListener('click', function() {
     if (notif) notif.classList.remove('active');
 });
 
-async function markRead(id) {
-    await fetch('<?php echo SITE_URL; ?>/api/notifications/read/' + id);
+function handleLogout(e) {
+    if (window.showDisconnectOverlay) {
+        e.preventDefault();
+        window.showDisconnectOverlay('Encerrando sua sessão com segurança...');
+        setTimeout(() => {
+            window.location.href = e.currentTarget.href;
+        }, 3000);
+    } else {
+        // Fallback if showDisconnectOverlay is not defined
+        window.location.href = e.currentTarget.href;
+    }
+}
+
+async function markRead(event, id) {
+    if (event) event.stopPropagation();
+    const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/read/' + id, { method: 'POST' });
+    if (res.ok) {
+        const el = document.getElementById('notif-' + id);
+        if (el) {
+            el.style.opacity = '0';
+            el.style.transform = 'translateX(20px)';
+            setTimeout(() => {
+                el.remove();
+                // Check if empty
+                const list = document.querySelector('.notif-list');
+                if (list && list.children.length === 0) {
+                    list.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i><span>Nenhuma nova notificação</span></div>';
+                    // Update badge
+                    const badge = document.querySelector('.notif-badge');
+                    if (badge) badge.remove();
+                } else {
+                    // Update badge count
+                    const badge = document.querySelector('.notif-badge');
+                    if (badge) {
+                        const count = parseInt(badge.textContent) - 1;
+                        if (count <= 0) badge.remove();
+                        else badge.textContent = count;
+                    }
+                }
+            }, 300);
+        }
+    }
 }
 
 async function markAllRead() {
-    const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/read_all');
+    const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/read_all', { method: 'POST' });
     if (res.ok) window.location.reload();
 }
 </script>

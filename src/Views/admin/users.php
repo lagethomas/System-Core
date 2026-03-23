@@ -44,6 +44,9 @@
                             <?php echo $u['last_login'] ? date('d/m/Y H:i', strtotime($u['last_login'])) : 'Nunca'; ?>
                         </td>
                         <td class="text-right">
+                            <button onclick="sendAccess(<?php echo $u['id']; ?>)" class="btn-user-action" title="Enviar Dados de Acesso" style="color: var(--primary);">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
                             <button onclick="openUserModal(<?php echo htmlspecialchars(json_encode($u)); ?>)" class="btn-user-action" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </button>
@@ -157,6 +160,23 @@ function suggestUsername(name) {
     const input = document.getElementById('user-username');
     if (!input || input.readOnly) return;
     input.value = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '.').replace(/\.+/g, '.').replace(/^\.|\.$/g, '');
+}
+
+async function sendAccess(id) {
+    if (await UI.confirm('Deseja realmente gerar e enviar novos dados de acesso para este usuário por e-mail? A senha atual dele será alterada.', {
+        title: 'Confirmar Envio',
+        confirmText: 'Sim, Enviar',
+        type: 'success',
+        icon: 'fa-paper-plane'
+    })) {
+        const formData = new FormData();
+        formData.append('id', id);
+
+        const res = await UI.request('<?php echo SITE_URL; ?>/api/admin/users/send-access', formData);
+        if (res && res.success) {
+            UI.showToast('Dados de acesso enviados!');
+        }
+    }
 }
 
 async function deleteUser(id) {

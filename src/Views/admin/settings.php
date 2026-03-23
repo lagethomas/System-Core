@@ -184,7 +184,7 @@
                     <div class="form-group mt-2">
                         <input type="number" name="security_session_timeout" value="<?php echo $settings['security_session_timeout'] ?? '120'; ?>" class="form-control p-2">
                     </div>
-                    <small class="text-muted d-block mt-auto pt-2">Tempo para deslogar automaticamente.</small>
+                    <small class="text-muted d-block mt-auto pt-2">Tempo em <b>minutos</b> (ex: 120 = 2h).</small>
                 </div>
 
                 <!-- Single Session -->

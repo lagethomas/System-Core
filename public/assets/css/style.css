@@ -1880,6 +1880,115 @@ input:checked+.slider:before {
 .bg-success {
     background-color: var(--success) !important;
 }
+/* ==============================================================
+   DISCONNECT OVERLAY (Rule 5 & 34)
+   ============================================================== */
+.disconnect-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease;
+}
+
+.disconnect-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.disconnect-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.disconnect-overlay.active .disconnect-card {
+    transform: scale(1);
+}
+
+.disconnect-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 20px;
+    animation: pulseGlow 2s infinite;
+}
+
+.disconnect-card h3 {
+    margin: 0 0 10px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.disconnect-card p {
+    color: var(--text-muted);
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+.disconnect-loader {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin-bottom: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.disconnect-loader::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30%;
+    height: 100%;
+    background: var(--primary);
+    border-radius: 2px;
+    animation: loaderMove 3s linear forwards;
+}
+
+.disconnect-card span {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+@keyframes loaderMove {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
 
 .bg-warning {
     background-color: #f59e0b !important;
