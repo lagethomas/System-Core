@@ -275,6 +275,86 @@ function handleLogout(e) {
     }
 }
 
+async function refreshNotifications() {
+    try {
+        const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/unread');
+        const data = await res.json();
+        
+        if (data.success) {
+            updateNotificationUI(data.notifications);
+        }
+    } catch (e) {
+        console.error('Erro ao carregar notificações:', e);
+    }
+}
+
+function updateNotificationUI(notifications) {
+    const list = document.querySelector('.notif-list');
+    const badge = document.querySelector('.notif-badge');
+    const trigger = document.getElementById('notif-trigger');
+    const header = document.querySelector('.notif-header');
+    
+    // Update Badge
+    if (notifications.length > 0) {
+        if (badge) {
+            badge.textContent = notifications.length;
+        } else {
+            const newBadge = document.createElement('span');
+            newBadge.className = 'notif-badge';
+            newBadge.textContent = notifications.length;
+            trigger.appendChild(newBadge);
+        }
+        
+        // Ensure "Mark All Read" button exists
+        if (!header.querySelector('.btn-mark-read')) {
+            const btn = document.createElement('button');
+            btn.onclick = markAllRead;
+            btn.className = 'btn-mark-read';
+            btn.textContent = 'Marcar todas como lidas';
+            header.appendChild(btn);
+        }
+    } else {
+        if (badge) badge.remove();
+        const btn = header.querySelector('.btn-mark-read');
+        if (btn) btn.remove();
+    }
+
+    // Update List
+    if (notifications.length === 0) {
+        list.innerHTML = `
+            <div class="notif-empty">
+                <i class="fas fa-bell-slash"></i>
+                <span>Nenhuma nova notificação</span>
+            </div>
+        `;
+    } else {
+        let html = '';
+        notifications.forEach(notif => {
+            html += `
+                <div class="notif-item-wrapper" id="notif-${notif.id}">
+                    <a href="${notif.link || '#'}" class="notif-item">
+                        <div class="notif-icon ${notif.type || 'info'}">
+                            <i class="${notif.icon}"></i>
+                        </div>
+                        <div class="notif-content">
+                            <span class="notif-title">${notif.title}</span>
+                            <span class="notif-text">${notif.message}</span>
+                            <span class="notif-time">${notif.time_ago}</span>
+                        </div>
+                    </a>
+                    <button onclick="markRead(event, ${notif.id})" class="notif-close-btn" title="Marcar como lido">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+        });
+        list.innerHTML = html;
+    }
+}
+
+// Iniciar Polling (15 segundos)
+setInterval(refreshNotifications, 15000);
+
 async function markRead(event, id) {
     if (event) event.stopPropagation();
     const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/read/' + id, { method: 'POST' });
@@ -288,7 +368,12 @@ async function markRead(event, id) {
                 // Check if empty
                 const list = document.querySelector('.notif-list');
                 if (list && list.children.length === 0) {
-                    list.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i><span>Nenhuma nova notificação</span></div>';
+                    list.innerHTML = `
+                        <div class="notif-empty">
+                            <i class="fas fa-bell-slash"></i>
+                            <span>Nenhuma nova notificação</span>
+                        </div>
+                    `;
                     // Update badge
                     const badge = document.querySelector('.notif-badge');
                     if (badge) badge.remove();

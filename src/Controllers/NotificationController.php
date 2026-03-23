@@ -47,4 +47,30 @@ class NotificationController extends Controller {
 
         $this->jsonResponse(['success' => $success, 'message' => 'Todas lidas']);
     }
+
+    public function unread(): void {
+        $user_id = (int)($_SESSION['user_id'] ?? 0);
+        if (!$user_id) {
+            $this->jsonResponse(['success' => false, 'notifications' => []]);
+            return;
+        }
+
+        require_once __DIR__ . '/../../includes/repositories/NotificationRepository.php';
+        $pdo = \App\Core\Database::getInstance();
+        $notifRepo = new \NotificationRepository($pdo);
+        
+        $notifications = (array)$notifRepo->getUnreadByUser($user_id);
+        
+        foreach ($notifications as &$n) {
+            $n['time_ago'] = date('d/m H:i', strtotime($n['created_at']));
+            $n['icon'] = 'fas fa-info-circle';
+            switch($n['type'] ?? '') {
+                case 'success': $n['icon'] = 'fas fa-check-circle'; break;
+                case 'warning': $n['icon'] = 'fas fa-exclamation-triangle'; break;
+                case 'danger':  $n['icon'] = 'fas fa-exclamation-circle'; break;
+            }
+        }
+
+        $this->jsonResponse(['success' => true, 'notifications' => $notifications]);
+    }
 }

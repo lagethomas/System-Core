@@ -36,6 +36,7 @@ $router->add('POST', '/settings', ['controller' => 'Admin\\SettingsController', 
 
 $router->add('POST', '/api/notifications/read/{id}', ['controller' => 'NotificationController', 'method' => 'read', 'middlewares' => [$auth]]);
 $router->add('POST', '/api/notifications/read_all', ['controller' => 'NotificationController', 'method' => 'readAll', 'middlewares' => [$auth]]);
+$router->add('GET', '/api/notifications/unread', ['controller' => 'NotificationController', 'method' => 'unread', 'middlewares' => [$auth]]);
 $router->add('GET', '/api/notifications/clear_all', ['controller' => 'NotificationController', 'method' => 'clearAll', 'middlewares' => [$auth]]);
 
 $router->add('GET', '/admin/integrations', ['controller' => 'Admin\\IntegrationsController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);
