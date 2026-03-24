@@ -70,14 +70,16 @@ function toggleSidebar() {
  * Session Management (Rule 5)
  */
 function startPulse() {
-    setInterval(async () => {
-        const res = await UI.request('/api/auth/pulse');
-        if (res && res.success === false) {
-            window.showDisconnectOverlay(res.error === 'duplicate' 
-                ? 'Sua conta foi acessada em outro local.' 
-                : 'Sua sessão expirou por inatividade.');
-        }
-    }, 120000); // 2 minute pulse (Rule 5)
+    // Immediate check on focus for better DX
+    window.addEventListener('focus', checkSession);
+
+    // Periodic check
+    setInterval(checkSession, 5000); // 5 second pulse
+}
+
+async function checkSession() {
+    // Fire and forget, global fetch handler catches 401 auto-disconnects
+    fetch('/api/auth/pulse', { method: 'POST', body: new FormData() }).catch(() => {});
 }
 
 window.showDisconnectOverlay = function(message) {
@@ -89,7 +91,7 @@ window.showDisconnectOverlay = function(message) {
             <h3>Sessão Encerrada</h3>
             <p>${message}</p>
             <div class="disconnect-loader"></div>
-            <span>Redirecionando para o login...</span>
+            <span>Encerrando sua sessão com segurança...</span>
         </div>
     `;
     document.body.appendChild(overlay);

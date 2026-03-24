@@ -9,7 +9,7 @@
     if (!csrfToken) return;
 
     const origFetch = window.fetch;
-    window.fetch = function (input, init) {
+    window.fetch = async function (input, init) {
         init = init || {};
         const method = (init.method || 'GET').toUpperCase();
         
@@ -21,8 +21,10 @@
             init.headers = init.headers || {};
             if (init.headers instanceof Headers) {
                 init.headers.set('X-CSRF-Token', csrfToken);
+                init.headers.set('X-Requested-With', 'XMLHttpRequest');
             } else {
                 init.headers['X-CSRF-Token'] = csrfToken;
+                init.headers['X-Requested-With'] = 'XMLHttpRequest';
             }
             
             // For POST/PUT with FormData, append token field
@@ -32,7 +34,26 @@
                 }
             }
         }
-        return origFetch.call(this, input, init);
+        const response = await origFetch.call(this, input, init);
+        
+        // Intercept 401 triggers across the app mapping to session overlay
+        if (response.status === 401 && isInternal) {
+            try {
+                const clone = response.clone();
+                const data = await clone.json();
+                if (data && (data.error === 'duplicate' || data.error === 'expired')) {
+                    if (window.showDisconnectOverlay && !window._disconnectShown) {
+                        window._disconnectShown = true;
+                        const msg = data.error === 'duplicate' 
+                            ? 'Sua conta foi acessada em outro local.' 
+                            : 'Sua sessão expirou por inatividade.';
+                        window.showDisconnectOverlay(msg);
+                    }
+                }
+            } catch(e) {}
+        }
+        
+        return response;
     };
 })();
 
@@ -54,7 +75,10 @@ if (typeof UI !== 'undefined') {
             if (contentType && contentType.indexOf("application/json") !== -1) {
                 const result = await response.json();
                 if (!result.success) {
-                    this.showToast(result.message || 'Erro ao processar requisição', result.type || 'error');
+                    // Don't show toast for auth failures, they are handled by overlays
+                    if (result.error !== 'expired' && result.error !== 'duplicate') {
+                        this.showToast(result.message || 'Erro ao processar requisição', result.type || 'error');
+                    }
                 }
                 return result;
             } else {

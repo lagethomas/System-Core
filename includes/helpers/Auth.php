@@ -23,17 +23,7 @@ class Auth {
         }
 
         if ($_SESSION['secure_ua'] !== $userAgent || $_SESSION['secure_ip'] !== $userIp) {
-            // Destroy LOCAL session only - do NOT clear DB session_id
-            // so the hasActiveSession check still works from another device
-            session_unset();
-            if (ini_get('session.use_cookies')) {
-                $params = session_get_cookie_params();
-                setcookie(session_name(), '', time() - 42000,
-                    $params['path'], $params['domain'],
-                    $params['secure'], $params['httponly']
-                );
-            }
-            session_destroy();
+            self::clearLocalSession();
             return false;
         }
 
@@ -52,8 +42,13 @@ class Auth {
      */
     public static function requireLogin(): void {
         if (!self::isLoggedIn()) {
-            header("Location: " . SITE_URL . "/login");
-            exit;
+            self::redirectOrJson('expired');
+        }
+
+        // Single Session Enforcement (Navigation block)
+        if (self::isSessionReplaced()) {
+            self::clearLocalSession();
+            self::redirectOrJson('duplicate');
         }
     }
 
@@ -139,7 +134,9 @@ class Auth {
         $timeout = (int)($platform_settings['security_session_timeout'] ?? 120) * 60; // Value in minutes
 
         if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $timeout)) {
-            self::logout();
+            // Log logout to DB first if wanted, but redirectOrJson is the priority
+            self::clearLocalSession();
+            self::redirectOrJson('expired');
         }
         $_SESSION['last_activity'] = time();
     }
@@ -233,6 +230,101 @@ class Auth {
         $pdo = \DB::getInstance();
         $stmt = $pdo->prepare('DELETE FROM cp_login_attempts WHERE ip_address = ?');
         $stmt->execute([$ip]);
+    }
+
+    /**
+     * Check if the current session ID has been replaced in the DB
+     */
+    private static function isSessionReplaced(): bool {
+        try {
+            $pdo = \DB::getInstance();
+            $stmt = $pdo->prepare('SELECT current_session_id FROM cp_users WHERE id = ?');
+            $stmt->execute([$_SESSION['user_id']]);
+            $storedId = $stmt->fetchColumn();
+            return (bool)($storedId && $storedId !== session_id());
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Destroys ONLY the local browser session (cookies/files)
+     * Leaves the DB current_session_id intact.
+     */
+    private static function clearLocalSession(): void {
+        session_unset();
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params['path'], $params['domain'],
+                $params['secure'], $params['httponly']
+            );
+        }
+        session_destroy();
+    }
+
+    /**
+     * Redirects to login or returns JSON error depending on request type
+     */
+    private static function redirectOrJson(string $reason): void {
+        $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') ||
+                  (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false);
+
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            http_response_code(401);
+            echo json_encode([
+                'success' => false, 
+                'error'   => $reason,
+                'message' => ($reason === 'duplicate' ? 'Sua conta foi acessada em outro local.' : 'Sua sessão expirou.')
+            ]);
+            exit;
+        }
+
+        // Full page load hit the wall: Show the HTML overlay
+        $title = ($reason === 'duplicate') ? 'Sua conta foi acessada em outro local.' : 'Sua sessão expirou por inatividade.';
+        self::serveDisconnectHtml($title);
+    }
+
+    private static function serveDisconnectHtml(string $message): void {
+        http_response_code(401);
+        $site_url = defined('SITE_URL') ? SITE_URL : '';
+        echo "<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <title>Sessão Encerrada</title>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap' rel='stylesheet'>
+    <style>
+        body { margin: 0; padding: 0; background: #0f1115; font-family: 'Outfit', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .disconnect-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 99999; }
+        .disconnect-card { background: #1a1d24; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 40px; text-align: center; max-width: 400px; width: 90%; color: #fff; box-shadow: 0 20px 40px rgba(0,0,0,0.5); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .disconnect-icon { width: 70px; height: 70px; border-radius: 50%; background: rgba(239, 68, 68, 0.1); color: #ef4444; font-size: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+        .disconnect-loader { width: 40px; height: 40px; border: 3px solid rgba(255, 255, 255, 0.1); border-top-color: #ef4444; border-radius: 50%; animation: spin 1s linear infinite; margin: 25px auto 15px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        h3 { font-size: 1.5rem; margin-bottom: 10px; font-weight: 700; margin-top: 0; }
+        p { color: #9ca3af; font-size: 0.95rem; line-height: 1.5; margin: 0; }
+        span { color: #6b7280; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class='disconnect-overlay'>
+        <div class='disconnect-card'>
+            <div class='disconnect-icon'><i class='fas fa-plug'></i></div>
+            <h3>Sessão Encerrada</h3>
+            <p>{$message}</p>
+            <div class='disconnect-loader'></div>
+            <span>Encerrando sua sessão com segurança...</span>
+        </div>
+    </div>
+    <script>
+        setTimeout(function() { window.location.href = '{$site_url}/logout'; }, 3500);
+    </script>
+</body>
+</html>";
+        exit;
     }
 }
 

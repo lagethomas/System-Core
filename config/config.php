@@ -14,6 +14,9 @@ ini_set('session.use_strict_mode', '1');
 ini_set('session.cookie_httponly', '1');
 ini_set('session.use_only_cookies', '1');
 ini_set('session.cookie_samesite', 'Lax');
+ini_set('session.cookie_lifetime', '2592000'); // 30 dias (em segundos)
+ini_set('session.gc_maxlifetime', '2592000');   // 30 dias (em segundos)
+
 // Use secure only if HTTPS is detected
 if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] === 'on' || $_SERVER['HTTPS'] === '1')) {
     ini_set('session.cookie_secure', '1');

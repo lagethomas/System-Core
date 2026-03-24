@@ -54,7 +54,9 @@
 
             <div class="form-group mt-3">
                 <label class="auth-label">Senha</label>
-                <input type="password" name="password" class="form-control" placeholder="Sua senha" required>
+                <input type="password" name="password" class="form-control" 
+                       value="<?php echo htmlspecialchars($pre_password ?? ''); ?>"
+                       placeholder="Sua senha" required>
             </div>
 
             <button type="submit" class="btn-primary btn-block mt-4" id="btnLogin">
@@ -65,9 +67,14 @@
             </button>
 
             <?php if ($warn_session): ?>
-                <div class="alert-session-bottom" style="margin-top: 20px; padding: 12px; background: rgba(220, 38, 38, 0.1); border-radius: 8px; border: 1px solid rgba(220, 38, 38, 0.2); color: #ef4444; font-size: 0.85rem; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s ease;">
-                    <i class="fas fa-user-lock" style="font-size: 1.1rem;"></i>
-                    <span>Para se autenticar, encerre a outra sessão aberta.</span>
+                <div class="alert-session-bottom" style="margin-top: 20px; padding: 12px; background: rgba(220, 38, 38, 0.1); border-radius: 8px; border: 1px solid rgba(220, 38, 38, 0.2); color: #ef4444; font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px; animation: slideIn 0.3s ease;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-user-lock" style="font-size: 1.1rem;"></i>
+                        <span>Você já possui uma sessão ativa. Se deseja encerrá-la e entrar neste dispositivo:</span>
+                    </div>
+                    <button type="submit" name="force_login" value="1" class="btn-danger btn-block" style="background: #ef4444; border: none; color: white; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s;">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Encerrar outra sessão e entrar aqui
+                    </button>
                 </div>
             <?php endif; ?>
         </form>

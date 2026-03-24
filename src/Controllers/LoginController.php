@@ -21,6 +21,10 @@ class LoginController extends Controller {
         }
 
         $error = '';
+        if (isset($_GET['error']) && $_GET['error'] === 'duplicate') {
+            $error = 'Sua conta foi acessada em outro local e esta sessão foi encerrada.';
+        }
+
         $this->renderLogin($error, $platform_settings ?? []);
     }
 
@@ -108,25 +112,34 @@ class LoginController extends Controller {
                 $single_session = ($ss_val === '1');
 
                 if ($single_session && Auth::hasActiveSession((int)$user['id'])) {
-                    try {
-                        require_once __DIR__ . '/../../includes/logs.php';
-                        \Logger::log('security_session', 'Acesso bloqueado: Usuário já possui uma sessão ativa.');
-                        
-                        // Notify the existing session about this attempt
-                        require_once __DIR__ . '/../../includes/repositories/NotificationRepository.php';
-                        $notifRepo = new \NotificationRepository($pdo);
-                        $notifRepo->create([
-                            'user_id' => $user['id'],
-                            'title'   => '⚠️ Alerta de Segurança',
-                            'message' => 'Uma nova tentativa de login foi bloqueada pois você já possui uma sessão ativa.',
-                            'link'    => SITE_URL . '/logs',
-                            'type'    => 'warning'
-                        ]);
-                    } catch (\Exception $e) {}
+                    if ($force) {
+                        // User chose to force logout from other locations
+                        Auth::clearSessionFromDB((int)$user['id']);
+                        try {
+                            require_once __DIR__ . '/../../includes/logs.php';
+                            \Logger::log('security_session', 'Logout forçado realizado pelo usuário: ' . $user['username']);
+                        } catch (\Exception $e) {}
+                    } else {
+                        try {
+                            require_once __DIR__ . '/../../includes/logs.php';
+                            \Logger::log('security_session', 'Acesso bloqueado: Usuário já possui uma sessão ativa.');
+                            
+                            // Notify the existing session about this attempt
+                            require_once __DIR__ . '/../../includes/repositories/NotificationRepository.php';
+                            $notifRepo = new \NotificationRepository($pdo);
+                            $notifRepo->create([
+                                'user_id' => $user['id'],
+                                'title'   => '⚠️ Alerta de Segurança',
+                                'message' => 'Uma nova tentativa de login foi detectada. Se não foi você, recomendamos trocar sua senha.',
+                                'link'    => SITE_URL . '/logs',
+                                'type'    => 'warning'
+                            ]);
+                        } catch (\Exception $e) {}
 
-                    // Block login — show ONLY the bottom message (clear top error)
-                    $this->renderLogin('', $platform_settings ?? [], true, $username, $password);
-                    return;
+                        // Block login — show the warning with pre-filled inputs
+                        $this->renderLogin('', $platform_settings ?? [], true, $username, $password);
+                        return;
+                    }
                 }
                 // ── END SINGLE SESSION CHECK ───────────────────────────
 
