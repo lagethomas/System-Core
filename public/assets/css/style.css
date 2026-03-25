@@ -37,6 +37,28 @@
     box-sizing: border-box;
 }
 
+/* ===================================================
+   LUCIDE ICONS — Global Sizing
+   Use .icon-xs, .icon-sm, .icon-md, .icon-lg, .icon-xl
+   or the preset class .icon on any <i data-lucide="">
+   ===================================================*/
+[data-lucide], [data-lucide] svg,
+i[data-lucide] + svg, i[data-lucide] svg {
+    /* default icon size across the system */
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+/* Size utilities */
+.icon-xs svg, .icon-xs[data-lucide] { width: 12px; height: 12px; }
+.icon-sm svg, .icon-sm[data-lucide] { width: 14px; height: 14px; }
+.icon-md svg, .icon-md[data-lucide] { width: 18px; height: 18px; }
+.icon-lg svg, .icon-lg[data-lucide] { width: 22px; height: 22px; }
+.icon-xl svg, .icon-xl[data-lucide] { width: 28px; height: 28px; }
+
 body {
     font-family: 'Outfit', sans-serif;
     background-color: var(--bg-dark);
@@ -377,8 +399,106 @@ body {
 .top-nav-right {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
     position: relative;
+}
+
+/* Global Search Bar */
+.global-search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 250px;
+    transition: var(--transition);
+}
+
+/* Desktop: button hidden, show inline icon */
+.search-expand-btn {
+    display: none;
+}
+
+.global-search-container .desktop-search-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: var(--transition);
+    width: 16px;
+    height: 16px;
+}
+
+.global-search-container input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    padding: 8px 32px 8px 36px;
+    border-radius: 10px;
+    color: var(--text-main);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.global-search-container input:focus {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+    /* NO width change on desktop */
+}
+
+.global-search-container:focus-within .desktop-search-icon {
+    color: var(--primary);
+}
+
+/* Clear (×) button inside search */
+.search-clear-btn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: none;
+    padding: 2px 4px;
+    line-height: 1;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+.search-clear-btn:hover { color: var(--danger); }
+.global-search-container.has-value .search-clear-btn { display: flex; align-items: center; }
+.global-search-container.has-value input { padding-right: 32px; }
+
+/* Session Timer — compact pill in the top header */
+.session-timer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    transition: color 0.3s, background 0.3s, border-color 0.3s;
+    cursor: default;
+    user-select: none;
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+}
+.session-timer svg { width: 13px; height: 13px; flex-shrink: 0; }
+.session-timer.warning { color: var(--warning); border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.08); }
+.session-timer.danger  { color: var(--danger);  border-color: rgba(255,77,77,0.4);   background: rgba(255,77,77,0.1); }
+.session-timer.expired { color: var(--danger);  font-size: 11px; animation: pulse-danger 1.2s ease-in-out infinite; }
+@keyframes pulse-danger {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.5; }
+}
+
+/* Hide timer on very small screens where space is tight */
+@media (max-width: 480px) {
+    .session-timer { display: none; }
 }
 
 /* Top Bar (alias para .top-nav) */
@@ -785,6 +905,11 @@ body {
     color: var(--primary);
 }
 
+.password-toggle-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
 /* Visibility for date/time picker icons in dark mode */
 ::-webkit-calendar-picker-indicator {
     filter: var(--calendar-filter);
@@ -1150,9 +1275,84 @@ select.form-control option {
         /* No more offset needed for sticky */
     }
 
+    /* ── Mobile Search Bar ────────────────────────────── */
 
+    /* Default: search container shows only the icon button */
+    .global-search-container {
+        width: auto !important;
+        background: none;
+        border: none;
+        position: relative;
+    }
 
-    /* Search and Top Actions */
+    .global-search-container .desktop-search-icon {
+        display: none !important;
+    }
+
+    .search-expand-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        transition: var(--transition);
+    }
+
+    .search-expand-btn:hover,
+    .search-expand-btn:focus {
+        color: var(--primary);
+        background: rgba(255,255,255,0.05);
+    }
+
+    /* Input hidden by default on mobile */
+    .global-search-container input {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        padding: 8px 0;
+        opacity: 0;
+        pointer-events: none;
+        border: none;
+        background: var(--bg-surface);
+        border-radius: 10px;
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, padding 0.3s;
+        font-size: 14px;
+    }
+
+    /* Expanded state — set via JS by adding .search-open to the container */
+    .global-search-container.search-open {
+        width: calc(100vw - 120px) !important;
+        z-index: 200;
+    }
+
+    .global-search-container.search-open input {
+        width: 100%;
+        padding: 9px 12px 9px 14px;
+        opacity: 1;
+        pointer-events: auto;
+        border: 1px solid var(--primary);
+        box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.12);
+    }
+
+    /* Hide page title when search is open */
+    .top-bar.search-active #page-title {
+        opacity: 0;
+        pointer-events: none;
+        width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        margin: 0;
+        padding: 0;
+        transition: opacity 0.2s, width 0.3s;
+    }
+
+    /* ─────────────────────────────────────────────────── */
 
     .filter-bar form .filter-actions {
         flex-direction: row !important;
@@ -1786,6 +1986,11 @@ input:checked+.slider:before {
 
 .btn-generate-password:hover {
     color: var(--primary-hover);
+}
+
+.btn-generate-password svg {
+    width: 16px;
+    height: 16px;
 }
 
 .text-center {

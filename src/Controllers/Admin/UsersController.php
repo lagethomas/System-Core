@@ -133,7 +133,7 @@ class UsersController extends Controller {
                 $notifRepo->create([
                     'user_id' => 1,
                     'title'   => '👤 Usuário Removido',
-                    'message' => "Um usuário (ID $id) foi excluído do sistema.",
+                    'message' => "Um usuário (ID " . (string)$id . ") foi excluído do sistema.",
                     'link'    => SITE_URL . '/admin/users',
                     'type'    => 'danger'
                 ]);

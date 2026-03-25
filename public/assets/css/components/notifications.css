@@ -157,3 +157,14 @@
     cursor: pointer;
     font-weight: 600;
 }
+
+/* Notif Item Wrapper & Close Button */
+.notif-item-wrapper { position: relative; display: flex; align-items: stretch; border-bottom: 1px solid var(--border); transition: all 0.2s ease; }
+.notif-item-wrapper:hover { background: rgba(255,255,255,0.02); }
+.notif-item-wrapper:last-child { border-bottom: none; }
+.notif-close-btn { 
+    background: transparent; border: none; color: #6b7280; padding: 0 15px; cursor: pointer; opacity: 0; 
+    transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+}
+.notif-item-wrapper:hover .notif-close-btn { opacity: 1; }
+.notif-close-btn:hover { color: #ef4444; background: rgba(239, 68, 68, 0.05); }

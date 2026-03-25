@@ -8,9 +8,14 @@ class Logger {
     public static function log(string $action, ?string $description = null): void {
         // --- REDIRECT DEBUG LOGS TO DISK (logs/php_errors.log via error_log) ---
         if (strpos($action, 'debug_') === 0) {
-            $user_id = $_SESSION['user_id'] ?? 'Guest';
-            $ip = $_SERVER['REMOTE_ADDR'] ?? 'CLI';
-            error_log("DEBUG: [Action: $action] [User: $user_id] [IP: $ip] Description: $description");
+            global $platform_settings;
+            $diskLogsEnabled = ($platform_settings['enable_system_logs'] ?? '0') === '1';
+            
+            if ($diskLogsEnabled) {
+                $user_id = $_SESSION['user_id'] ?? 'Guest';
+                $ip = $_SERVER['REMOTE_ADDR'] ?? 'CLI';
+                error_log("DEBUG: [Action: $action] [User: $user_id] [IP: $ip] Description: $description");
+            }
             return;
         }
 

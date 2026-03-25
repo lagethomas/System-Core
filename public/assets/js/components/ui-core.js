@@ -57,6 +57,7 @@ const UI = {
         if (typeof this.initAutocomplete === 'function') this.initAutocomplete();
         if (typeof this.initMasks === 'function') this.initMasks();
         if (typeof this.initPasswordToggles === 'function') this.initPasswordToggles();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     },
 
     closeModal() {
@@ -77,13 +78,13 @@ const UI = {
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
 
-        let icon = 'fa-check-circle';
-        if (type === 'error') icon = 'fa-circle-xmark';
-        if (type === 'warning') icon = 'fa-triangle-exclamation';
-        if (type === 'info') icon = 'fa-circle-info';
+        let lucideIcon = 'check-circle';
+        if (type === 'error') lucideIcon = 'x-circle';
+        if (type === 'warning') lucideIcon = 'alert-triangle';
+        if (type === 'info') lucideIcon = 'info';
 
         toast.innerHTML = `
-            <i class="fas ${icon}"></i> 
+            <i data-lucide="${lucideIcon}"></i> 
             <span class="toast-message">${message}</span>
             <button class="toast-close" title="Fechar">&times;</button>
         `;
@@ -110,6 +111,7 @@ const UI = {
         const closeBtn = toast.querySelector('.toast-close');
         if (closeBtn) closeBtn.onclick = (e) => { e.stopPropagation(); removeToast(); };
         setTimeout(removeToast, 4000);
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     },
 
     confirm(message, options = {}) {
@@ -118,7 +120,7 @@ const UI = {
             confirmText: 'Sim, Excluir',
             cancelText: 'Cancelar',
             type: 'danger',
-            icon: 'fa-exclamation-triangle'
+            icon: 'alert-triangle'
         };
         const config = { ...defaults, ...options };
         const colors = {
@@ -132,7 +134,7 @@ const UI = {
             const html = `
                 <div class="confirm-container" style="padding: 10px 0; text-align: center;">
                     <div class="confirm-icon-circle" style="background: ${activeColor.bg}; color: ${activeColor.color}; width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-size: 28px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.3);">
-                        <i class="fas ${config.icon}"></i>
+                        <i data-lucide="${config.icon}"></i>
                     </div>
                     <p class="confirm-message" style="font-size: 16px; font-weight: 500; line-height: 1.6; margin-bottom: 35px; color: var(--text-main); padding: 0 10px;">${message}</p>
                     <div class="confirm-buttons" style="display: flex; gap: 15px; justify-content: center;">
@@ -213,17 +215,13 @@ const UI = {
     
     togglePassword(btn, targetId) {
         const input = document.getElementById(targetId);
-        if (!input) return;
+        if (!input || !btn) return;
         
-        const isPassword = input.type === 'password';
-        input.type = isPassword ? 'text' : 'password';
+        const isNowPassword = input.type === 'password';
+        input.type = isNowPassword ? 'text' : 'password';
         
-        const isNowPassword = (input.type === 'password');
-        const icon = btn.querySelector('i');
-        if (icon) {
-            icon.classList.toggle('fa-lock-open', !isNowPassword);
-            icon.classList.toggle('fa-lock', isNowPassword);
-        }
+        btn.innerHTML = `<i data-lucide="${input.type === 'password' ? 'lock' : 'unlock'}"></i>`;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     },
 
     initPasswordToggles() {
@@ -245,7 +243,7 @@ const UI = {
             btn.type = 'button';
             btn.className = 'password-toggle-btn';
             btn.title = 'Mostrar/Ocultar Senha';
-            btn.innerHTML = '<i class="fas fa-lock"></i>';
+            btn.innerHTML = '<i data-lucide="lock"></i>';
             
             if (!input.id) input.id = 'pwd-' + Math.random().toString(36).substr(2, 9);
             
@@ -266,7 +264,41 @@ const UI = {
                 genBtn.style.right = '10px';
             }
         });
+    },
+
+    searchOnPage(query) {
+        const q = query.toLowerCase().trim();
+        // Select elements that are typically searchable/filterable
+        const selectors = '.premium-table tbody tr, .card, .stat-card, .list-item, .user-list-card table tr';
+        const elements = document.querySelectorAll(selectors);
+        
+        if (!q) {
+            elements.forEach(el => {
+                el.style.display = '';
+                el.style.opacity = '1';
+            });
+            return;
+        }
+        
+        elements.forEach(el => {
+            const text = el.textContent.toLowerCase();
+            if (text.includes(q)) {
+                el.style.display = '';
+                el.style.opacity = '1';
+            } else {
+                el.style.display = 'none';
+                el.style.opacity = '0';
+            }
+        });
     }
 };
+
+// Global UI Initialization
+document.addEventListener('DOMContentLoaded', () => {
+    UI.handleUrlMessages();
+    UI.initAutocomplete();
+    UI.initPasswordToggles();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+});
 
 window.UI = UI;

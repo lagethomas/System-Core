@@ -6,13 +6,13 @@
 
 <div class="settings-tab-nav">
     <a href="?tab=general" class="nav-link-tab <?php echo $active_tab === 'general' ? 'active' : ''; ?>">
-        <i class="fas fa-cog"></i> Geral
+        <i data-lucide="settings"></i> Geral
     </a>
     <a href="?tab=themes" class="nav-link-tab <?php echo $active_tab === 'themes' ? 'active' : ''; ?>">
-        <i class="fas fa-palette"></i> Temas
+        <i data-lucide="palette"></i> Temas
     </a>
     <a href="?tab=security" class="nav-link-tab <?php echo $active_tab === 'security' ? 'active' : ''; ?>">
-        <i class="fas fa-shield-alt"></i> Segurança
+        <i data-lucide="shield"></i> Segurança
     </a>
 </div>
 
@@ -22,14 +22,14 @@
             <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
             
             <div class="settings-header-box">
-                <h5><i class="fas fa-cog text-primary"></i> Configurações Gerais</h5>
+                <h5><i data-lucide="settings" class="text-primary"></i> Configurações Gerais</h5>
                 <p>Gerencie a identidade básica e funcionamento do sistema.</p>
             </div>
             
             <div class="form-grid-5 mb-4">
                 <!-- Nome Card -->
                 <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i class="fas fa-info-circle"></i> Nome</label>
+                    <label class="upload-label"><i data-lucide="info"></i> Nome</label>
                     <div class="form-group mt-2">
                         <input type="text" name="system_name" value="<?php echo htmlspecialchars($settings['system_name'] ?? ''); ?>" class="form-control" placeholder="ex: SaaSFlow">
                     </div>
@@ -38,7 +38,7 @@
 
                 <!-- Logs Card -->
                 <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i class="fas fa-terminal"></i> Logs</label>
+                    <label class="upload-label"><i data-lucide="terminal"></i> Logs</label>
                     <div class="form-group mt-2">
                         <label class="switch-label d-flex align-items-center justify-content-between cursor-pointer p-0">
                             <span class="fs-11 opacity-08">Ativar em Disco</span>
@@ -53,23 +53,23 @@
 
                 <!-- Logo Card -->
                 <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i class="fas fa-image"></i> Logo</label>
+                    <label class="upload-label"><i data-lucide="image"></i> Logo</label>
                     <div class="upload-flex-container">
                         <div id="preview-logo" class="upload-preview-box">
                             <?php if (!empty($settings['system_logo'])): ?>
                                 <img src="<?php echo SITE_URL; ?>/uploads/logos/<?php echo $settings['system_logo']; ?>" alt="Logo" class="logo-img">
                             <?php else: ?>
-                                <i class="fas fa-layer-group"></i>
+                                <i data-lucide="layers"></i>
                             <?php endif; ?>
                         </div>
                         <div class="upload-actions-flex">
                             <label for="logo-upload" class="btn-primary btn-upload-sm mb-0 cursor-pointer">
-                                <i class="fas fa-upload"></i> Upload
+                                <i data-lucide="upload"></i> Upload
                                 <input type="file" id="logo-upload" name="system_logo" onchange="previewImage(this, 'preview-logo', 'logo-img')" style="display: none;">
                             </label>
                             <?php if (!empty($settings['system_logo'])): ?>
                                 <button type="submit" name="remove_logo" value="1" class="btn-danger btn-delete-sm">
-                                    <i class="fas fa-trash"></i>
+                                    <i data-lucide="trash-2"></i>
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -79,23 +79,23 @@
 
                 <!-- Background Card -->
                 <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i class="fas fa-desktop"></i> Background</label>
+                    <label class="upload-label"><i data-lucide="monitor"></i> Background</label>
                     <div class="upload-flex-container">
                         <div id="preview-bg" class="upload-preview-box">
                             <?php if (!empty($settings['login_background'])): ?>
                                 <img src="<?php echo SITE_URL; ?>/uploads/backgrounds/<?php echo $settings['login_background']; ?>" alt="BG" class="bg-img">
                             <?php else: ?>
-                                <i class="fas fa-image"></i>
+                                <i data-lucide="image"></i>
                             <?php endif; ?>
                         </div>
                         <div class="upload-actions-flex">
                             <label for="bg-upload" class="btn-primary btn-upload-sm mb-0 cursor-pointer">
-                                <i class="fas fa-upload"></i> Upload
+                                <i data-lucide="upload"></i> Upload
                                 <input type="file" id="bg-upload" name="login_background" onchange="previewImage(this, 'preview-bg', 'bg-img')" style="display: none;">
                             </label>
                             <?php if (!empty($settings['login_background'])): ?>
                                 <button type="submit" name="remove_login_bg" value="1" class="btn-danger btn-delete-sm">
-                                    <i class="fas fa-trash"></i>
+                                    <i data-lucide="trash-2"></i>
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -106,7 +106,7 @@
 
             <div class="settings-footer-section">
                 <button type="submit" name="save_general" class="btn-primary settings-save-btn">
-                    <i class="fas fa-save"></i> Salvar Agora
+                    <i data-lucide="save"></i> Salvar Agora
                 </button>
             </div>
         </form>
@@ -115,7 +115,7 @@
         <form method="POST">
             <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
             <div class="settings-header-box">
-                <h5><i class="fas fa-palette text-primary"></i> Personalização de Tema</h5>
+                <h5><i data-lucide="palette" class="text-primary"></i> Personalização de Tema</h5>
                 <p>Selecione a identidade visual que será aplicada a todos os usuários do sistema.</p>
             </div>
 
@@ -138,7 +138,7 @@
                                 <span class="theme-card-name"><?php echo $theme['name']; ?></span>
                             </div>
                             <div class="theme-check-icon">
-                                <i class="fas fa-check"></i>
+                                <i data-lucide="check"></i>
                             </div>
                         </div>
                     </label>
@@ -147,7 +147,7 @@
 
             <div class="settings-footer-section">
                 <button type="submit" name="save_theme" class="btn-primary settings-save-btn">
-                    <i class="fas fa-save"></i> Aplicar Tema
+                    <i data-lucide="save"></i> Aplicar Tema
                 </button>
             </div>
 
@@ -155,14 +155,14 @@
         <form method="POST">
             <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
             <div class="settings-header-box">
-                <h5><i class="fas fa-shield-alt text-primary"></i> Segurança do Sistema</h5>
+                <h5><i data-lucide="shield" class="text-primary"></i> Segurança do Sistema</h5>
                 <p>Gerencie autenticação, sessões e logs.</p>
             </div>
 
             <div class="form-grid-5">
                 <!-- Max Attempts -->
                 <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i class="fas fa-user-lock"></i> Tentativas</label>
+                    <label class="upload-label"><i data-lucide="user-x"></i> Tentativas</label>
                     <div class="form-group mt-2">
                         <input type="number" name="security_max_attempts" value="<?php echo $settings['security_max_attempts'] ?? '5'; ?>" class="form-control p-2">
                     </div>
@@ -171,7 +171,7 @@
 
                 <!-- Lockout -->
                 <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i class="fas fa-hourglass-half"></i> Bloqueio</label>
+                    <label class="upload-label"><i data-lucide="hourglass"></i> Bloqueio</label>
                     <div class="form-group mt-2">
                         <input type="number" name="security_lockout_time" value="<?php echo $settings['security_lockout_time'] ?? '15'; ?>" class="form-control p-2">
                     </div>
@@ -180,7 +180,7 @@
 
                 <!-- Timeout -->
                 <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i class="fas fa-clock"></i> Inatividade</label>
+                    <label class="upload-label"><i data-lucide="clock"></i> Inatividade</label>
                     <div class="form-group mt-2">
                         <input type="number" name="security_session_timeout" value="<?php echo $settings['security_session_timeout'] ?? '120'; ?>" class="form-control p-2">
                     </div>
@@ -189,7 +189,7 @@
 
                 <!-- Single Session -->
                 <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i class="fas fa-sign-in-alt"></i> Sessão</label>
+                    <label class="upload-label"><i data-lucide="log-in"></i> Sessão</label>
                     <div class="form-group mt-2">
                         <label class="switch-label d-flex align-items-center justify-content-between cursor-pointer p-0">
                             <span class="fs-11 opacity-08">Sessão Única</span>
@@ -204,7 +204,7 @@
 
                 <!-- IP Lockout -->
                 <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i class="fas fa-ban"></i> IP Block</label>
+                    <label class="upload-label"><i data-lucide="ban"></i> IP Block</label>
                     <div class="form-group mt-2">
                         <label class="switch-label d-flex align-items-center justify-content-between cursor-pointer p-0">
                             <span class="fs-11 opacity-08">Bloqueio por IP</span>
@@ -219,7 +219,7 @@
 
                 <!-- Strong Password -->
                 <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i class="fas fa-key"></i> Senhas</label>
+                    <label class="upload-label"><i data-lucide="key"></i> Senhas</label>
                     <div class="form-group mt-2">
                         <label class="switch-label d-flex align-items-center justify-content-between cursor-pointer p-0">
                             <span class="fs-11 opacity-08">Senhas Fortes</span>
@@ -234,7 +234,7 @@
 
                 <!-- Log Days -->
                 <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i class="fas fa-calendar-day"></i> Retenção</label>
+                    <label class="upload-label"><i data-lucide="calendar"></i> Retenção</label>
                     <div class="form-group mt-2">
                         <input type="number" name="security_log_days" value="<?php echo $settings['security_log_days'] ?? '30'; ?>" class="form-control p-2">
                     </div>
@@ -243,7 +243,7 @@
 
                 <!-- Log Limit -->
                 <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i class="fas fa-list-ol"></i> Limite Logs</label>
+                    <label class="upload-label"><i data-lucide="list-ordered"></i> Limite Logs</label>
                     <div class="form-group mt-2">
                         <input type="number" name="security_log_limit" value="<?php echo $settings['security_log_limit'] ?? '10000'; ?>" class="form-control p-2">
                     </div>
@@ -252,7 +252,7 @@
 
                 <!-- Blocked IPs Management (Rule 39) -->
                 <div class="upload-box-wrapper p-3" style="grid-column: span 2;">
-                    <label class="upload-label"><i class="fas fa-shield-alt"></i> Gestão de IPs Bloqueados</label>
+                    <label class="upload-label"><i data-lucide="shield"></i> Gestão de IPs Bloqueados</label>
                     <div class="form-group mt-2">
                         <textarea name="security_blocked_ips" class="form-control p-2" rows="3" placeholder="Insira um IP por linha..."><?php
                             try {
@@ -272,7 +272,7 @@
 
             <div class="settings-footer-section">
                 <button type="submit" name="save_security" class="btn-primary settings-save-btn">
-                    <i class="fas fa-save"></i> Salvar Configurações
+                    <i data-lucide="save"></i> Salvar Configurações
                 </button>
             </div>
         </form>

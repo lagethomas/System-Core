@@ -21,10 +21,10 @@
             <input type="text" name="action" class="form-control w-100" placeholder="Filtrar por ação..." value="<?php echo htmlspecialchars($action_filter); ?>">
         </div>
         <button type="submit" class="btn-primary logs-filter-btn">
-            <i class="fas fa-search"></i> Filtrar
+            <i data-lucide="search"></i> Filtrar
         </button>
         <a href="?" class="btn-secondary logs-reset-btn">
-            <i class="fas fa-undo"></i>
+            <i data-lucide="rotate-ccw"></i>
         </a>
     </form>
 </div>

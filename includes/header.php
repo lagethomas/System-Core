@@ -77,9 +77,12 @@ $unread_count = count($unread_notifications);
     }
     ?>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="<?php echo SITE_URL; ?>/assets/img/icon-192.png">
+    <script>
+        // Expose server-side session timeout so JS timer stays in sync
+        window.SESSION_TIMEOUT_MINUTES = <?php echo (string)(int)($platform_settings['security_session_timeout'] ?? 120); ?>;
+    </script>
 </head>
 <body>
     <div class="app-container">
@@ -91,42 +94,42 @@ $unread_count = count($unread_notifications);
                         <?php if (!empty($platform_settings['system_logo'])): ?>
                             <img src="<?php echo SITE_URL; ?>/uploads/logos/<?php echo $platform_settings['system_logo']; ?>" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                         <?php else: ?>
-                            <i class="fas fa-layer-group"></i>
+                            <i data-lucide="layers"></i>
                         <?php endif; ?>
                     </div>
                     <span><?php echo htmlspecialchars($system_name); ?></span>
                 </a>
                 <button class="sidebar-collapse-toggle" onclick="toggleSidebarCollapse()" title="Encolher Menu">
-                    <i class="fas fa-chevron-left"></i>
+                    <i data-lucide="chevron-left"></i>
                 </button>
             </div>
             <nav class="sidebar-nav">
                 <ul>
                     <li class="<?php echo ($current_page == 'dashboard.php' || $current_page == 'dashboard') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/dashboard">
-                            <i class="fas fa-th-large"></i> <span>Dashboard</span>
+                            <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
                         </a>
                     </li>
                     
                     <?php if (Auth::isAdmin()): ?>
                     <li class="<?php echo ($current_page == 'users.php' || $current_page == 'users') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/users">
-                            <i class="fas fa-users"></i> <span>Usuários</span>
+                            <i data-lucide="users"></i> <span>Usuários</span>
                         </a>
                     </li>
                     <li class="<?php echo ($current_page == 'integrations.php' || $current_page == 'integrations') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/integrations">
-                            <i class="fas fa-plug"></i> <span>Integrações</span>
+                            <i data-lucide="plug"></i> <span>Integrações</span>
                         </a>
                     </li>
                     <li class="<?php echo ($current_page == 'logs.php' || $current_page == 'logs') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/logs">
-                            <i class="fas fa-terminal"></i> <span>Logs Globais</span>
+                            <i data-lucide="terminal"></i> <span>Logs Globais</span>
                         </a>
                     </li>
                     <li class="<?php echo ($current_page == 'settings.php' || $current_page == 'settings') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/settings">
-                            <i class="fas fa-cogs"></i> <span>Configurações</span>
+                            <i data-lucide="settings"></i> <span>Configurações</span>
                         </a>
                     </li>
                     <?php endif; ?>
@@ -138,17 +141,17 @@ $unread_count = count($unread_notifications);
                         <?php echo strtoupper(substr($user_name, 0, 1)); ?>
                     </div>
                     <div class="user-info">
-                        <span class="user-name"><?php echo htmlspecialchars($user_name); ?> <i class="fas fa-chevron-up user-chevron"></i></span>
+                        <span class="user-name"><?php echo htmlspecialchars($user_name); ?> <i data-lucide="chevron-up" class="user-chevron"></i></span>
                         <span class="user-role"><?php echo ucfirst($user_role); ?></span>
                     </div>
                 </div>
                 <!-- Popup de Perfil/Sair -->
                 <div class="sidebar-user-dropdown" id="user-dropdown">
                     <a href="<?php echo SITE_URL; ?>/profile" class="btn-secondary" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
-                        <i class="fas fa-user-circle"></i> Meu Perfil Maroto
+                        <i data-lucide="user-circle"></i> Meu Perfil Maroto
                     </a>
                     <a href="<?php echo SITE_URL; ?>/logout" onclick="handleLogout(event)" class="user-dropdown-item danger">
-                        <i class="fas fa-sign-out-alt"></i> Sair
+                        <i data-lucide="log-out"></i> Sair
                     </a>
                 </div>
             </div>
@@ -158,15 +161,33 @@ $unread_count = count($unread_notifications);
             <header class="top-bar">
                 <div class="top-bar-left">
                     <button class="menu-toggle" onclick="toggleSidebar()">
-                        <i class="fas fa-bars"></i>
+                        <i data-lucide="menu"></i>
                     </button>
-                    <h2 class="page-title"><?php echo $page_titles[$current_page] ?? 'Início'; ?></h2>
+                    <h2 class="page-title" id="page-title"><?php echo $page_titles[$current_page] ?? 'Início'; ?></h2>
                 </div>
 
                 <div class="top-nav-right">
+                    <!-- Global Search -->
+                    <div class="global-search-container" id="global-search-container">
+                        <button class="search-expand-btn" id="search-expand-btn" onclick="toggleMobileSearch()" title="Pesquisar">
+                            <i data-lucide="search"></i>
+                        </button>
+                        <i data-lucide="search" class="search-icon desktop-search-icon"></i>
+                        <input type="text" id="global-page-search" placeholder="Buscar nesta página..." oninput="handleSearchInput(this)">
+                        <button class="search-clear-btn" id="search-clear-btn" onclick="clearSearch()" title="Limpar busca">
+                            <i data-lucide="x"></i>
+                        </button>
+                    </div>
+
+                    <!-- Session Timer (compact, in header) -->
+                    <div class="session-timer" id="session-timer" title="Tempo restante de sessão">
+                        <i data-lucide="clock"></i>
+                        <span id="timer-count">--:--</span>
+                    </div>
+
                     <!-- Notificações -->
                     <div class="notif-trigger" id="notif-trigger">
-                        <i class="fas fa-bell"></i>
+                        <i data-lucide="bell"></i>
                         <?php if ($unread_count > 0): ?>
                             <span class="notif-badge"><?php echo (string)$unread_count; ?></span>
                         <?php endif; ?>
@@ -182,7 +203,7 @@ $unread_count = count($unread_notifications);
                         <div class="notif-list">
                             <?php if (empty($unread_notifications)): ?>
                                 <div class="notif-empty">
-                                    <i class="fas fa-bell-slash"></i>
+                                    <i data-lucide="bell-off"></i>
                                     <span>Nenhuma nova notificação</span>
                                 </div>
                             <?php else: ?>
@@ -191,15 +212,15 @@ $unread_count = count($unread_notifications);
                                         <a href="<?php echo $notif['link'] ?: '#'; ?>" class="notif-item">
                                             <div class="notif-icon <?php echo htmlspecialchars($notif['type'] ?? 'info'); ?>">
                                                 <?php 
-                                                // Icon mapping by type
-                                                $icon = 'fas fa-info-circle';
+                                                // Icon mapping by type (Lucide names)
+                                                $icon = 'info';
                                                 switch($notif['type'] ?? '') {
-                                                    case 'success': $icon = 'fas fa-check-circle'; break;
-                                                    case 'warning': $icon = 'fas fa-exclamation-triangle'; break;
-                                                    case 'danger':  $icon = 'fas fa-exclamation-circle'; break;
+                                                    case 'success': $icon = 'check-circle'; break;
+                                                    case 'warning': $icon = 'alert-triangle'; break;
+                                                    case 'danger':  $icon = 'alert-circle'; break;
                                                 }
                                                 ?>
-                                                <i class="<?php echo $icon; ?>"></i>
+                                                <i data-lucide="<?php echo $icon; ?>"></i>
                                             </div>
                                             <div class="notif-content">
                                                 <span class="notif-title"><?php echo htmlspecialchars($notif['title']); ?></span>
@@ -208,7 +229,7 @@ $unread_count = count($unread_notifications);
                                             </div>
                                         </a>
                                         <button onclick="markRead(event, <?php echo $notif['id']; ?>)" class="notif-close-btn" title="Marcar como lido">
-                                            <i class="fas fa-times"></i>
+                                            <i data-lucide="x"></i>
                                         </button>
                                     </div>
                                 <?php endforeach; ?>
@@ -221,19 +242,6 @@ $unread_count = count($unread_notifications);
                 </div>
             </header>
             <div class="page-content">
-
-            <style>
-                .notif-item-wrapper { position: relative; display: flex; align-items: stretch; border-bottom: 1px solid var(--border); transition: all 0.2s ease; }
-                .notif-item-wrapper:hover { background: rgba(255,255,255,0.02); }
-                .notif-item-wrapper:last-child { border-bottom: none; }
-                .notif-item { flex: 1; padding: 12px 15px; text-decoration: none; color: inherit; display: flex; gap: 12px; }
-                .notif-close-btn { 
-                    background: transparent; border: none; color: #6b7280; padding: 0 15px; cursor: pointer; opacity: 0; 
-                    transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
-                }
-                .notif-item-wrapper:hover .notif-close-btn { opacity: 1; }
-                .notif-close-btn:hover { color: #ef4444; background: rgba(239, 68, 68, 0.05); }
-            </style>
 
 <script>
 
@@ -323,10 +331,11 @@ function updateNotificationUI(notifications) {
     if (notifications.length === 0) {
         list.innerHTML = `
             <div class="notif-empty">
-                <i class="fas fa-bell-slash"></i>
+                <i data-lucide="bell-off"></i>
                 <span>Nenhuma nova notificação</span>
             </div>
         `;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     } else {
         let html = '';
         notifications.forEach(notif => {
@@ -343,12 +352,13 @@ function updateNotificationUI(notifications) {
                         </div>
                     </a>
                     <button onclick="markRead(event, ${notif.id})" class="notif-close-btn" title="Marcar como lido">
-                        <i class="fas fa-times"></i>
+                        <i data-lucide="x"></i>
                     </button>
                 </div>
             `;
         });
         list.innerHTML = html;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 }
 
@@ -370,10 +380,11 @@ async function markRead(event, id) {
                 if (list && list.children.length === 0) {
                     list.innerHTML = `
                         <div class="notif-empty">
-                            <i class="fas fa-bell-slash"></i>
+                            <i data-lucide="bell-off"></i>
                             <span>Nenhuma nova notificação</span>
                         </div>
                     `;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
                     // Update badge
                     const badge = document.querySelector('.notif-badge');
                     if (badge) badge.remove();

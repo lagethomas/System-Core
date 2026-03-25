@@ -8,7 +8,7 @@
         <div class="profile-avatar" id="avatar-preview" title="Alterar Foto" onclick="document.getElementById('profile_picture').click()" style="<?php echo !empty($user['avatar']) ? 'background-image: url('.SITE_URL.'/uploads/profile/'.$user['avatar'].'); background-size: cover; background-position: center; color: transparent;' : ''; ?>">
             <?php echo empty($user['avatar']) ? strtoupper(substr($user['name'], 0, 1)) : ''; ?>
             <div class="avatar-edit-icon">
-                <i class="fas fa-camera"></i>
+                <i data-lucide="camera"></i>
             </div>
         </div>
         <div>
@@ -46,7 +46,7 @@
                     <div class="relative">
                         <input type="password" name="password" id="profile-password" class="form-control w-100 pr-5" placeholder="Deixe em branco para manter">
                         <button type="button" onclick="UI.generatePassword('profile-password')" class="btn-generate-password" title="Gerar Senha">
-                            <i class="fas fa-random"></i>
+                            <i data-lucide="shuffle"></i>
                         </button>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
 
         <div class="profile-footer-actions">
             <button type="submit" class="btn-primary">
-                <i class="fas fa-save"></i> Salvar Alterações
+                <i data-lucide="save"></i> Salvar Alterações
             </button>
         </div>
     </form>

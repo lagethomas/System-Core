@@ -12,7 +12,7 @@
     <div class="user-list-header">
         <h3>Lista de Usuários</h3>
         <button class="btn-primary" onclick="openUserModal()">
-            <i class="fas fa-user-plus"></i> Novo Usuário
+            <i data-lucide="user-plus"></i> Novo Usuário
         </button>
     </div>
 
@@ -41,18 +41,31 @@
                             </span>
                         </td>
                         <td class="user-last-login">
-                            <?php echo $u['last_login'] ? date('d/m/Y H:i', strtotime($u['last_login'])) : 'Nunca'; ?>
+                            <?php
+                            if (!empty($u['last_login'])) {
+                                $ts   = strtotime($u['last_login']);
+                                $diff = time() - $ts;
+                                if ($diff < 60)          $rel = 'Agora mesmo';
+                                elseif ($diff < 3600)    $rel = floor($diff / 60) . 'min atrás';
+                                elseif ($diff < 86400)   $rel = floor($diff / 3600) . 'h atrás';
+                                elseif ($diff < 604800)  $rel = floor($diff / 86400) . 'd atrás';
+                                else                     $rel = date('d/m/Y', $ts);
+                                echo '<span title="' . date('d/m/Y H:i:s', $ts) . '" style="cursor:default">' . $rel . '</span>';
+                            } else {
+                                echo '<span style="color:var(--text-muted);font-size:0.8em">Nunca</span>';
+                            }
+                            ?>
                         </td>
                         <td class="text-right">
                             <button onclick="sendAccess(<?php echo $u['id']; ?>)" class="btn-user-action" title="Enviar Dados de Acesso" style="color: var(--primary);">
-                                <i class="fas fa-paper-plane"></i>
+                                <i data-lucide="send"></i>
                             </button>
                             <button onclick="openUserModal(<?php echo htmlspecialchars(json_encode($u)); ?>)" class="btn-user-action" title="Editar">
-                                <i class="fas fa-edit"></i>
+                                <i data-lucide="edit"></i>
                             </button>
                             <?php if ($u['id'] != $_SESSION['user_id']): ?>
                                 <button onclick="deleteUser(<?php echo $u['id']; ?>)" class="btn-user-action btn-user-delete" title="Remover">
-                                    <i class="fas fa-trash"></i>
+                                    <i data-lucide="trash-2"></i>
                                 </button>
                             <?php endif; ?>
                         </td>
@@ -104,7 +117,7 @@ function openUserModal(data = null) {
                 <div class="relative">
                     <input type="password" name="password" id="modal-password" class="form-control w-100 pr-5" ${data ? '' : 'required'}>
                     <button type="button" onclick="UI.generatePassword('modal-password')" class="btn-generate-password" title="Gerar Senha">
-                        <i class="fas fa-random"></i>
+                        <i data-lucide="shuffle"></i>
                     </button>
                 </div>
             </div>
@@ -167,7 +180,7 @@ async function sendAccess(id) {
         title: 'Confirmar Envio',
         confirmText: 'Sim, Enviar',
         type: 'success',
-        icon: 'fa-paper-plane'
+        icon: 'send'
     })) {
         const formData = new FormData();
         formData.append('id', id);

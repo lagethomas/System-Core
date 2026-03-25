@@ -27,6 +27,8 @@
 
     <!-- Tom Select JS -->
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <!-- Lucide Icons - must load before ui-core.js so it's available at DOMContentLoaded -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <!-- SaaSFlow Core Components -->
     <script src="<?php echo \App\Core\Controller::asset('/assets/js/components/ui-core.js'); ?>"></script>
     <script src="<?php echo \App\Core\Controller::asset('/assets/js/components/ajax-handler.js'); ?>"></script>
@@ -44,5 +46,11 @@
     if (file_exists($real_js_path)): ?>
         <script src="<?php echo \App\Core\Controller::asset($module_js_path); ?>"></script>
     <?php endif; ?>
+
+    <!-- Final Lucide icon initialization pass (catches any late-rendered icons) -->
+    <script>
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    </script>
+
 </body>
 </html>

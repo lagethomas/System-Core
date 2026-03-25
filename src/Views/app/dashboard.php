@@ -14,7 +14,7 @@
 <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px;">
     <div class="stat-card" style="background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 20px;">
         <div style="width: 50px; height: 50px; background: rgba(var(--primary-rgb), 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 24px;">
-            <i class="fas fa-users"></i>
+            <i data-lucide="users"></i>
         </div>
         <div>
             <h3 style="margin: 0; font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Usuários</h3>
@@ -24,7 +24,7 @@
 
     <div class="stat-card" style="background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 20px;">
         <div style="width: 50px; height: 50px; background: rgba(52, 211, 153, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #34d399; font-size: 24px;">
-            <i class="fas fa-terminal"></i>
+            <i data-lucide="terminal"></i>
         </div>
         <div>
             <h3 style="margin: 0; font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Atividades</h3>
@@ -57,13 +57,13 @@
         <h3 style="margin-top: 0;">Link Rápido</h3>
         <div style="display: flex; flex-direction: column; gap: 10px;">
             <a href="<?php echo SITE_URL; ?>/admin/users" class="btn-secondary" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
-                <i class="fas fa-user-plus"></i> Gerenciar Usuários
+                <i data-lucide="user-plus"></i> Gerenciar Usuários
             </a>
             <a href="<?php echo SITE_URL; ?>/profile" class="btn-secondary" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
-                <i class="fas fa-user-circle"></i> Meu Perfil Maroto
+                <i data-lucide="user-circle"></i> Meu Perfil Maroto
             </a>
             <a href="<?php echo SITE_URL; ?>/admin/logs" class="btn-secondary" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
-                <i class="fas fa-list"></i> Ver Logs Globais
+                <i data-lucide="list"></i> Ver Logs Globais
             </a>
         </div>
     </div>

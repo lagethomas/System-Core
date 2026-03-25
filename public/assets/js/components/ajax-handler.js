@@ -116,7 +116,8 @@ document.addEventListener('submit', async (e) => {
 
         if (btn) {
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+            btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin mr-2"></i> Processando...';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         const result = await UI.request(action, formData);

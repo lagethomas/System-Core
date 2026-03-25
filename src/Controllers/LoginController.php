@@ -146,6 +146,16 @@ class LoginController extends Controller {
                 Auth::login($user);
                 Auth::resetAttempts(); // Reset failures on success
 
+                // ── UPDATE LAST LOGIN ──────────────────────────────────
+                try {
+                    require_once __DIR__ . '/../../includes/repositories/UserRepository.php';
+                    $userRepo = new \UserRepository($pdo);
+                    $userRepo->updateLastLogin((int)$user['id']);
+                } catch (\Exception $e) {
+                    error_log("updateLastLogin failed: " . $e->getMessage());
+                }
+                // ────────────────────────────────────────────────────────
+
                 try {
                     require_once __DIR__ . '/../../includes/logs.php';
                     \Logger::log('login', 'Autenticação bem-sucedida para o usuário: ' . $user['username']);
@@ -201,39 +211,64 @@ class LoginController extends Controller {
     /**
      * Session Pulse (POST /api/auth/pulse)
      * Rule 5: Keepalive and duplicate session check
+     * Resets $_SESSION['last_activity'] so active users are never disconnected early.
      */
     public function pulse(): void {
         try {
+            require_once __DIR__ . '/../../includes/logs.php';
+
             if (!Auth::isLoggedIn()) {
+                \Logger::log('debug_session', '[pulse] REJECTED — not logged in. session_id=' . session_id());
                 $this->jsonResponse(['success' => false, 'error' => 'expired']);
                 return;
             }
 
-            $pdo = \App\Core\Database::getInstance();
+            $pdo    = \App\Core\Database::getInstance();
             $userId = (int)$_SESSION['user_id'];
+            $sessId = session_id();
+            $lastAct = $_SESSION['last_activity'] ?? null;
+            $idleSecs = $lastAct ? (time() - (int)$lastAct) : -1;
+
+            \Logger::log('debug_session',
+                "[pulse] user=" . (string)$userId . " session={$sessId} " .
+                "idle=" . (string)$idleSecs . "s " .
+                "last_activity=" . ($lastAct ? date('H:i:s', (int)$lastAct) : 'NULL')
+            );
 
             // Single Session Enforcement (Rule 39)
             $stmt = $pdo->prepare('SELECT current_session_id FROM cp_users WHERE id = ?');
             $stmt->execute([$userId]);
             $storedSessId = $stmt->fetchColumn();
 
-            if ($storedSessId && $storedSessId !== session_id()) {
-                try {
-                    require_once __DIR__ . '/../../includes/logs.php';
-                    \Logger::log('security_session', 'Sessão duplicada detectada e encerrada automaticamente.');
-                } catch (\Exception $e) {}
-
+            if ($storedSessId && $storedSessId !== $sessId) {
+                \Logger::log('debug_session',
+                    "[pulse] DUPLICATE detected user=" . (string)$userId . " stored={$storedSessId} current={$sessId}"
+                );
+                \Logger::log('security_session', 'Sessão duplicada detectada e encerrada automaticamente.');
                 $this->jsonResponse(['success' => false, 'error' => 'duplicate']);
                 return;
             }
 
-            // Update Pulse
+            // ── Reset inactivity timer (KEY FIX) ──────────────────
+            $_SESSION['last_activity'] = time();
+            // ────────────────────────────────────────────────────────
+
+            // Update DB pulse
             $stmt = $pdo->prepare('UPDATE cp_users SET last_pulse = NOW() WHERE id = ?');
             $stmt->execute([$userId]);
 
-            $this->jsonResponse(['success' => true]);
+            \Logger::log('debug_session', "[pulse] OK user=" . (string)$userId . " last_activity reset to " . date('H:i:s'));
+
+            global $platform_settings;
+            $timeoutMin  = (int)($platform_settings['security_session_timeout'] ?? 120);
+            $timeoutSecs = $timeoutMin * 60;
+
+            $this->jsonResponse([
+                'success'           => true,
+                'remaining_seconds' => $timeoutSecs
+            ]);
         } catch (\Exception $e) {
-            error_log("Pulse API error (likely missing columns): " . $e->getMessage());
+            error_log("Pulse API error: " . $e->getMessage());
             $this->jsonResponse(['success' => false, 'error' => 'db_error']);
         }
     }

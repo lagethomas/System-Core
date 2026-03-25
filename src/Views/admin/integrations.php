@@ -7,13 +7,13 @@
 
 <div class="settings-tab-nav">
     <a href="?tab=email" class="nav-link-tab <?php echo $active_tab === 'email' ? 'active' : ''; ?>">
-        <i class="fas fa-envelope"></i> E-mail (SMTP)
+        <i data-lucide="mail"></i> E-mail (SMTP)
     </a>
 </div>
 
 <?php if ($msg): ?>
     <div class="alert-success-custom">
-        <i class="fas fa-check-circle"></i> <?php echo $msg; ?>
+        <i data-lucide="check-circle"></i> <?php echo $msg; ?>
     </div>
 <?php endif; ?>
 
@@ -21,7 +21,7 @@
     <?php if ($active_tab === 'email'): ?>
         <form method="POST">
             <div class="integration-header">
-                <i class="fas fa-envelope text-primary"></i>
+                <i data-lucide="mail" class="text-primary"></i>
                 <h5>Configurações de E-mail (SMTP)</h5>
             </div>
             <p class="integration-subtitle">Configure o servidor SMTP para o envio de notificações e e-mails do sistema.</p>
@@ -69,10 +69,10 @@
 
             <div class="integration-footer">
                 <button type="submit" name="save_email" class="btn-primary btn-integration-save">
-                    <i class="fas fa-save"></i> Salvar Integração de E-mail
+                    <i data-lucide="save"></i> Salvar Integração de E-mail
                 </button>
                 <button type="button" onclick="sendTestEmail()" class="btn-secondary btn-integration-test">
-                    <i class="fas fa-paper-plane"></i> Enviar E-mail Teste
+                    <i data-lucide="send"></i> Enviar E-mail Teste
                 </button>
             </div>
         </form>
