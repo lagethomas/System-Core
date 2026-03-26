@@ -9,6 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isCollapsed && sidebar) {
         sidebar.classList.add('collapsed');
         document.body.classList.add('sidebar-collapsed');
+        
+        const btn = document.getElementById('sidebar-toggle-btn');
+        if (btn) {
+            btn.innerHTML = '<i data-lucide="arrow-right-from-line"></i>';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
     }
 
     // 2. Initializers
@@ -56,8 +62,16 @@ function toggleSidebarCollapse() {
     const sidebar = document.getElementById('sidebar');
     if (!sidebar) return;
     sidebar.classList.toggle('collapsed');
-    document.body.classList.toggle('sidebar-collapsed');
-    localStorage.setItem('sidebar-collapsed', sidebar.classList.contains('collapsed'));
+    const isCollapsed = sidebar.classList.contains('collapsed');
+    document.body.classList.toggle('sidebar-collapsed', isCollapsed);
+    localStorage.setItem('sidebar-collapsed', isCollapsed);
+
+    // Update Icon (Lucide)
+    const btn = document.getElementById('sidebar-toggle-btn');
+    if (btn) {
+        btn.innerHTML = `<i data-lucide="${isCollapsed ? 'arrow-right-from-line' : 'arrow-left-from-line'}"></i>`;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
 }
 
 function toggleSidebar() {
