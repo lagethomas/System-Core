@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const btn = document.getElementById('sidebar-toggle-btn');
         if (btn) {
-            btn.innerHTML = '<i data-lucide="arrow-right-from-line"></i>';
+            btn.innerHTML = '<i data-lucide="panel-left-open"></i>';
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
     }
@@ -69,7 +69,7 @@ function toggleSidebarCollapse() {
     // Update Icon (Lucide)
     const btn = document.getElementById('sidebar-toggle-btn');
     if (btn) {
-        btn.innerHTML = `<i data-lucide="${isCollapsed ? 'arrow-right-from-line' : 'arrow-left-from-line'}"></i>`;
+        btn.innerHTML = `<i data-lucide="${isCollapsed ? 'panel-left-open' : 'panel-right-close'}"></i>`;
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 }

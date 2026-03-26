@@ -100,7 +100,7 @@ $unread_count = count($unread_notifications);
                     <span><?php echo htmlspecialchars($system_name); ?></span>
                 </a>
                 <button class="sidebar-collapse-toggle" id="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" title="Encolher Menu">
-                    <i data-lucide="arrow-left-from-line"></i>
+                    <i data-lucide="panel-right-close"></i>
                 </button>
             </div>
             <nav class="sidebar-nav">
