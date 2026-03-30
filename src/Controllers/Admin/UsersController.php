@@ -11,10 +11,22 @@ class UsersController extends Controller {
     public function index(): void {
         require_once __DIR__ . '/../../../includes/repositories/UserRepository.php';
         $userRepo = new UserRepository(\App\Core\Database::getInstance());
-        $all_users = $userRepo->getAll();
+        
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $perPage = 10;
+        $search = $_GET['search'] ?? '';
+        $idFilter = isset($_GET['id']) ? (int)$_GET['id'] : null;
+
+        $totalUsers = $userRepo->countAll($search, $idFilter);
+        $all_users = $userRepo->getPaginated($page, $perPage, $search, $idFilter);
+        $totalPages = (int)ceil($totalUsers / $perPage);
 
         $this->render('admin/users', [
-            'all_users' => $all_users
+            'all_users' => $all_users,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalUsers' => $totalUsers,
+            'searchTerm' => $search
         ]);
     }
 

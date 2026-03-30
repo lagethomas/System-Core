@@ -317,3 +317,50 @@ function previewImage(input, previewId, imgClass) {
 </script>
 
 
+
+<script>
+/**
+ * Highlight and scroll to a specific setting if the 'highlight' parameter is present in the URL.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const highlightKey = urlParams.get('highlight');
+    
+    if (highlightKey) {
+        // Try to find the element by name attribute (common for inputs in the settings)
+        const targetElement = document.querySelector(`[name="${highlightKey}"]`);
+        
+        if (targetElement) {
+            // Find the parent wrapper to highlight
+            const wrapper = targetElement.closest('.upload-box-wrapper') || targetElement.parentElement;
+            
+            // Scroll to it
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Add highlight animation/style
+            wrapper.style.transition = 'all 0.5s ease';
+            wrapper.style.boxShadow = '0 0 20px rgba(var(--primary-rgb), 0.5)';
+            wrapper.style.borderColor = 'var(--primary)';
+            wrapper.style.transform = 'scale(1.02)';
+            
+            // Remove highlight after a few seconds
+            setTimeout(() => {
+                wrapper.style.boxShadow = '';
+                wrapper.style.transform = '';
+            }, 3000);
+        }
+    }
+});
+</script>
+
+<style>
+.pulse-preview {
+    animation: pulse-border 1.5s infinite;
+}
+
+@keyframes pulse-border {
+    0% { border-color: var(--border); }
+    50% { border-color: var(--primary); }
+    100% { border-color: var(--border); }
+}
+</style>

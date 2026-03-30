@@ -67,6 +67,8 @@ $unread_count = count($unread_notifications);
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/popups.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/switches.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/badges.css'); ?>">
+    <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/global-search.css'); ?>">
+
     
     <?php 
     // Auto-load page specific CSS from modules
@@ -168,16 +170,17 @@ $unread_count = count($unread_notifications);
 
                 <div class="top-nav-right">
                     <!-- Global Search -->
-                    <div class="global-search-container" id="global-search-container">
-                        <button class="search-expand-btn" id="search-expand-btn" onclick="toggleMobileSearch()" title="Pesquisar">
-                            <i data-lucide="search"></i>
-                        </button>
-                        <i data-lucide="search" class="search-icon desktop-search-icon"></i>
-                        <input type="text" id="global-page-search" placeholder="Buscar nesta página..." oninput="handleSearchInput(this)">
-                        <button class="search-clear-btn" id="search-clear-btn" onclick="clearSearch()" title="Limpar busca">
-                            <i data-lucide="x"></i>
-                        </button>
+                    <div class="global-search-container" id="global-search">
+                        <div class="search-input-wrapper">
+                            <i data-lucide="search" class="search-icon"></i>
+                            <input type="text" id="global-search-input" placeholder="Buscar no sistema..." autocomplete="off">
+                            <kbd class="search-shortcut">/</kbd>
+                        </div>
+                        <div class="global-search-results" id="global-search-results">
+                            <!-- Results inject via JS -->
+                        </div>
                     </div>
+
 
                     <!-- Session Timer (compact, in header) -->
                     <div class="session-timer" id="session-timer" title="Tempo restante de sessão">
@@ -244,6 +247,112 @@ $unread_count = count($unread_notifications);
             <div class="page-content">
 
 <script>
+// ── GLOBAL SEARCH ──────────────────────────────────────────────
+(function() {
+    const searchInput = document.getElementById('global-search-input');
+    const searchResults = document.getElementById('global-search-results');
+    let searchDebounce = null;
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchDebounce);
+            const query = this.value.trim();
+            
+            if (query.length < 2) {
+                searchResults.classList.remove('active');
+                return;
+            }
+
+            searchDebounce = setTimeout(async () => {
+                try {
+                    const res = await fetch(`<?php echo SITE_URL; ?>/api/search?q=${encodeURIComponent(query)}`);
+                    const data = await res.json();
+                    
+                    if (data.results && data.results.length > 0) {
+                        renderSearchResults(data.results);
+                    } else {
+                        searchResults.innerHTML = '<div style="padding: 15px; text-align: center; color: var(--text-muted); font-size: 0.85rem;">Nenhum resultado encontrado.</div>';
+                        searchResults.classList.add('active');
+                    }
+                } catch (err) {
+                    console.error("Erro na busca global:", err);
+                }
+            }, 300);
+        });
+
+        // Keyboard Shortcut (/)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+                e.preventDefault();
+                searchInput.focus();
+            }
+            if (e.key === 'Escape') {
+                searchResults.classList.remove('active');
+                if (document.activeElement === searchInput) searchInput.blur();
+            }
+        });
+
+        // Close on click outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.global-search-container')) {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        // Handle focus to show results if query exists
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim().length >= 2) {
+                searchResults.classList.add('active');
+            }
+        });
+    }
+
+    function renderSearchResults(results) {
+        let html = '';
+        const groups = {};
+
+        results.forEach(item => {
+            if (!groups[item.type]) groups[item.type] = [];
+            groups[item.type].push(item);
+        });
+
+        const typeIcons = {
+            'user': 'user',
+            'log': 'terminal',
+            'setting': 'settings'
+        };
+
+        const typeLabels = {
+            'user': 'Usuários',
+            'log': 'Logs do Sistema',
+            'setting': 'Configurações'
+        };
+
+        for (const type in groups) {
+            html += `<div class="search-result-group">
+                        <div class="search-group-title">${typeLabels[type] || type}</div>
+                        ${groups[type].map(res => `
+                            <a href="${res.url}" class="search-result-item">
+                                <div class="search-result-icon">
+                                    <i data-lucide="${res.icon || typeIcons[type] || 'info'}" class="icon-lucide"></i>
+                                </div>
+                                <div class="search-result-info">
+                                    <span class="result-name">${res.name}</span>
+                                    <span class="result-sub">${res.sub || ''}</span>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>`;
+        }
+
+        searchResults.innerHTML = html;
+        searchResults.classList.add('active');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+})();
+</script>
+
+<script>
 
 // Dropdown de perfil
 document.getElementById('user-profile-trigger').addEventListener('click', function(e) {
@@ -271,16 +380,8 @@ document.addEventListener('click', function() {
 });
 
 function handleLogout(e) {
-    if (window.showDisconnectOverlay) {
-        e.preventDefault();
-        window.showDisconnectOverlay('Encerrando sua sessão com segurança...');
-        setTimeout(() => {
-            window.location.href = e.currentTarget.href;
-        }, 3000);
-    } else {
-        // Fallback if showDisconnectOverlay is not defined
-        window.location.href = e.currentTarget.href;
-    }
+    // Redirect immediately as requested by user
+    window.location.href = e.currentTarget.href;
 }
 
 async function refreshNotifications() {

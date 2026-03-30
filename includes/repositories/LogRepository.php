@@ -56,6 +56,64 @@ class LogRepository {
     }
 
     /**
+     * Get logs with pagination
+     */
+    public function getPaginated(int $page = 1, int $perPage = 20, array $filters = []): array {
+        $offset = ($page - 1) * $perPage;
+        $sql = "SELECT l.*, u.name as user_name 
+                FROM cp_logs l 
+                LEFT JOIN cp_users u ON l.user_id = u.id 
+                WHERE 1=1 ";
+        $params = [];
+
+        if (!empty($filters['start_date'])) {
+            $sql .= " AND l.created_at >= ? ";
+            $params[] = $filters['start_date'] . ' 00:00:00';
+        }
+        if (!empty($filters['end_date'])) {
+            $sql .= " AND l.created_at <= ? ";
+            $params[] = $filters['end_date'] . ' 23:59:59';
+        }
+        if (!empty($filters['action'])) {
+            $sql .= " AND l.action LIKE ? ";
+            $params[] = "%" . $filters['action'] . "%";
+        }
+
+        $sql .= " ORDER BY l.created_at DESC LIMIT ? OFFSET ?";
+        $params[] = $perPage;
+        $params[] = $offset;
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Count total logs for pagination
+     */
+    public function countAll(array $filters = []): int {
+        $sql = "SELECT COUNT(*) FROM cp_logs l WHERE 1=1 ";
+        $params = [];
+
+        if (!empty($filters['start_date'])) {
+            $sql .= " AND l.created_at >= ? ";
+            $params[] = $filters['start_date'] . ' 00:00:00';
+        }
+        if (!empty($filters['end_date'])) {
+            $sql .= " AND l.created_at <= ? ";
+            $params[] = $filters['end_date'] . ' 23:59:59';
+        }
+        if (!empty($filters['action'])) {
+            $sql .= " AND l.action LIKE ? ";
+            $params[] = "%" . $filters['action'] . "%";
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
      * Cleanup logs based on retention settings (Rule 39)
      */
     public function cleanup(int $days, int $limit): void {

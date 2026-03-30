@@ -32,13 +32,21 @@ class LogsController extends Controller {
             'action' => $action_filter
         ];
 
-        $logs = $logRepo->getAll($filters, 500);
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $perPage = 25;
+        
+        $totalLogs = $logRepo->countAll($filters);
+        $logs = $logRepo->getPaginated($page, $perPage, $filters);
+        $totalPages = (int)ceil($totalLogs / $perPage);
 
         $this->render('admin/logs', [
             'logs' => $logs,
             'start_date' => $start_date,
             'end_date' => $end_date,
-            'action_filter' => $action_filter
+            'action_filter' => $action_filter,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalLogs' => $totalLogs
         ]);
     }
 }

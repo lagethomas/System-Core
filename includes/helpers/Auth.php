@@ -326,45 +326,8 @@ class Auth {
     }
 
     private static function serveDisconnectHtml(string $message): void {
-        http_response_code(401);
         $site_url = defined('SITE_URL') ? SITE_URL : '';
-        echo "<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='UTF-8'>
-    <title>Sessão Encerrada</title>
-    <script src='https://unpkg.com/lucide@latest'></script>
-    <link href='https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap' rel='stylesheet'>
-    <style>
-        body { margin: 0; padding: 0; background: #0f1115; font-family: 'Outfit', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .disconnect-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 99999; }
-        .disconnect-card { background: #1a1d24; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 40px; text-align: center; max-width: 400px; width: 90%; color: #fff; box-shadow: 0 20px 40px rgba(0,0,0,0.5); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .disconnect-icon { width: 70px; height: 70px; border-radius: 50%; background: rgba(239, 68, 68, 0.1); color: #ef4444; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-        .disconnect-icon svg { width: 32px; height: 32px; }
-        .disconnect-loader { width: 40px; height: 40px; border: 3px solid rgba(255, 255, 255, 0.1); border-top-color: #ef4444; border-radius: 50%; animation: spin 1s linear infinite; margin: 25px auto 15px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        h3 { font-size: 1.5rem; margin-bottom: 10px; font-weight: 700; margin-top: 0; }
-        p { color: #9ca3af; font-size: 0.95rem; line-height: 1.5; margin: 0; }
-        span { color: #6b7280; font-size: 0.85rem; }
-    </style>
-</head>
-<body>
-    <div class='disconnect-overlay'>
-        <div class='disconnect-card'>
-            <div class='disconnect-icon'><i data-lucide='plug'></i></div>
-            <h3>Sessão Encerrada</h3>
-            <p>{$message}</p>
-            <div class='disconnect-loader'></div>
-            <span>Encerrando sua sessão com segurança...</span>
-        </div>
-    </div>
-    <script>
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-        setTimeout(function() { window.location.href = '{$site_url}/logout'; }, 3500);
-    </script>
-</body>
-</html>";
+        header("Location: {$site_url}/logout");
         exit;
     }
 }

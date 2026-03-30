@@ -74,7 +74,60 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Pagination -->
+    <?php if ($totalPages > 1): ?>
+    <div class="pagination-container">
+        <div class="pagination-info">
+            Mostrando <strong><?php echo count($all_users); ?></strong> de <strong><?php echo (string)$totalUsers; ?></strong> usuários
+        </div>
+        <ul class="pagination-list">
+            <?php if ($currentPage > 1): ?>
+            <li class="pagination-item nav-btn">
+                <a href="?page=<?php echo (string)($currentPage - 1); ?>&search=<?php echo urlencode($searchTerm); ?>" title="Anterior">
+                    <i data-lucide="chevron-left"></i>
+                </a>
+            </li>
+            <?php endif; ?>
+
+            <?php
+            $start = max(1, $currentPage - 2);
+            $end = min($totalPages, $currentPage + 2);
+            
+            if ($start > 1) echo '<li class="pagination-item disabled"><span>...</span></li>';
+            
+            for ($i = $start; $i <= $end; $i++): ?>
+                <li class="pagination-item <?php echo $i === $currentPage ? 'active' : ''; ?>">
+                    <?php if ($i === $currentPage): ?>
+                        <span><?php echo (string)$i; ?></span>
+                    <?php else: ?>
+                        <a href="?page=<?php echo (string)$i; ?>&search=<?php echo urlencode($searchTerm); ?>"><?php echo (string)$i; ?></a>
+                    <?php endif; ?>
+                </li>
+            <?php endfor; ?>
+
+            <?php if ($end < $totalPages) echo '<li class="pagination-item disabled"><span>...</span></li>'; ?>
+
+            <?php if ($currentPage < $totalPages): ?>
+            <li class="pagination-item nav-btn">
+                <a href="?page=<?php echo (string)($currentPage + 1); ?>&search=<?php echo urlencode($searchTerm); ?>" title="Próxima">
+                    <i data-lucide="chevron-right"></i>
+                </a>
+            </li>
+            <?php endif; ?>
+        </ul>
+    </div>
+    <?php endif; ?>
 </div>
+
+<style>
+.user-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+</style>
 
 <script>
 function openUserModal(data = null) {

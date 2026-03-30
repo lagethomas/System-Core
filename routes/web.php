@@ -34,7 +34,9 @@ $router->add('POST', '/admin/settings', ['controller' => 'Admin\\SettingsControl
 $router->add('GET', '/settings', ['controller' => 'Admin\\SettingsController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);
 $router->add('POST', '/settings', ['controller' => 'Admin\\SettingsController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);
 
+$router->add('GET', '/api/search', ['controller' => 'SearchController', 'method' => 'globalSearch', 'middlewares' => [$auth]]);
 $router->add('POST', '/api/notifications/read/{id}', ['controller' => 'NotificationController', 'method' => 'read', 'middlewares' => [$auth]]);
+
 $router->add('POST', '/api/notifications/read_all', ['controller' => 'NotificationController', 'method' => 'readAll', 'middlewares' => [$auth]]);
 $router->add('GET', '/api/notifications/unread', ['controller' => 'NotificationController', 'method' => 'unread', 'middlewares' => [$auth]]);
 $router->add('GET', '/api/notifications/clear_all', ['controller' => 'NotificationController', 'method' => 'clearAll', 'middlewares' => [$auth]]);

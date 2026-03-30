@@ -2194,3 +2194,62 @@ input:checked+.slider:before {
 .bg-warning {
     background-color: #f59e0b !important;
 }
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+}
+
+.pagination-info {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.pagination-list {
+    display: flex;
+    list-style: none;
+    gap: 8px;
+}
+
+.pagination-item a, .pagination-item span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.pagination-item a:hover {
+    background: rgba(var(--primary-rgb), 0.1);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.pagination-item.active span {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--black);
+}
+
+.pagination-item.disabled span {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-item.nav-btn i {
+    width: 16px;
+    height: 16px;
+}

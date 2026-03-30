@@ -263,19 +263,6 @@ const SessionManager = (() => {
    DISCONNECT OVERLAY
    ═══════════════════════════════════════════════════════ */
 window.showDisconnectOverlay = function(message) {
-    const overlay = document.createElement('div');
-    overlay.className = 'disconnect-overlay';
-    overlay.innerHTML = `
-        <div class="disconnect-card">
-            <div class="disconnect-icon"><i data-lucide="plug"></i></div>
-            <h3>Sessão Encerrada</h3>
-            <p>${message}</p>
-            <div class="disconnect-loader"></div>
-            <span>Encerrando sua sessão com segurança...</span>
-        </div>
-    `;
-    document.body.appendChild(overlay);
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-    setTimeout(() => overlay.classList.add('active'), 10);
-    setTimeout(() => { window.location.href = '/logout'; }, 3500);
+    // Redirect immediately as requested by user - removing animations
+    window.location.href = '/logout';
 };

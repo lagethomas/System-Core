@@ -53,6 +53,55 @@ class UserRepository {
     }
 
     /**
+     * Get users with pagination
+     */
+    public function getPaginated(int $page = 1, int $perPage = 10, string $search = '', ?int $idFilter = null): array {
+        $offset = ($page - 1) * $perPage;
+        $sql = "SELECT u.*, creator.name as creator_name
+                FROM cp_users u 
+                LEFT JOIN cp_users creator ON u.created_by = creator.id WHERE 1=1 ";
+        $params = [];
+
+        if ($idFilter) {
+            $sql .= " AND u.id = ? ";
+            $params[] = $idFilter;
+        } elseif ($search) {
+            $sql .= " AND (u.name LIKE ? OR u.email LIKE ? OR u.username LIKE ? OR u.phone LIKE ?) ";
+            $s = "%$search%";
+            $params = [$s, $s, $s, $s];
+        }
+
+        $sql .= " ORDER BY u.name ASC LIMIT ? OFFSET ?";
+        $params[] = $perPage;
+        $params[] = $offset;
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Count total users for pagination
+     */
+    public function countAll(string $search = '', ?int $idFilter = null): int {
+        $sql = "SELECT COUNT(*) FROM cp_users u WHERE 1=1 ";
+        $params = [];
+
+        if ($idFilter) {
+            $sql .= " AND u.id = ? ";
+            $params[] = $idFilter;
+        } elseif ($search) {
+            $sql .= " AND (u.name LIKE ? OR u.email LIKE ? OR u.username LIKE ? OR u.phone LIKE ?) ";
+            $s = "%$search%";
+            $params = [$s, $s, $s, $s];
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
      * Save or update a user
      */
     public function save(array $data): bool {
