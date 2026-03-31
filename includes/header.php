@@ -60,6 +60,7 @@ $unread_count = count($unread_notifications);
     <title><?php echo htmlspecialchars(($page_titles[$current_page] ?? 'Início') . ' | ' . ($system_name ?? 'SaaSFlow')); ?></title>
     
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/style.css'); ?>">
+    <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/app-premium.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/theme/' . $theme_slug . '.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/notifications.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/page-content.css'); ?>">

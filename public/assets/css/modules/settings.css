@@ -1,9 +1,11 @@
 /* Settings Module CSS */
 
 .settings-main-card {
-    border-radius: 16px;
+    border-radius: 20px;
     border: 1px solid rgba(var(--primary-rgb), 0.1);
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    background: var(--bg-card);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .settings-header-box {
@@ -42,8 +44,8 @@
 .upload-box-wrapper {
     background: var(--bg-card);
     border: 2px dashed rgba(var(--primary-rgb), 0.15);
-    border-radius: 12px;
-    transition: all 0.3s ease;
+    border-radius: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     height: 100%;
     padding: 30px !important;
     display: flex;
@@ -261,7 +263,7 @@
 .theme-card-ui {
     background: rgba(var(--primary-rgb), 0.03);
     border: 1px solid rgba(var(--primary-rgb), 0.1);
-    border-radius: 14px;
+    border-radius: 20px;
     padding: 12px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
