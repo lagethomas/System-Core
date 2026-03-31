@@ -54,25 +54,25 @@
                 <!-- Logo Card -->
                 <div class="upload-box-wrapper p-3">
                     <label class="upload-label"><i data-lucide="image"></i> Logo</label>
-                    <div class="upload-flex-container">
-                        <div id="preview-logo" class="upload-preview-box">
+                    <div class="upload-clickable-container">
+                        <div id="preview-logo" class="upload-preview-box upload-clickable" onclick="document.getElementById('logo-upload').click()" title="Clique para selecionar imagem">
                             <?php if (!empty($settings['system_logo'])): ?>
                                 <img src="<?php echo SITE_URL; ?>/uploads/logos/<?php echo $settings['system_logo']; ?>" alt="Logo" class="logo-img">
                             <?php else: ?>
-                                <i data-lucide="layers"></i>
+                                <i data-lucide="upload" class="upload-placeholder-icon"></i>
+                                <span class="upload-placeholder-text">Clique para enviar</span>
                             <?php endif; ?>
+                            <div class="upload-hover-overlay">
+                                <i data-lucide="upload"></i>
+                                <span>Alterar</span>
+                            </div>
                         </div>
-                        <div class="upload-actions-flex">
-                            <label for="logo-upload" class="btn-primary btn-upload-sm mb-0 cursor-pointer">
-                                <i data-lucide="upload"></i> Upload
-                                <input type="file" id="logo-upload" name="system_logo" onchange="previewImage(this, 'preview-logo', 'logo-img')" style="display: none;">
-                            </label>
-                            <?php if (!empty($settings['system_logo'])): ?>
-                                <button type="submit" name="remove_logo" value="1" class="btn-danger btn-delete-sm">
-                                    <i data-lucide="trash-2"></i>
-                                </button>
-                            <?php endif; ?>
-                        </div>
+                        <input type="file" id="logo-upload" name="system_logo" accept="image/*" onchange="previewImage(this, 'preview-logo', 'logo-img')" style="display: none;">
+                        <?php if (!empty($settings['system_logo'])): ?>
+                            <button type="submit" name="remove_logo" value="1" class="btn-danger upload-delete-overlay" title="Remover logo" onclick="event.stopPropagation()">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        <?php endif; ?>
                     </div>
                     <small class="text-muted d-block mt-auto pt-2">Imagem exibida no menu lateral.</small>
                 </div>
@@ -80,25 +80,25 @@
                 <!-- Background Card -->
                 <div class="upload-box-wrapper p-3">
                     <label class="upload-label"><i data-lucide="monitor"></i> Background</label>
-                    <div class="upload-flex-container">
-                        <div id="preview-bg" class="upload-preview-box">
+                    <div class="upload-clickable-container">
+                        <div id="preview-bg" class="upload-preview-box upload-clickable" onclick="document.getElementById('bg-upload').click()" title="Clique para selecionar imagem">
                             <?php if (!empty($settings['login_background'])): ?>
                                 <img src="<?php echo SITE_URL; ?>/uploads/backgrounds/<?php echo $settings['login_background']; ?>" alt="BG" class="bg-img">
                             <?php else: ?>
-                                <i data-lucide="image"></i>
+                                <i data-lucide="upload" class="upload-placeholder-icon"></i>
+                                <span class="upload-placeholder-text">Clique para enviar</span>
                             <?php endif; ?>
+                            <div class="upload-hover-overlay">
+                                <i data-lucide="upload"></i>
+                                <span>Alterar</span>
+                            </div>
                         </div>
-                        <div class="upload-actions-flex">
-                            <label for="bg-upload" class="btn-primary btn-upload-sm mb-0 cursor-pointer">
-                                <i data-lucide="upload"></i> Upload
-                                <input type="file" id="bg-upload" name="login_background" onchange="previewImage(this, 'preview-bg', 'bg-img')" style="display: none;">
-                            </label>
-                            <?php if (!empty($settings['login_background'])): ?>
-                                <button type="submit" name="remove_login_bg" value="1" class="btn-danger btn-delete-sm">
-                                    <i data-lucide="trash-2"></i>
-                                </button>
-                            <?php endif; ?>
-                        </div>
+                        <input type="file" id="bg-upload" name="login_background" accept="image/*" onchange="previewImage(this, 'preview-bg', 'bg-img')" style="display: none;">
+                        <?php if (!empty($settings['login_background'])): ?>
+                            <button type="submit" name="remove_login_bg" value="1" class="btn-danger upload-delete-overlay" title="Remover background" onclick="event.stopPropagation()">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        <?php endif; ?>
                     </div>
                     <small class="text-muted d-block mt-auto pt-2">Imagem de fundo da tela de login.</small>
                 </div>
@@ -291,15 +291,36 @@ function previewImage(input, previewId, imgClass) {
         const reader = new FileReader();
 
         reader.onload = function(e) {
+            // Clear placeholder icons and text, keep overlay
+            const placeholderIcon = preview.querySelector('.upload-placeholder-icon');
+            const placeholderText = preview.querySelector('.upload-placeholder-text');
+            if (placeholderIcon) placeholderIcon.remove();
+            if (placeholderText) placeholderText.remove();
+
             // Clear or update existing img
             let img = preview.querySelector('img');
             if (!img) {
-                preview.innerHTML = '';
                 img = document.createElement('img');
                 img.className = imgClass;
-                preview.appendChild(img);
+                // Insert before the overlay
+                const overlay = preview.querySelector('.upload-hover-overlay');
+                if (overlay) {
+                    preview.insertBefore(img, overlay);
+                } else {
+                    preview.appendChild(img);
+                }
             }
             img.src = e.target.result;
+            
+            // Ensure hover overlay exists
+            let overlay = preview.querySelector('.upload-hover-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'upload-hover-overlay';
+                overlay.innerHTML = '<i data-lucide="upload"></i><span>Alterar</span>';
+                preview.appendChild(overlay);
+                if (window.lucide) lucide.createIcons();
+            }
             
             // Visual feedback
             preview.style.borderColor = 'var(--primary)';
