@@ -161,7 +161,7 @@ body {
 }
 
 .sidebar-header {
-    padding: 30px 24px;
+    padding: 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -196,7 +196,7 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     color: var(--primary);
     text-decoration: none;
@@ -313,18 +313,21 @@ body {
 }
 
 .sidebar-logo-icon {
-    width: 32px;
-    height: 32px;
-    background: var(--primary);
-    border-radius: 8px;
+    width: 42px;
+    height: 42px;
+    background: transparent;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 10px;
+    overflow: hidden;
 }
 
 .sidebar-logo-icon i {
-    color: #000;
+    color: var(--primary);
+    width: 24px;
+    height: 24px;
 }
 
 .sidebar-user-dropdown {

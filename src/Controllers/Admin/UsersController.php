@@ -180,7 +180,7 @@ class UsersController extends Controller {
             
             // Update user password (Hashed according to security standards)
             \App\Core\Database::update('cp_users', [
-                'password' => password_hash($tempPassword, PASSWORD_DEFAULT)
+                'password' => password_hash($tempPassword, PASSWORD_ARGON2ID)
             ], 'id = :where_id', ['where_id' => $id]);
 
             // Load site name for the email

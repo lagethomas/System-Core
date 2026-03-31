@@ -120,14 +120,7 @@
     <?php endif; ?>
 </div>
 
-<style>
-.user-list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-</style>
+
 
 <script>
 function openUserModal(data = null) {
@@ -247,7 +240,10 @@ async function sendAccess(id) {
 
 async function deleteUser(id) {
     if (await UI.confirm('Deseja realmente remover este usuário?')) {
-        const res = await UI.request('<?php echo SITE_URL; ?>/api/admin/users/delete', { id });
+        const formData = new FormData();
+        formData.append('id', id);
+        
+        const res = await UI.request('<?php echo SITE_URL; ?>/api/admin/users/delete', formData);
         if (res && res.success) {
             UI.showToast('Usuário removido');
             window.location.reload();

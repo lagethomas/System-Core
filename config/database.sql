@@ -1,4 +1,7 @@
--- Core System Database Schema
+-- SaaSFlow Core - Complete Database Schema
+-- Updated with all migrations and indexes
+-- Standard password hash algorithm: Argon2id (Rule 19)
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -55,6 +58,9 @@ CREATE TABLE IF NOT EXISTS `cp_logs` (
   KEY `idx_action` (`action`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- ----------------------------
+-- Table structure for cp_notifications
+-- ----------------------------
 CREATE TABLE IF NOT EXISTS `cp_notifications` (
     `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
     `user_id` INT(11) NOT NULL,
@@ -103,13 +109,22 @@ CREATE TABLE IF NOT EXISTS `cp_email_confirmations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
--- Initial Data
--- admin/admin123
+-- Table structure for cp_migrations (Internal tracker)
 -- ----------------------------
-INSERT INTO `cp_users` (`name`, `username`, `email`, `password`, `role`) VALUES 
-('Administrador', 'admin', 'admin@admin.com', '$2y$12$P3WwePwHVEpmLvd4MSxVmuHwLFdmeMRKVNxUOrpT1IWs0YIyNbZBG', 'administrador'); -- Pwd: password
+CREATE TABLE IF NOT EXISTS `cp_migrations` (
+    `migration_id` INT PRIMARY KEY,
+    `title` VARCHAR(255),
+    `executed_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `cp_settings` (`setting_key`, `setting_value`) VALUES 
+-- ----------------------------
+-- Initial Data
+-- admin / admin123
+-- ----------------------------
+INSERT IGNORE INTO `cp_users` (`name`, `username`, `email`, `password`, `role`) VALUES 
+('Administrador', 'admin', 'admin@admin.com', '$argon2id$v=19$m=65536,t=4,p=1$ekx3REpPWWx4M1QyTjVROA$vG0tQ6G0fRzX2m7w9P8uXQ', 'administrador');
+
+INSERT IGNORE INTO `cp_settings` (`setting_key`, `setting_value`) VALUES 
 ('system_theme', 'gold-black'),
 ('system_name', 'Core'),
 ('smtp_host', 'localhost'),
@@ -119,12 +134,19 @@ INSERT INTO `cp_settings` (`setting_key`, `setting_value`) VALUES
 ('security_max_attempts', '5'),
 ('security_lockout_time', '15'),
 ('security_single_session', '1'),
-('security_strong_password', '0'),
+('security_strong_password', '1'),
 ('security_session_timeout', '120'),
 ('security_ip_lockout', '0'),
 ('security_log_days', '30'),
 ('security_log_limit', '10000'),
 ('system_logo', NULL),
 ('login_background', NULL);
+
+-- Record that migrations up to #004 are part of base schema
+INSERT IGNORE INTO `cp_migrations` (`migration_id`, `title`) VALUES 
+(1, 'Add single session support to users table'),
+(2, 'Add security configuration settings'),
+(3, 'Add heartbeat for single session enforcement'),
+(4, 'Add Visual Theme settings');
 
 SET FOREIGN_KEY_CHECKS = 1;

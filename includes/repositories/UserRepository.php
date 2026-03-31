@@ -123,7 +123,7 @@ class UserRepository {
             
             if (!empty($data['password'])) {
                 $sql .= ", password = ?";
-                $params[] = password_hash($data['password'], PASSWORD_DEFAULT);
+                $params[] = password_hash($data['password'], PASSWORD_ARGON2ID);
             }
             
             $sql .= " WHERE id = ?";
@@ -134,7 +134,7 @@ class UserRepository {
                 $data['name'], 
                 $data['username'],
                 $data['email'], 
-                password_hash($data['password'], PASSWORD_DEFAULT), 
+                password_hash($data['password'], PASSWORD_ARGON2ID), 
                 $data['role'], 
                 $data['created_by'] ?? null,
                 $data['city'] ?? null,

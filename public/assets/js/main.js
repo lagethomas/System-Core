@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const btn = document.getElementById('sidebar-toggle-btn');
         if (btn) {
-            btn.innerHTML = '<i data-lucide="panel-left-open"></i>';
+            btn.innerHTML = '<i data-lucide="chevrons-right"></i>';
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
     }
@@ -69,7 +69,7 @@ function toggleSidebarCollapse() {
     // Update Icon (Lucide)
     const btn = document.getElementById('sidebar-toggle-btn');
     if (btn) {
-        btn.innerHTML = `<i data-lucide="${isCollapsed ? 'panel-left-open' : 'panel-right-close'}"></i>`;
+        btn.innerHTML = `<i data-lucide="${isCollapsed ? 'chevrons-right' : 'chevrons-left'}"></i>`;
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 }
@@ -119,7 +119,7 @@ document.addEventListener('click', (e) => {
 function handleSearchInput(input) {
     const container = document.getElementById('global-search-container');
     if (container) container.classList.toggle('has-value', input.value.length > 0);
-    if (typeof UI !== 'undefined') UI.searchOnPage(input.value);
+    if (typeof UI !== 'undefined') UI.handleGlobalSearch(input.value);
 }
 
 function clearSearch() {
@@ -127,7 +127,7 @@ function clearSearch() {
     const container = document.getElementById('global-search-container');
     if (input)     { input.value = ''; }
     if (container) { container.classList.remove('has-value'); }
-    if (typeof UI !== 'undefined') UI.searchOnPage('');
+    if (typeof UI !== 'undefined') UI.handleGlobalSearch('');
 }
 
 /* ═══════════════════════════════════════════════════════

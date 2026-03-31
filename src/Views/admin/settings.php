@@ -374,14 +374,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<style>
-.pulse-preview {
-    animation: pulse-border 1.5s infinite;
-}
 
-@keyframes pulse-border {
-    0% { border-color: var(--border); }
-    50% { border-color: var(--primary); }
-    100% { border-color: var(--border); }
-}
-</style>
