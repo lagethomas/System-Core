@@ -1982,6 +1982,72 @@ input:checked+.slider:before {
     padding-right: 3rem !important;
 }
 
+.pr-10 {
+    padding-right: 3.5rem !important;
+}
+
+.pl-10 {
+    padding-left: 3.5rem !important;
+}
+
+.pr-20 {
+    padding-right: 5rem !important;
+}
+
+/* Input with icons */
+.input-with-icon-left {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--text-muted);
+    font-size: 16px;
+    pointer-events: none;
+    z-index: 5;
+    transition: var(--transition);
+}
+
+.form-control:focus + .input-icon,
+.form-control:focus ~ .input-icon {
+    color: var(--primary);
+}
+
+/* Password Toggle Standard (Rule 35) */
+.password-toggle-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.btn-password-toggle {
+    position: absolute;
+    right: 14px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    z-index: 10;
+}
+
+.btn-password-toggle:hover {
+    color: var(--primary);
+}
+
+.btn-password-toggle i {
+    width: 18px !important;
+    height: 18px !important;
+}
+
 .btn-generate-password {
     position: absolute;
     right: 10px;
@@ -1991,8 +2057,17 @@ input:checked+.slider:before {
     border: none;
     color: var(--primary);
     cursor: pointer;
-    font-size: 16px;
-    padding: 5px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    border-radius: 6px;
+}
+
+.btn-generate-password:hover {
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary-light);
 }
 
 .btn-generate-password:hover {

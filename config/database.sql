@@ -135,7 +135,7 @@ INSERT IGNORE INTO `cp_settings` (`setting_key`, `setting_value`) VALUES
 ('security_lockout_time', '15'),
 ('security_single_session', '1'),
 ('security_strong_password', '1'),
-('security_session_timeout', '120'),
+('security_session_timeout', '30'),
 ('security_ip_lockout', '0'),
 ('security_log_days', '30'),
 ('security_log_limit', '10000'),
@@ -147,6 +147,8 @@ INSERT IGNORE INTO `cp_migrations` (`migration_id`, `title`) VALUES
 (1, 'Add single session support to users table'),
 (2, 'Add security configuration settings'),
 (3, 'Add heartbeat for single session enforcement'),
-(4, 'Add Visual Theme settings');
+(4, 'Add Visual Theme settings'),
+(5, 'Add Email Confirmations Table'),
+(6, 'Add Security Infrastructure (Login Attempts & Blocked IPs)');
 
 SET FOREIGN_KEY_CHECKS = 1;
