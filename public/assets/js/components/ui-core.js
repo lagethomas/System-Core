@@ -213,7 +213,6 @@ const UI = {
     initPasswordToggles() {
         document.querySelectorAll('input[type="password"]').forEach(input => {
             if (input.dataset.toggleInit) return;
-            input.dataset.toggleInit = 'true';
             
             let wrapper = input.parentElement;
             if (!wrapper.classList.contains('password-toggle-wrapper')) {
@@ -223,15 +222,23 @@ const UI = {
                 wrapper.appendChild(input);
             }
             
+            // Avoid duplicates if a button already exists (Rule 35)
+            if (wrapper.querySelector('.btn-password-toggle') || wrapper.querySelector('.password-toggle-btn')) {
+                input.dataset.toggleInit = 'true';
+                return;
+            }
+
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = 'password-toggle-btn';
+            btn.className = 'btn-password-toggle'; // Adjusted class to match auth.css
             btn.innerHTML = '<i data-lucide="lock"></i>';
             if (!input.id) input.id = 'pwd-' + Math.random().toString(36).substr(2, 9);
             btn.onclick = (e) => { e.preventDefault(); this.togglePassword(btn, input.id); };
             wrapper.appendChild(btn);
             
-            const genBtn = wrapper.parentElement.querySelector('.btn-generate-password');
+            input.dataset.toggleInit = 'true';
+
+            const genBtn = wrapper.parentElement ? wrapper.parentElement.querySelector('.btn-generate-password') : null;
             if (genBtn) {
                 wrapper.appendChild(genBtn);
                 btn.style.right = '40px'; 

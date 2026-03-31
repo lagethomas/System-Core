@@ -17,7 +17,7 @@
 
 .search-input-wrapper:focus-within {
     background: rgba(255, 255, 255, 0.08);
-    border-color: var(--accent-main, #f59e0b);
+    border-color: var(--primary, #f59e0b);
     box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
 }
 
@@ -107,7 +107,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--accent-main, #f59e0b);
+    color: var(--primary, #f59e0b);
 }
 
 .search-result-info {

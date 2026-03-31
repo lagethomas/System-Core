@@ -3,33 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - <?php echo $system_name; ?></title>
+    <title>Login | <?php echo $system_name; ?></title>
+    
+    <!-- Rule 34: CSS External Stylesheets -->
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=<?php echo $v; ?>">
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/modules/auth.css?v=<?php echo $v; ?>">
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/theme/<?php echo $theme_slug; ?>.css?v=<?php echo $v; ?>">
+    
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="<?php echo SITE_URL; ?>/assets/img/icon-192.png">
 
+    <!-- Dynamic Theme-Aware Background (Rule 34: Minimal Dynamic Handling via Style Tag) -->
+    <?php if (!empty($settings['login_background'])): ?>
     <style>
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to   { opacity: 1; transform: translateY(0); }
+        body.auth-wrapper.has-bg {
+            background-image: url('<?php echo SITE_URL; ?>/uploads/backgrounds/<?php echo $settings['login_background']; ?>');
         }
     </style>
-</head>
-<body class="auth-wrapper" <?php if (!empty($settings['login_background'])): ?> style="background: url('<?php echo SITE_URL; ?>/uploads/backgrounds/<?php echo $settings['login_background']; ?>') no-repeat center center fixed; background-size: cover;" <?php endif; ?>>
-    
-    <?php if (!empty($settings['login_background'])): ?>
-        <div class="auth-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 0;"></div>
     <?php endif; ?>
 
-    <div class="auth-card" style="position: relative; z-index: 1; <?php echo !empty($settings['login_background']) ? 'backdrop-filter: blur(12px); background: rgba(15, 17, 21, 0.85); border: 1px solid rgba(255,255,255,0.1); shadow: 0 25px 50px rgba(0,0,0,0.5);' : ''; ?>">
+    <!-- Rule 96: SweetAlert2 (Must be before UI helpers) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Rule 36: Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="auth-wrapper <?php echo !empty($settings['login_background']) ? 'has-bg' : ''; ?>">
+    
+    <?php if (!empty($settings['login_background'])): ?>
+        <div class="auth-overlay"></div>
+    <?php endif; ?>
+
+    <div class="auth-card <?php echo !empty($settings['login_background']) ? 'glassmorphism' : ''; ?>">
         <div class="auth-header">
             <div class="auth-logo-box">
                 <?php if (!empty($settings['system_logo'])): ?>
-                    <img src="<?php echo SITE_URL; ?>/uploads/logos/<?php echo $settings['system_logo']; ?>" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                    <img src="<?php echo SITE_URL; ?>/uploads/logos/<?php echo $settings['system_logo']; ?>" alt="Logo">
                 <?php else: ?>
-                    <i data-lucide="layers"></i>
+                    <i data-lucide="shield" class="icon-xl"></i>
                 <?php endif; ?>
             </div>
             <h2 class="auth-title"><?php echo $system_name; ?></h2>
@@ -38,7 +49,8 @@
 
         <?php if (!empty($error)): ?>
             <div class="alert-error">
-                <i data-lucide="alert-circle"></i> <?php echo htmlspecialchars($error); ?>
+                <i data-lucide="alert-circle"></i> 
+                <span><?php echo htmlspecialchars($error); ?></span>
             </div>
         <?php endif; ?>
 
@@ -53,9 +65,14 @@
 
             <div class="form-group mt-3">
                 <label class="auth-label">Senha</label>
-                <input type="password" name="password" class="form-control" 
-                       value="<?php echo htmlspecialchars($pre_password ?? ''); ?>"
-                       placeholder="Sua senha" required>
+                <div class="password-toggle-wrapper">
+                    <input type="password" name="password" id="password" class="form-control pr-10" 
+                           value="<?php echo htmlspecialchars($pre_password ?? ''); ?>"
+                           placeholder="Sua senha" required>
+                    <button type="button" class="btn-password-toggle" onclick="UI.togglePassword(this, 'password')">
+                        <i data-lucide="lock"></i>
+                    </button>
+                </div>
             </div>
 
             <button type="submit" class="btn-primary btn-block mt-4" id="btnLogin">
@@ -66,40 +83,56 @@
             </button>
 
             <?php if ($warn_session): ?>
-                <div class="alert-session-bottom" style="margin-top: 20px; padding: 12px; background: rgba(220, 38, 38, 0.1); border-radius: 8px; border: 1px solid rgba(220, 38, 38, 0.2); color: #ef4444; font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px; animation: slideIn 0.3s ease;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i data-lucide="user-x" style="font-size: 1.1rem;"></i>
+                <div class="alert-session-bottom">
+                    <div class="alert-header">
+                        <i data-lucide="shield-alert"></i>
                         <span>Você já possui uma sessão ativa. Se deseja encerrá-la e entrar neste dispositivo:</span>
                     </div>
-                    <button type="submit" name="force_login" value="1" class="btn-danger btn-block" style="background: #ef4444; border: none; color: white; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s;">
-                        <i data-lucide="log-in" class="mr-2"></i> Encerrar outra sessão e entrar aqui
+                    <button type="submit" name="force_login" value="1" class="btn-danger-soft">
+                         <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i data-lucide="log-in" style="width: 16px; height: 16px;"></i> 
+                            Encerrar outra sessão e entrar aqui
+                         </span>
                     </button>
                 </div>
             <?php endif; ?>
         </form>
     </div>
 
-    <script src="<?php echo SITE_URL; ?>/assets/js/components/ui-core.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Rule 34: Javascript External Helpers -->
+    <script src="<?php echo SITE_URL; ?>/assets/js/components/ui-core.js?v=<?php echo $v; ?>"></script>
+    
     <script>
-        if (typeof UI !== 'undefined') UI.initPasswordToggles();
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+        // Initialize UI Elements
+        document.addEventListener('DOMContentLoaded', () => {
+            // Rule 36: Lucide Init
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
 
-        function lockBtn(formId, btnId) {
-            const form = document.getElementById(formId);
-            if (!form) return;
-            form.addEventListener('submit', function() {
-                const btn = document.getElementById(btnId);
-                if (!btn) return;
-                btn.disabled = true;
-                const text   = btn.querySelector('.btn-text');
-                const loader = btn.querySelector('.btn-loader');
-                if (text)   text.style.display  = 'none';
-                if (loader) { loader.style.display = 'flex'; loader.style.alignItems = 'center'; }
-            });
-        }
+            // Rule 97: Global Notifications via UI Core
+            <?php if (!empty($error)): ?>
+            if (typeof window.notify === 'function') {
+                window.notify("<?php echo addslashes($error); ?>", "error");
+            }
+            <?php endif; ?>
+        });
 
-        lockBtn('loginForm', 'btnLogin');
+        // Rule 35: Form Interactivity
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const btn = document.getElementById('btnLogin');
+            const btnText = btn.querySelector('.btn-text');
+            const btnLoader = btn.querySelector('.btn-loader');
+            
+            // Avoid multiple submits
+            btn.disabled = true;
+            if (btnText) btnText.style.display = 'none';
+            if (btnLoader) {
+                btnLoader.style.display = 'flex';
+                btnLoader.style.alignItems = 'center';
+                btnLoader.style.justifyContent = 'center';
+            }
+        });
     </script>
 </body>
 </html>

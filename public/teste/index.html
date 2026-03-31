@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Hunter Pro - Thomas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); }
+        .shimmer { background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-slate-200 min-h-screen">
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">
+                    Lead Hunter Pro
+                </h1>
+                <p class="text-slate-500 text-sm">Sistema de prospecção estratégica para Thomas Henrique</p>
+            </div>
+            <div id="statsCounter" class="hidden flex items-center gap-4 bg-slate-800/50 border border-slate-700 px-6 py-3 rounded-2xl">
+                <span class="text-slate-400 text-xs uppercase tracking-widest font-bold">Leads Encontrados:</span>
+                <span id="countValue" class="text-2xl font-black text-blue-400">0</span>
+            </div>
+        </div>
+
+        <div class="glass border border-slate-700/50 p-2 rounded-2xl shadow-2xl mb-8 flex flex-col md:flex-row gap-2">
+            <input type="text" id="keyword" 
+                placeholder="Ex: Clínicas de Estética em São José dos Campos"
+                class="flex-1 bg-transparent border-none p-4 focus:ring-0 text-white placeholder-slate-500 text-lg">
+            <button onclick="startScrape()" 
+                class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-12 rounded-xl transition-all shadow-lg shadow-blue-900/40 hover:-translate-y-0.5 active:translate-y-0">
+                Extrair Leads
+            </button>
+        </div>
+
+        <div class="glass border border-slate-700/50 rounded-2xl overflow-hidden shadow-2xl">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="bg-slate-800/80 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-700">
+                            <th class="p-5">Empresa</th>
+                            <th class="p-5">Reputação</th>
+                            <th class="p-5">Contato</th>
+                            <th class="p-5 text-right">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTable" class="divide-y divide-slate-800">
+                        <tr>
+                            <td colspan="4" class="p-20 text-center text-slate-600">
+                                <svg class="w-12 h-12 mx-auto mb-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                Pronto para iniciar uma nova busca de leads.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function startScrape() {
+            const keyword = document.getElementById('keyword').value.trim();
+            const table = document.getElementById('resultsTable');
+            const stats = document.getElementById('statsCounter');
+            const count = document.getElementById('countValue');
+
+            if (!keyword) return alert("Thomas, defina o nicho e a localização.");
+
+            // UI Reset & Loading State
+            stats.classList.add('hidden');
+            table.innerHTML = Array(5).fill(0).map(() => `
+                <tr>
+                    <td class="p-5"><div class="h-6 shimmer rounded w-3/4"></div></td>
+                    <td class="p-5"><div class="h-6 shimmer rounded w-1/2"></div></td>
+                    <td class="p-5"><div class="h-6 shimmer rounded w-1/3"></div></td>
+                    <td class="p-5"><div class="h-8 shimmer rounded w-20 ml-auto"></div></td>
+                </tr>
+            `).join('');
+
+            try {
+                const response = await fetch('scrape.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ keyword })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || "Erro no servidor");
+
+                // Update Stats
+                stats.classList.remove('hidden');
+                count.innerText = data.length;
+
+                renderResults(data);
+            } catch (err) {
+                table.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-red-500 bg-red-500/5">${err.message}</td></tr>`;
+            }
+        }
+
+        function renderResults(leads) {
+            const table = document.getElementById('resultsTable');
+            if (leads.length === 0) {
+                table.innerHTML = '<tr><td colspan="4" class="p-20 text-center text-slate-500 font-medium">Nenhum resultado para os critérios informados.</td></tr>';
+                return;
+            }
+
+            table.innerHTML = leads.map(lead => `
+                <tr class="hover:bg-blue-500/5 transition-colors group">
+                    <td class="p-5">
+                        <div class="font-bold text-white group-hover:text-blue-400 transition-colors">${lead.nome}</div>
+                        <div class="text-[10px] text-slate-500 mt-1 uppercase font-bold tracking-tighter">Google Maps Result</div>
+                    </td>
+                    <td class="p-5">
+                        <div class="flex items-center gap-2">
+                            <span class="text-amber-400 font-bold text-sm">${lead.rating}</span>
+                            <div class="flex text-[8px] text-amber-500/50">★★★★★</div>
+                            <span class="text-slate-500 text-[10px]">(${lead.reviews})</span>
+                        </div>
+                    </td>
+                    <td class="p-5">
+                        <div class="text-sm font-medium text-slate-300">${lead.telefone}</div>
+                        <div class="text-[10px] text-blue-500/60 font-semibold cursor-help underline decoration-dotted">E-mail: ${lead.email}</div>
+                    </td>
+                    <td class="p-5 text-right">
+                        <a href="${lead.link}" target="_blank" 
+                           class="inline-flex items-center justify-center bg-slate-700 hover:bg-blue-600 text-white text-[10px] font-black px-4 py-2 rounded-lg transition-all active:scale-90">
+                           MAPS
+                        </a>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

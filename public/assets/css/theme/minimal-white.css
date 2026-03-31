@@ -31,6 +31,11 @@
 
     /* Effects */
     --calendar-filter: none;
+
+    /* Auth Overrides */
+    --auth-card-bg: rgba(255, 255, 255, 0.95);
+    --auth-card-border: #e2e8f0;
+    --auth-overlay-bg: rgba(255, 255, 255, 0.4);
 }
 
 /* Specific overrides for light theme contrast */

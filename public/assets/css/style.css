@@ -1782,7 +1782,7 @@ select.form-control option {
     width: 14px;
     left: 2px;
     bottom: 2px;
-    background-color: white;
+    background-color: var(--primary);
     transition: .4s;
     border-radius: 50%;
 }
@@ -1794,7 +1794,7 @@ input:checked+.slider {
 
 input:checked+.slider:before {
     transform: translateX(14px);
-    background-color: var(--black);
+    background-color: var(--primary-light);
 }
 
 /* Utility Classes */

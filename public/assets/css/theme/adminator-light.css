@@ -31,6 +31,11 @@
 
     /* Effects */
     --calendar-filter: none;
+
+    /* Auth Overrides */
+    --auth-card-bg: #ffffff;
+    --auth-card-border: #e5e7eb;
+    --auth-overlay-bg: rgba(255, 255, 255, 0.6);
 }
 
 body {
@@ -62,6 +67,7 @@ body {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: -0.025em;
+    font-size: 0.7rem;
 }
 
 .sidebar-nav {
@@ -252,4 +258,36 @@ body {
     font-size: 10px !important;
     font-weight: 800 !important;
     text-transform: uppercase;
+}
+/* 8. Authentication Overrides */
+.auth-card {
+    border-radius: 4px !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05) !important;
+}
+
+.auth-title {
+    color: #1f2937 !important;
+}
+
+.auth-subtitle {
+    color: #6b7280 !important;
+}
+
+.auth-label {
+    color: #4b5563 !important;
+}
+
+/* 9. Force Auth Theme */
+.auth-card {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    color: #1f2937 !important;
+}
+
+.auth-title {
+    color: #1f2937 !important;
+}
+
+.auth-subtitle {
+    color: #6b7280 !important;
 }
