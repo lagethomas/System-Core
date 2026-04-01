@@ -46,11 +46,11 @@
                 ?>
                     <img src="<?php echo $logo_url; ?>" alt="Logo">
                 <?php else: ?>
-                    <i data-lucide="shield" class="icon-xl"></i>
+                    <i data-lucide="user-round" class="icon-xl"></i>
                 <?php endif; ?>
             </div>
             <h2 class="auth-title"><?php echo $system_name; ?></h2>
-            <p class="auth-subtitle">Acesse sua conta para continuar</p>
+            <p class="auth-subtitle">Acesse para gerenciar sua unidade</p>
         </div>
 
         <?php if (!empty($error)): ?>
@@ -70,22 +70,22 @@
                        placeholder="Seu usuário" required autofocus>
             </div>
 
-            <div class="form-group mt-3">
-                <label class="auth-label">Senha</label>
+            <div class="form-group mt-4">
+                <label class="auth-label">Sua Senha</label>
                 <div class="password-toggle-wrapper">
-                    <input type="password" name="password" id="password" class="form-control pr-10" 
+                    <input type="password" name="password" id="password" class="form-control pr-12" 
                            value="<?php echo htmlspecialchars($pre_password ?? ''); ?>"
-                           placeholder="Sua senha" required>
+                           placeholder="••••••••" required>
                     <button type="button" class="btn-password-toggle" onclick="UI.togglePassword(this, 'password')">
                         <i data-lucide="lock"></i>
                     </button>
                 </div>
             </div>
 
-            <button type="submit" class="btn-primary btn-block mt-4" id="btnLogin">
-                <span class="btn-text">Entrar no Sistema <i data-lucide="arrow-right" class="ml-2"></i></span>
+            <button type="submit" class="btn-primary mt-5" id="btnLogin">
+                <span class="btn-text">Entrar no Sistema <i data-lucide="arrow-right"></i></span>
                 <span class="btn-loader" style="display: none;">
-                    <i data-lucide="loader-2" class="animate-spin mr-2"></i> Processando...
+                    <i data-lucide="loader-2" class="animate-spin"></i> Processando...
                 </span>
             </button>
 
