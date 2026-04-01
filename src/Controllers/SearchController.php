@@ -102,14 +102,24 @@ class SearchController extends Controller {
                     [$searchTerm, $searchTerm]
                 );
                 foreach ($settings as $s) {
-                    $tab = $settingTabs[$s['setting_key']] ?? 'general';
-                    $results[] = [
-                        'type' => 'setting',
-                        'name' => 'Config: ' . $s['setting_key'],
-                        'sub' => $s['setting_value'],
-                        'url' => SITE_URL . '/settings?tab=' . $tab . '&highlight=' . $s['setting_key'],
-                        'icon' => 'settings'
-                    ];
+                    if (strpos($s['setting_key'], 'smtp_') === 0) {
+                        $results[] = [
+                            'type' => 'setting',
+                            'name' => 'Config: ' . $s['setting_key'],
+                            'sub' => $s['setting_value'],
+                            'url' => SITE_URL . '/integrations?tab=email&highlight=' . $s['setting_key'],
+                            'icon' => 'plug'
+                        ];
+                    } else {
+                        $tab = $settingTabs[$s['setting_key']] ?? 'general';
+                        $results[] = [
+                            'type' => 'setting',
+                            'name' => 'Config: ' . $s['setting_key'],
+                            'sub' => $s['setting_value'],
+                            'url' => SITE_URL . '/settings?tab=' . $tab . '&highlight=' . $s['setting_key'],
+                            'icon' => 'settings'
+                        ];
+                    }
                 }
             } catch (\Exception $e) {}
 
