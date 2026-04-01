@@ -22,6 +22,7 @@
     </div>
 </div>
 
+<?php if ($is_admin): ?>
 <div class="stats-grid mb-5">
     <a href="<?php echo SITE_URL; ?>/admin/users" class="stat-card-premium">
         <div class="stat-icon-box blue">
@@ -49,7 +50,9 @@
         </div>
     </a>
 </div>
+<?php endif; ?>
 
+<?php if ($is_admin): ?>
 <div class="dashboard-grid">
     <div class="dashboard-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -113,6 +116,18 @@
         </div>
     </div>
 </div>
+<?php else: ?>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100px 20px; text-align: center;">
+        <div style="width: 120px; height: 120px; background: rgba(var(--primary-rgb), 0.1); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
+            <i data-lucide="shield-check" style="width: 60px; height: 60px;"></i>
+        </div>
+        <h2 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 10px;">Acesso Autorizado</h2>
+        <p style="color: var(--text-muted); max-width: 500px; line-height: 1.6;">Estamos felizes em tê-lo aqui. Utilize o menu lateral para gerenciar sua empresa e as configurações do seu sistema.</p>
+        <a href="<?php echo SITE_URL; ?>/profile" class="btn-primary" style="margin-top: 30px;">
+            Acessar Meu Perfil <i data-lucide="arrow-right" class="icon-sm"></i>
+        </a>
+    </div>
+<?php endif; ?>
 
 <style>
 .icon-box-lite {

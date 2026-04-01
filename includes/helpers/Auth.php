@@ -38,6 +38,45 @@ class Auth {
     }
 
     /**
+     * Check if user is a company owner (Proprietário)
+     */
+    public static function isOwner(): bool {
+        return self::isLoggedIn() && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'proprietario';
+    }
+
+    /**
+     * Get current user's company ID
+     */
+    public static function companyId(): ?int {
+        if (!self::isLoggedIn()) return null;
+        
+        if (isset($_SESSION['company_id'])) {
+            return (int)$_SESSION['company_id'];
+        }
+
+        $pdo = \DB::getInstance();
+        $stmt = $pdo->prepare('SELECT company_id FROM cp_users WHERE id = ?');
+        $stmt->execute([$_SESSION['user_id']]);
+        $id = $stmt->fetchColumn();
+        if ($id) {
+            $_SESSION['company_id'] = (int)$id;
+            return (int)$id;
+        }
+        return null;
+    }
+
+    /**
+     * Require a specific role (or admin)
+     */
+    public static function requireRole(string $role): void {
+        self::requireLogin();
+        if (($_SESSION['user_role'] ?? '') !== $role && !self::isAdmin()) {
+            header("Location: " . SITE_URL . "/dashboard");
+            exit;
+        }
+    }
+
+    /**
      * Redirect if not logged in
      */
     public static function requireLogin(): void {
@@ -82,6 +121,8 @@ class Auth {
         $_SESSION['user_name']     = $user['name'];
         $_SESSION['user_email']    = $user['email'];
         $_SESSION['user_role']     = $user['role'];
+        $_SESSION['company_id']    = $user['company_id'] ?? null;
+        $_SESSION['company_slug']  = $user['company_slug'] ?? null;
         $_SESSION['last_activity'] = time();
         $_SESSION['secure_ua']     = $_SERVER['HTTP_USER_AGENT'] ?? '';
         $_SESSION['secure_ip']     = $_SERVER['REMOTE_ADDR'] ?? '';
@@ -115,6 +156,11 @@ class Auth {
      * Logout user and clear session
      */
     public static function logout(): void {
+        $redirect = SITE_URL . "/login";
+        if (!empty($_SESSION['company_slug'])) {
+            $redirect = SITE_URL . "/" . $_SESSION['company_slug'] . "/login";
+        }
+
         // Clear from DB if logged in
         if (isset($_SESSION['user_id'])) {
             self::clearSessionFromDB((int)$_SESSION['user_id']);
@@ -131,7 +177,7 @@ class Auth {
         session_destroy();
         
         if (!headers_sent()) {
-            header("Location: " . SITE_URL . "/login");
+            header("Location: " . $redirect);
             exit;
         }
     }

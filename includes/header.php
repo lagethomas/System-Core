@@ -37,7 +37,11 @@ $page_titles = [
     'profile.php' => 'Meu Perfil',
     'profile' => 'Meu Perfil',
     'integrations.php' => 'Integrações',
-    'integrations' => 'Integrações'
+    'integrations' => 'Integrações',
+    'companies' => 'Empresas Clientes',
+    'company_details' => 'Detalhes da Empresa',
+    'plans' => 'Pacotes de Assinatura',
+    'company_settings' => 'Configurações da Empresa'
 ];
 
 // Fetch Notifications
@@ -56,6 +60,31 @@ $unread_count = count($unread_notifications);
     global $platform_settings;
     $theme_slug = $platform_settings['system_theme'] ?? 'gold-black';
     $system_name = $platform_settings['system_name'] ?? 'SaaSFlow Core';
+    $system_logo = $platform_settings['system_logo'] ?? '';
+
+    // --- COMPANY BRANDING OVERRIDE (Rule 39 / User Request) ---
+    if (Auth::isLoggedIn()) {
+        $company_id = Auth::companyId();
+        if ($company_id) {
+            try {
+                $comp = \App\Core\Database::fetch("SELECT name, logo, theme FROM cp_companies WHERE id = ?", [$company_id]);
+                if ($comp) {
+                    $system_name = $comp['name'];
+                    if (!empty($comp['logo'])) {
+                        // If it starts with / or http, use it as is. Otherwise prepended by uploads/logos (for old system compatibility)
+                        if (strpos($comp['logo'], '/') === 0 || strpos($comp['logo'], 'http') === 0) {
+                            $system_logo = $comp['logo'];
+                        } else {
+                            $system_logo = '/uploads/logos/' . $comp['logo'];
+                        }
+                    }
+                    if (!empty($comp['theme'])) {
+                        $theme_slug = $comp['theme'];
+                    }
+                }
+            } catch (\Exception $e) {}
+        }
+    }
     ?>
     <title><?php echo htmlspecialchars(($page_titles[$current_page] ?? 'Início') . ' | ' . ($system_name ?? 'SaaSFlow')); ?></title>
     
@@ -95,8 +124,20 @@ $unread_count = count($unread_notifications);
             <div class="sidebar-header">
                 <a href="<?php echo SITE_URL; ?>/dashboard" class="logo">
                     <div class="sidebar-logo-icon">
-                        <?php if (!empty($platform_settings['system_logo'])): ?>
-                            <img src="<?php echo SITE_URL; ?>/uploads/logos/<?php echo $platform_settings['system_logo']; ?>" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        <?php 
+                        $logo_to_show = '';
+                        if (!empty($system_logo)) {
+                            if (strpos($system_logo, '/') === 0) {
+                                $logo_to_show = SITE_URL . $system_logo;
+                            } elseif (strpos($system_logo, 'http') === 0) {
+                                $logo_to_show = $system_logo;
+                            } else {
+                                $logo_to_show = SITE_URL . '/uploads/logos/' . $system_logo;
+                            }
+                        }
+                        
+                        if (!empty($logo_to_show)): ?>
+                            <img src="<?php echo $logo_to_show; ?>" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                         <?php else: ?>
                             <i data-lucide="image"></i>
                         <?php endif; ?>
@@ -116,6 +157,16 @@ $unread_count = count($unread_notifications);
                     </li>
                     
                     <?php if (Auth::isAdmin()): ?>
+                    <li class="<?php echo ($current_page == 'companies' || $current_page == 'companies.php' || $current_page == 'company_details') ? 'active' : ''; ?>">
+                        <a href="<?php echo SITE_URL; ?>/admin/companies">
+                            <i data-lucide="building-2"></i> <span>Empresas</span>
+                        </a>
+                    </li>
+                    <li class="<?php echo ($current_page == 'plans') ? 'active' : ''; ?>">
+                        <a href="<?php echo SITE_URL; ?>/admin/plans">
+                            <i data-lucide="package"></i> <span>Planos</span>
+                        </a>
+                    </li>
                     <li class="<?php echo ($current_page == 'users.php' || $current_page == 'users') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/users">
                             <i data-lucide="users"></i> <span>Usuários</span>
@@ -137,6 +188,14 @@ $unread_count = count($unread_notifications);
                         </a>
                     </li>
                     <?php endif; ?>
+
+                    <?php if (Auth::isOwner()): ?>
+                    <li class="<?php echo ($current_page == 'company_settings') ? 'active' : ''; ?>">
+                        <a href="<?php echo SITE_URL; ?>/app/company-settings">
+                            <i data-lucide="building"></i> <span>Minha Empresa</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
                 </ul>
             </nav>
             <div class="sidebar-footer">
@@ -152,7 +211,7 @@ $unread_count = count($unread_notifications);
                 <!-- Popup de Perfil/Sair -->
                 <div class="sidebar-user-dropdown" id="user-dropdown">
                     <a href="<?php echo SITE_URL; ?>/profile" class="btn-secondary" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
-                        <i data-lucide="user-circle"></i> Meu Perfil Maroto
+                        <i data-lucide="user-circle"></i> Meu Perfil
                     </a>
                     <a href="<?php echo SITE_URL; ?>/logout" onclick="handleLogout(event)" class="user-dropdown-item danger">
                         <i data-lucide="log-out"></i> Sair

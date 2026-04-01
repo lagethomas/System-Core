@@ -129,9 +129,10 @@ body {
 
 .sidebar.collapsed .sidebar-header {
     justify-content: center;
-    padding: 20px 0;
-    flex-direction: column;
-    gap: 15px;
+    padding: 24px 0;
+    flex-direction: row; /* Change back to row to allow centering logo accurately */
+    position: relative;
+    height: 100px; /* Fixed height to accommodate both without pushing */
 }
 
 .sidebar.collapsed .sidebar-logo-icon {
@@ -139,8 +140,10 @@ body {
 }
 
 .sidebar.collapsed .sidebar-collapse-toggle {
-    position: static;
-    margin: 0;
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 24px;
     height: 24px;
     font-size: 10px;
@@ -540,6 +543,12 @@ body {
     color: var(--primary);
 }
 
+@media (max-width: 768px) {
+    .top-bar .page-title {
+        display: none !important;
+    }
+}
+
 .top-bar .page-title {
     font-size: 20px;
     font-weight: 700;
@@ -691,6 +700,33 @@ body {
     cursor: pointer;
     transition: var(--transition);
     text-decoration: none;
+}
+
+/* Action Buttons (CRUD icons) used in tables */
+.btn-user-action {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    color: var(--text-muted) !important;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-user-action:hover {
+    color: var(--primary) !important;
+    border-color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.1);
+}
+
+.btn-user-delete:hover {
+    color: #ff4d4d !important;
+    border-color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.1);
 }
 
 .btn-primary:hover {
@@ -1505,6 +1541,19 @@ select.form-control option {
     flex-direction: column !important;
     max-height: 90vh !important;
     overflow: hidden !important;
+    transition: max-width 0.3s ease;
+}
+
+.modal-content.modal-lg {
+    max-width: 850px !important;
+}
+
+.modal-content.modal-xl {
+    max-width: 1140px !important;
+}
+
+.modal-content.modal-sm {
+    max-width: 400px !important;
 }
 
 .modal-header {
@@ -1794,7 +1843,7 @@ input:checked+.slider {
 
 input:checked+.slider:before {
     transform: translateX(14px);
-    background-color: var(--primary-light);
+    background-color: var(--text-main);
 }
 
 /* Utility Classes */

@@ -34,6 +34,7 @@ class DashboardController extends Controller {
 
         $this->render('app/dashboard', [
             'user_name' => $user_name,
+            'is_admin' => Auth::isAdmin(),
             'total_users' => $total_users,
             'total_logs' => $total_logs
         ]);

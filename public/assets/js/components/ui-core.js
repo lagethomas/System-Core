@@ -4,35 +4,40 @@
  */
 
 // 1. SweetAlert2 Standardized Mixins (Rule 5)
-const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 4000,
-    timerProgressBar: true,
-    background: '#1a1b26',
-    color: '#fff',
-    didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer);
-        toast.addEventListener('mouseleave', Swal.resumeTimer);
-        // Apply gold icon color
-        const icon = toast.querySelector('.swal2-icon');
-        if (icon) icon.style.borderColor = '#d4af37';
-        if (icon) icon.style.color = '#d4af37';
-    }
-});
-
 /**
- * Global Notify Function (Rule 5)
- * @param {string} msg 
- * @param {string} type 'success' | 'error' | 'warning' | 'info'
+ * Global Notify Function (Custom implementation to replace SweetAlert)
  */
 window.notify = function(msg, type = 'success') {
-    Toast.fire({
-        icon: type,
-        title: msg,
-        iconColor: '#d4af37'
-    });
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    // Icon mapping (Lucide)
+    let iconName = 'info';
+    if (type === 'success') iconName = 'check-circle-2';
+    if (type === 'error') iconName = 'alert-circle';
+    if (type === 'warning') iconName = 'alert-triangle';
+
+    toast.innerHTML = `
+        <i data-lucide="${iconName}"></i>
+        <div class="toast-message">${msg}</div>
+        <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+    `;
+
+    container.appendChild(toast);
+    if (window.lucide) lucide.createIcons();
+
+    // Auto-remove after 4 seconds
+    setTimeout(() => {
+        toast.style.animation = 'toastSlideOut 0.4s forwards';
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
 };
 
 /**
@@ -87,9 +92,15 @@ const UI = {
         return window.confirmAction(options.title || 'Confirmar', msg, options.type || 'warning', options.confirmText);
     },
 
-    showModal(title, html) {
+    showModal(title, html, size = '') {
         if (!this.modal) return;
         this.modalTitle.textContent = title;
+
+        const content = this.modal.querySelector('.modal-content');
+        if (content) {
+            content.classList.remove('modal-lg', 'modal-sm', 'modal-xl');
+            if (size) content.classList.add('modal-' + size.startsWith('modal-') ? size : 'modal-' + size);
+        }
 
         const temp = document.createElement('div');
         temp.innerHTML = html;
@@ -244,6 +255,28 @@ const UI = {
                 btn.style.right = '40px'; 
                 genBtn.style.right = '10px';
             }
+        });
+    },
+
+    copyToClipboard(text, msg = 'Copiado para a área de transferência!') {
+        if (!text) return;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            window.notify(msg, 'success');
+        }).catch(err => {
+            console.error('Erro ao copiar:', err);
+            // Fallback for non-secure contexts
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                window.notify(msg, 'success');
+            } catch (err) {
+                window.notify('Erro ao copiar texto.', 'error');
+            }
+            document.body.removeChild(textArea);
         });
     }
 };

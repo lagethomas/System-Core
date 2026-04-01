@@ -14,10 +14,13 @@
     <link rel="icon" type="image/png" href="<?php echo SITE_URL; ?>/assets/img/icon-192.png">
 
     <!-- Dynamic Theme-Aware Background (Rule 34: Minimal Dynamic Handling via Style Tag) -->
-    <?php if (!empty($settings['login_background'])): ?>
+    <?php if (!empty($login_background)): ?>
     <style>
         body.auth-wrapper.has-bg {
-            background-image: url('<?php echo SITE_URL; ?>/uploads/backgrounds/<?php echo $settings['login_background']; ?>');
+            <?php 
+            $bg_url = strpos($login_background, '/') === 0 ? SITE_URL . $login_background : SITE_URL . '/uploads/backgrounds/' . $login_background;
+            ?>
+            background-image: url('<?php echo $bg_url; ?>');
         }
     </style>
     <?php endif; ?>
@@ -28,17 +31,20 @@
     <!-- Rule 36: Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="auth-wrapper <?php echo !empty($settings['login_background']) ? 'has-bg' : ''; ?>">
+<body class="auth-wrapper <?php echo !empty($login_background) ? 'has-bg' : ''; ?>">
     
-    <?php if (!empty($settings['login_background'])): ?>
+    <?php if (!empty($login_background)): ?>
         <div class="auth-overlay"></div>
     <?php endif; ?>
 
     <div class="auth-card <?php echo !empty($settings['login_background']) ? 'glassmorphism' : ''; ?>">
         <div class="auth-header">
             <div class="auth-logo-box">
-                <?php if (!empty($settings['system_logo'])): ?>
-                    <img src="<?php echo SITE_URL; ?>/uploads/logos/<?php echo $settings['system_logo']; ?>" alt="Logo">
+                <?php 
+                if (!empty($system_logo)): 
+                    $logo_url = (strpos($system_logo, '/') === 0 || strpos($system_logo, 'http') === 0) ? SITE_URL . $system_logo : SITE_URL . '/uploads/logos/' . $system_logo;
+                ?>
+                    <img src="<?php echo $logo_url; ?>" alt="Logo">
                 <?php else: ?>
                     <i data-lucide="shield" class="icon-xl"></i>
                 <?php endif; ?>
@@ -56,6 +62,7 @@
 
         <form method="POST" action="<?php echo SITE_URL; ?>/login" id="loginForm">
             <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+            <input type="hidden" name="company_id" value="<?php echo $company ? $company['id'] : ''; ?>">
             <div class="form-group">
                 <label class="auth-label">Usuário</label>
                 <input type="text" name="username" class="form-control"

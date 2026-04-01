@@ -233,8 +233,8 @@
         gap: 12px;
     }
 
-    .page-title h1 {
-        font-size: 18px;
+    .page-title {
+        display: none !important;
     }
 
     .desktop-search {
@@ -260,7 +260,7 @@
    NOTIFICATIONS DROPDOWN
    ============================================================== */
 
-.notif-dropdown {
+.notification-dropdown {
     position: absolute;
     top: 40px;
     right: 0;
@@ -274,7 +274,7 @@
     overflow: hidden;
 }
 
-.notif-dropdown.active {
+.notification-dropdown.active {
     display: block;
 }
 
@@ -296,20 +296,66 @@
     font-weight: 500;
 }
 
-.notif-body {
-    max-height: 350px;
+.notif-list {
+    max-height: 175px; /* Sized to show approx 2 items */
     overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Custom Scrollbar for Dropdown (Premium Feel) */
+.notif-list::-webkit-scrollbar {
+    width: 6px;
+}
+.notif-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.notif-list::-webkit-scrollbar-thumb {
+    background: rgba(var(--primary-rgb), 0.2);
+    border-radius: 10px;
+}
+.notif-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--primary-rgb), 0.4);
+}
+
+.notif-item-wrapper {
+    position: relative;
+    border-bottom: 1px solid var(--border);
+}
+
+.notif-item-wrapper:last-child {
+    border-bottom: none;
 }
 
 .notif-item {
-    padding: 15px 20px;
-    border-bottom: 1px solid var(--border);
+    padding: 15px 45px 15px 20px; /* More right padding for close btn */
+    text-decoration: none;
     transition: 0.2s;
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 15px;
+    gap: 12px;
+}
+
+.notif-close-btn {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    opacity: 0.3;
+    cursor: pointer;
+    transition: var(--transition);
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notif-close-btn:hover {
+    opacity: 1;
+    color: var(--accent);
 }
 
 .notif-item:hover {
@@ -365,6 +411,25 @@
     justify-content: center;
     font-weight: 800;
     border: 1px solid var(--bg-dark);
+}
+
+.notif-footer {
+    padding: 12px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.notif-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+.notif-footer a:hover {
+    filter: brightness(1.2);
 }
 
 @keyframes pulse-notif {

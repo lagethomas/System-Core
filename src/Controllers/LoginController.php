@@ -29,8 +29,23 @@ class LoginController extends Controller {
     }
 
     /**
-     * Handle login form submission (POST /login)
+     * Show company-specific login form (GET /{slug}/login)
      */
+    public function companyLogin(string $slug): void {
+        global $pdo, $platform_settings;
+
+        if (Auth::isLoggedIn()) {
+            header('Location: ' . SITE_URL . '/dashboard');
+            exit;
+        }
+        $company = $this->getCompanyBySlug($slug);
+        if (!$company) {
+            header('Location: ' . SITE_URL . '/login');
+            exit;
+        }
+        $this->renderLogin('', [], false, '', '', $company);
+    }
+
     public function attempt(): void {
         global $pdo, $platform_settings;
         
@@ -52,43 +67,11 @@ class LoginController extends Controller {
 
         // ── SECURITY CHECKS (Rule 39) ──────────────────────────
         if (Auth::isIpBlocked()) {
-            try {
-                require_once __DIR__ . '/../../includes/logs.php';
-                \Logger::log('security_block', 'Tentativa de login bloqueada: IP banido permanentemente.');
-                
-                // Notify Admin (ID 1)
-                require_once __DIR__ . '/../../includes/repositories/NotificationRepository.php';
-                $notifRepo = new \NotificationRepository($pdo);
-                $notifRepo->create([
-                    'user_id' => 1,
-                    'title'   => '🚫 IP Bloqueado',
-                    'message' => 'Um IP banido tentou acessar o sistema.',
-                    'link'    => SITE_URL . '/admin/logs',
-                    'type'    => 'danger'
-                ]);
-            } catch (\Exception $e) {}
-            
             $this->renderLogin('Seu endereço IP está bloqueado por motivos de segurança.', $platform_settings ?? []);
             return;
         }
 
         if (!Auth::checkBruteForce()) {
-            try {
-                require_once __DIR__ . '/../../includes/logs.php';
-                \Logger::log('security_block', 'Tentativa de login bloqueada: Muitos erros seguidos (Brute Force).');
-                
-                // Notify Admin (ID 1)
-                require_once __DIR__ . '/../../includes/repositories/NotificationRepository.php';
-                $notifRepo = new \NotificationRepository($pdo);
-                $notifRepo->create([
-                    'user_id' => 1,
-                    'title'   => '🛡️ Alerta de Brute Force',
-                    'message' => "IP bloqueado temporariamente por excesso de tentativas para o usuário: $username",
-                    'link'    => SITE_URL . '/admin/logs',
-                    'type'    => 'danger'
-                ]);
-            } catch (\Exception $e) {}
-
             $lockout = $platform_settings['security_lockout_time'] ?? 15;
             $this->renderLogin("Muitas tentativas. Seu IP está bloqueado temporariamente por $lockout minutos.", $platform_settings ?? []);
             return;
@@ -98,79 +81,70 @@ class LoginController extends Controller {
         if (!$username || !$password) {
             $error = 'Preencha todos os campos.';
         } else {
-            $stmt = $pdo->prepare('SELECT * FROM cp_users WHERE username = ?');
+            $stmt = $pdo->prepare('
+                SELECT u.*, c.slug as company_slug, c.active as company_active
+                FROM cp_users u 
+                LEFT JOIN cp_companies c ON u.company_id = c.id 
+                WHERE u.username = ?
+            ');
             $stmt->execute([$username]);
             $user = $stmt->fetch();
 
             if ($user && password_verify($password, $user['password'])) {
+                
+                $posted_company_id = !empty($_POST['company_id']) ? (int)$_POST['company_id'] : null;
 
-                // ── SINGLE SESSION CHECK ───────────────────────────────
-                // Always read setting fresh from DB — never rely on cached value for security
-                $stmt_ss = $pdo->prepare("SELECT setting_value FROM cp_settings WHERE setting_key = 'security_single_session' LIMIT 1");
-                $stmt_ss->execute();
-                $ss_val = $stmt_ss->fetchColumn();
-                $single_session = ($ss_val === '1');
+                // ── TENANT VALIDATION ──────────────────────────────────
+                if (empty($posted_company_id) && strtolower($user['role'] ?? '') !== 'administrador') {
+                    $error = 'Acesso restrito. Utilize o link da sua empresa para logar.';
+                    $user = null; // Block progress
+                } elseif (!empty($posted_company_id) && ($user['company_id'] ?? 0) != $posted_company_id) {
+                    $error = 'Estas credenciais não pertencem a esta empresa.';
+                    $user = null; // Block progress
+                } elseif (!empty($user['company_id']) && ($user['company_active'] ?? 1) == 0) {
+                    $error = 'Acesso bloqueado: Esta empresa está inativa.';
+                    $user = null;
+                }
+                
+                if ($user && ($user['active'] ?? 1) == 0) {
+                    $error = 'Sua conta de usuário está desativada.';
+                    $user = null;
+                }
+                
+                if ($user) {
+                    // ── SINGLE SESSION CHECK ───────────────────────────────
+                    $stmt_ss = $pdo->prepare("SELECT setting_value FROM cp_settings WHERE setting_key = 'security_single_session' LIMIT 1");
+                    $stmt_ss->execute();
+                    $ss_val = $stmt_ss->fetchColumn();
+                    $single_session = ($ss_val === '1');
 
-                if ($single_session && Auth::hasActiveSession((int)$user['id'])) {
-                    if ($force) {
-                        // User chose to force logout from other locations
+                    if ($single_session && Auth::hasActiveSession((int)$user['id'])) {
+                        if (!$force) {
+                            $this->renderLogin('', $platform_settings ?? [], true, $username, $password, $posted_company_id ? $this->getCompanyById($posted_company_id) : null);
+                            return;
+                        }
                         Auth::clearSessionFromDB((int)$user['id']);
-                        try {
-                            require_once __DIR__ . '/../../includes/logs.php';
-                            \Logger::log('security_session', 'Logout forçado realizado pelo usuário: ' . $user['username']);
-                        } catch (\Exception $e) {}
-                    } else {
-                        try {
-                            require_once __DIR__ . '/../../includes/logs.php';
-                            \Logger::log('security_session', 'Acesso bloqueado: Usuário já possui uma sessão ativa.');
-                            
-                            // Notify the existing session about this attempt
-                            require_once __DIR__ . '/../../includes/repositories/NotificationRepository.php';
-                            $notifRepo = new \NotificationRepository($pdo);
-                            $notifRepo->create([
-                                'user_id' => $user['id'],
-                                'title'   => '⚠️ Alerta de Segurança',
-                                'message' => 'Uma nova tentativa de login foi detectada. Se não foi você, recomendamos trocar sua senha.',
-                                'link'    => SITE_URL . '/logs',
-                                'type'    => 'warning'
-                            ]);
-                        } catch (\Exception $e) {}
-
-                        // Block login — show the warning with pre-filled inputs
-                        $this->renderLogin('', $platform_settings ?? [], true, $username, $password);
-                        return;
                     }
+
+                    Auth::login($user);
+                    Auth::resetAttempts();
+
+                    try {
+                        require_once __DIR__ . '/../../includes/repositories/UserRepository.php';
+                        $userRepo = new \UserRepository($pdo);
+                        $userRepo->updateLastLogin((int)$user['id']);
+                    } catch (\Exception $e) {}
+
+                    header('Location: ' . SITE_URL . '/dashboard');
+                    exit;
                 }
-                // ── END SINGLE SESSION CHECK ───────────────────────────
-
-                Auth::login($user);
-                Auth::resetAttempts(); // Reset failures on success
-
-                // ── UPDATE LAST LOGIN ──────────────────────────────────
-                try {
-                    require_once __DIR__ . '/../../includes/repositories/UserRepository.php';
-                    $userRepo = new \UserRepository($pdo);
-                    $userRepo->updateLastLogin((int)$user['id']);
-                } catch (\Exception $e) {
-                    error_log("updateLastLogin failed: " . $e->getMessage());
-                }
-                // ────────────────────────────────────────────────────────
-
-                try {
-                    require_once __DIR__ . '/../../includes/logs.php';
-                    \Logger::log('login', 'Autenticação bem-sucedida para o usuário: ' . $user['username']);
-                } catch (\Exception $e) {}
-
-                header('Location: ' . SITE_URL . '/dashboard');
-                exit;
-
             } else {
-                Auth::registerFailedAttempt(); // Log failure for Brute Force check
+                Auth::registerFailedAttempt();
                 $error = 'Credenciais inválidas.';
             }
         }
 
-        $this->renderLogin($error, $platform_settings ?? []);
+        $this->renderLogin($error, $platform_settings ?? [], false, $username, $password, !empty($_POST['company_id']) ? $this->getCompanyById((int)$_POST['company_id']) : null);
     }
 
     /**
@@ -193,12 +167,22 @@ class LoginController extends Controller {
         array  $settings,
         bool   $warn_session = false,
         string $pre_username = '',
-        string $pre_password = ''
+        string $pre_password = '',
+        ?array $company = null
     ): void {
-        global $platform_settings;
-        $settings     = $platform_settings ?? $settings;
-        $system_name  = htmlspecialchars($settings['system_name'] ?? 'SaaSFlow Core');
-        $theme_slug   = htmlspecialchars($settings['system_theme'] ?? 'gold-black');
+        $system_name      = $company ? $company['name'] : htmlspecialchars($settings['system_name'] ?? 'SaaSFlow Core');
+        $system_logo      = ($company && !empty($company['logo'])) ? $company['logo'] : ($settings['system_logo'] ?? '');
+        $login_background = ($company && !empty($company['background_image'])) ? $company['background_image'] : ($settings['login_background'] ?? '');
+        
+        // Prioritize company theme if available
+        $theme_slug = 'gold-black';
+        if ($company && !empty($company['theme'])) {
+            $theme_slug = $company['theme'];
+        } else {
+            $theme_slug = $settings['system_theme'] ?? 'gold-black';
+        }
+        $theme_slug = htmlspecialchars($theme_slug);
+
         $csrf_token   = \CSRF::generateToken();
         $v            = (string)time();
 
@@ -206,6 +190,26 @@ class LoginController extends Controller {
         // View is at src/Views/auth/login.php
         include __DIR__ . '/../Views/auth/login.php';
         exit;
+    }
+
+    /**
+     * Helper to fetch company by slug
+     */
+    private function getCompanyBySlug(string $slug): ?array {
+        $pdo = \App\Core\Database::getInstance();
+        $stmt = $pdo->prepare("SELECT * FROM cp_companies WHERE slug = ? AND active = 1 LIMIT 1");
+        $stmt->execute([$slug]);
+        return $stmt->fetch() ?: null;
+    }
+
+    /**
+     * Helper to fetch company by id
+     */
+    private function getCompanyById(int $id): ?array {
+        $pdo = \App\Core\Database::getInstance();
+        $stmt = $pdo->prepare("SELECT * FROM cp_companies WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch() ?: null;
     }
 
     /**

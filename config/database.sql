@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS `cp_users` (
   `username` varchar(100) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('administrador','usuario') DEFAULT 'usuario',
+  `role` varchar(50) DEFAULT 'usuario',
+  `company_id` int(11) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
@@ -109,6 +110,88 @@ CREATE TABLE IF NOT EXISTS `cp_email_confirmations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
+-- Table structure for cp_plans
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `cp_plans` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(100) NOT NULL,
+    `base_price` DECIMAL(10,2) NOT NULL DEFAULT 40.00,
+    `included_users` INT NOT NULL DEFAULT 4,
+    `extra_user_price` DECIMAL(10,2) NOT NULL DEFAULT 30.00,
+    `trial_days` INT NOT NULL DEFAULT 7,
+    `partner_commission_percentage` DECIMAL(5,2) DEFAULT 0.00,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cp_companies
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `cp_companies` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) NOT NULL,
+    `slug` VARCHAR(255) UNIQUE NOT NULL,
+    `document` VARCHAR(255) DEFAULT NULL,
+    `cnpj` VARCHAR(20) DEFAULT NULL,
+    `phone` VARCHAR(50) DEFAULT NULL,
+    `email` VARCHAR(255) DEFAULT NULL,
+    `zip_code` VARCHAR(20) DEFAULT NULL,
+    `street` VARCHAR(255) DEFAULT NULL,
+    `neighborhood` VARCHAR(100) DEFAULT NULL,
+    `address_number` VARCHAR(10) DEFAULT NULL,
+    `city` VARCHAR(100) DEFAULT NULL,
+    `state` VARCHAR(50) DEFAULT NULL,
+    `theme_color` VARCHAR(50) DEFAULT '#2563eb',
+    `theme` VARCHAR(50) DEFAULT 'default',
+    `plan_id` INT DEFAULT NULL,
+    `partner_id` INT DEFAULT NULL,
+    `base_price` DECIMAL(10,2) DEFAULT 40.00,
+    `included_users` INT DEFAULT 4,
+    `extra_user_price` DECIMAL(10,2) DEFAULT 30.00,
+    `peak_users_count` INT DEFAULT 0,
+    `logo` VARCHAR(255) DEFAULT NULL,
+    `background_image` VARCHAR(255) DEFAULT NULL,
+    `active` TINYINT(1) DEFAULT 1,
+    `status` ENUM('active', 'inactive', 'suspended', 'trial') DEFAULT 'active',
+    `mp_access_token` TEXT DEFAULT NULL,
+    `mp_public_key` TEXT DEFAULT NULL,
+    `mp_enabled` TINYINT(1) DEFAULT 0,
+    `subscription_status` VARCHAR(50) DEFAULT NULL,
+    `inactive_since` DATE DEFAULT NULL,
+    `trashed_at` DATETIME DEFAULT NULL,
+    `expires_at` DATE DEFAULT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_slug` (`slug`),
+    INDEX `idx_active` (`active`),
+    INDEX `idx_expires` (`expires_at`),
+    INDEX `idx_partner` (`partner_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cp_invoices
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `cp_invoices` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `company_id` INT NOT NULL,
+    `amount` DECIMAL(10,2) NOT NULL,
+    `status` ENUM('pending','paid','cancelled','expired') DEFAULT 'pending',
+    `type` ENUM('single','recurring') DEFAULT 'single',
+    `description` TEXT DEFAULT NULL,
+    `due_date` DATE NOT NULL,
+    `paid_at` DATETIME DEFAULT NULL,
+    `last_reminder_date` DATE DEFAULT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX `idx_company` (`company_id`),
+    INDEX `idx_status` (`status`),
+    INDEX `idx_due` (`due_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Constraints
+-- ----------------------------
+ALTER TABLE `cp_users` ADD FOREIGN KEY (`company_id`) REFERENCES `cp_companies`(`id`) ON DELETE SET NULL;
+
+-- ----------------------------
 -- Table structure for cp_migrations (Internal tracker)
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `cp_migrations` (
@@ -119,10 +202,10 @@ CREATE TABLE IF NOT EXISTS `cp_migrations` (
 
 -- ----------------------------
 -- Initial Data
--- admin / admin123
+-- admin / admin@1234
 -- ----------------------------
 INSERT IGNORE INTO `cp_users` (`name`, `username`, `email`, `password`, `role`) VALUES 
-('Administrador', 'admin', 'admin@admin.com', '$argon2id$v=19$m=65536,t=4,p=1$ekx3REpPWWx4M1QyTjVROA$vG0tQ6G0fRzX2m7w9P8uXQ', 'administrador');
+('Administrador', 'admin', 'admin@admin.com', '$argon2i$v=19$m=16,t=2,p=1$QkFINVVWNEVxcFZnWDYzSQ$CoSx6PyMbZW1hf5P6RQRgg', 'administrador');
 
 INSERT IGNORE INTO `cp_settings` (`setting_key`, `setting_value`) VALUES 
 ('system_theme', 'gold-black'),

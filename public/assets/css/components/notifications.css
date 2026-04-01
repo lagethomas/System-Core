@@ -4,7 +4,7 @@
     top: 60px;
     right: 0;
     width: 320px;
-    background: var(--bg-card);
+    background: var(--bg-sidebar);
     border: 1px solid var(--border);
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
@@ -28,6 +28,27 @@
 .notif-header span {
     font-weight: 800;
     font-size: 14px;
+}
+
+.notif-list {
+    max-height: 175px; /* Sized to show approx 2 items */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* System Standard Scrollbar */
+.notif-list::-webkit-scrollbar {
+    width: 6px;
+}
+.notif-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.notif-list::-webkit-scrollbar-thumb {
+    background: rgba(var(--primary-rgb), 0.2);
+    border-radius: 10px;
+}
+.notif-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--primary-rgb), 0.5);
 }
 
 .notif-item {

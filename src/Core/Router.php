@@ -31,8 +31,30 @@ class Router {
         
         // Remove base path if system is in subfolder
         $site_path = parse_url(SITE_URL, PHP_URL_PATH) ?: '';
-        $path = str_replace($site_path, '', $path);
+        $site_path = rtrim($site_path, '/'); // Remove trailing slash for reliable replacement
+        
+        if (!empty($site_path) && strpos($path, $site_path) === 0) {
+            $path = substr($path, strlen($site_path));
+        }
+        
         $path = '/' . trim($path, '/');
+
+        // --- Custom Domain Detection (Rule 39 / White Label) ---
+        global $pdo;
+        $host = $_SERVER['HTTP_HOST'];
+        $mainHost = parse_url(SITE_URL, PHP_URL_HOST);
+        
+        if ($host !== $mainHost) {
+            // Check if this host is a custom domain for a company
+            $stmtD = $pdo->prepare("SELECT slug FROM cp_companies WHERE custom_domain = ? AND active = 1 LIMIT 1");
+            $stmtD->execute([$host]);
+            $companySlug = $stmtD->fetchColumn();
+            
+            if ($companySlug) {
+                // Prepend the slug virtually so we can use existing routes
+                $path = '/' . $companySlug . ($path === '/' ? '' : $path);
+            }
+        }
 
         foreach ($this->routes as $route) {
             if ($route['method'] === $method && preg_match($route['pattern'], $path, $matches)) {

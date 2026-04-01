@@ -34,7 +34,7 @@ echo "<pre>"; // For browser readability
 echo "🚀 Iniciando Migrações do Sistema...\n";
 
 try {
-    $pdo = \DB::getInstance();
+    global $pdo;
 
     // ── Pre-check: Migration Tracking Table ────────────────────
     $pdo->exec("CREATE TABLE IF NOT EXISTS `cp_migrations` (
@@ -117,6 +117,99 @@ try {
                   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                   PRIMARY KEY (`ip_address`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+            ]
+        ],
+        [
+            'id' => 7,
+            'title' => 'Create SaaS Plans Table',
+            'sql' => [
+                "CREATE TABLE IF NOT EXISTS `cp_plans` (
+                    `id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `name` VARCHAR(100) NOT NULL,
+                    `base_price` DECIMAL(10,2) NOT NULL DEFAULT 40.00,
+                    `included_users` INT NOT NULL DEFAULT 4,
+                    `extra_user_price` DECIMAL(10,2) NOT NULL DEFAULT 30.00,
+                    `trial_days` INT NOT NULL DEFAULT 7,
+                    `partner_commission_percentage` DECIMAL(5,2) DEFAULT 0.00,
+                    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+            ]
+        ],
+        [
+            'id' => 8,
+            'title' => 'Insert Initial SaaS Plans',
+            'sql' => [
+                "INSERT IGNORE INTO `cp_plans` (id, name, base_price, included_users, extra_user_price, trial_days) VALUES 
+                (1, 'Bronze', 49.90, 2, 20.00, 15),
+                (2, 'Prata', 89.90, 5, 15.00, 15),
+                (3, 'Ouro', 149.90, 10, 10.00, 15);"
+            ]
+        ],
+        [
+            'id' => 9,
+            'title' => 'Create/Update SaaS Companies Table with support for Custom Domains',
+            'sql' => [
+                "CREATE TABLE IF NOT EXISTS `cp_companies` (
+                    `id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `name` VARCHAR(255) NOT NULL,
+                    `slug` VARCHAR(255) UNIQUE NOT NULL,
+                    `document` VARCHAR(255) DEFAULT NULL,
+                    `cnpj` VARCHAR(20) DEFAULT NULL,
+                    `custom_domain` VARCHAR(255) DEFAULT NULL,
+                    `phone` VARCHAR(50) DEFAULT NULL,
+                    `email` VARCHAR(255) DEFAULT NULL,
+                    `theme_color` VARCHAR(50) DEFAULT '#d4af37',
+                    `theme` VARCHAR(50) DEFAULT 'gold-black',
+                    `plan_id` INT DEFAULT NULL,
+                    `partner_id` INT DEFAULT NULL,
+                    `peak_users_count` INT DEFAULT 0,
+                    `active` TINYINT(1) DEFAULT 1,
+                    `expires_at` DATE DEFAULT NULL,
+                    `inactive_since` DATE DEFAULT NULL,
+                    `trashed_at` DATETIME DEFAULT NULL,
+                    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    INDEX `idx_slug` (`slug`),
+                    INDEX `idx_active` (`active`),
+                    INDEX `idx_expires` (`expires_at`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+                // Ensure columns exist if table was already created by another source
+                "ALTER TABLE `cp_companies` ADD COLUMN IF NOT EXISTS `custom_domain` VARCHAR(255) DEFAULT NULL AFTER `cnpj`;",
+                "ALTER TABLE `cp_companies` ADD COLUMN IF NOT EXISTS `document` VARCHAR(255) DEFAULT NULL AFTER `slug`;",
+                "ALTER TABLE `cp_companies` ADD COLUMN IF NOT EXISTS `theme_color` VARCHAR(50) DEFAULT '#d4af37' AFTER `email`;",
+                "ALTER TABLE `cp_companies` ADD COLUMN IF NOT EXISTS `theme` VARCHAR(50) DEFAULT 'gold-black' AFTER `theme_color`;",
+                "ALTER TABLE `cp_companies` ADD COLUMN IF NOT EXISTS `peak_users_count` INT DEFAULT 0 AFTER `partner_id`;",
+                "ALTER TABLE `cp_companies` ADD COLUMN IF NOT EXISTS `inactive_since` DATE DEFAULT NULL AFTER `expires_at`;",
+                "ALTER TABLE `cp_companies` ADD COLUMN IF NOT EXISTS `trashed_at` DATETIME DEFAULT NULL AFTER `inactive_since`;"
+            ]
+        ],
+        [
+            'id' => 10,
+            'title' => 'Create SaaS Invoices Table',
+            'sql' => [
+                "CREATE TABLE IF NOT EXISTS `cp_invoices` (
+                    `id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `company_id` INT NOT NULL,
+                    `amount` DECIMAL(10,2) NOT NULL,
+                    `status` ENUM('pending','paid','cancelled','expired') DEFAULT 'pending',
+                    `type` ENUM('single','recurring') DEFAULT 'single',
+                    `description` TEXT DEFAULT NULL,
+                    `due_date` DATE NOT NULL,
+                    `paid_at` DATETIME DEFAULT NULL,
+                    `last_reminder_date` DATE DEFAULT NULL,
+                    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    INDEX `idx_company` (`company_id`),
+                    INDEX `idx_status` (`status`),
+                    INDEX `idx_due` (`due_date`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+            ]
+        ],
+        [
+            'id' => 11,
+            'title' => 'Adding Logo and Background to Companies',
+            'sql' => [
+                "ALTER TABLE `cp_companies` ADD COLUMN IF NOT EXISTS `logo` VARCHAR(255) DEFAULT NULL AFTER `theme`;",
+                "ALTER TABLE `cp_companies` ADD COLUMN IF NOT EXISTS `background_image` VARCHAR(255) DEFAULT NULL AFTER `logo`;"
             ]
         ]
     ];
