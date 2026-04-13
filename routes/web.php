@@ -47,9 +47,9 @@ $router->add('GET', '/admin/logs', ['controller' => 'Admin\\LogsController', 'me
 $router->add('GET', '/logs', ['controller' => 'Admin\\LogsController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);
 
 $router->add('GET', '/admin/settings', ['controller' => 'Admin\\SettingsController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);
-$router->add('POST', '/admin/settings', ['controller' => 'Admin\\SettingsController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);
+$router->add('POST', '/api/admin/settings/save', ['controller' => 'Admin\\SettingsController', 'method' => 'save', 'middlewares' => [$auth, $admin]]);
+$router->add('POST', '/api/admin/migrations/run', ['controller' => 'Admin\\SettingsController', 'method' => 'runMigrations', 'middlewares' => [$auth, $admin]]);
 $router->add('GET', '/settings', ['controller' => 'Admin\\SettingsController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);
-$router->add('POST', '/settings', ['controller' => 'Admin\\SettingsController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);
 
 // Company Settings
 $router->add('GET', '/app/company-settings', ['controller' => 'CompanySettingsController', 'method' => 'index', 'middlewares' => [$auth]]);

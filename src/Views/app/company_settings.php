@@ -133,23 +133,18 @@ $current_theme = $company['theme'] ?? 'gold-black';
                 <p>Personalize as cores predominantes do painel administrativo para sua marca.</p>
             </div>
             
-            <div class="theme-grid">
+            <div class="theme-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px;">
                 <?php foreach ($themes as $slug => $theme): 
                     $isSelected = ($slug === $current_theme);
                 ?>
-                    <label class="theme-card-label">
-                        <input type="radio" name="theme" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?> style="display: none;">
-                        <div class="theme-card-ui">
-                            <div class="theme-card-preview" style="background: <?php echo $theme['bg']; ?>;">
-                                <div class="theme-card-accent" style="background: <?php echo $theme['color']; ?>; box-shadow: 0 0 15px <?php echo $theme['color']; ?>88;"></div>
-                                <div class="theme-card-subaccent" style="background: rgba(255,255,255,0.1);"></div>
-                            </div>
-                            <div class="text-center">
-                                <span class="theme-card-name"><?php echo $theme['name']; ?></span>
-                            </div>
-                            <div class="theme-check-icon"><i data-lucide="check"></i></div>
+                    <div class="selectable-card <?php echo $isSelected ? 'active' : ''; ?>" onclick="toggleSelectableCard(this, 'theme_<?php echo $slug; ?>')">
+                        <input type="radio" name="theme" id="theme_<?php echo $slug; ?>" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?>>
+                        <div class="theme-card-preview" style="background: <?php echo $theme['bg']; ?>; width: 100%; height: 60px; border-radius: 8px; position: relative;">
+                            <div style="position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; border-radius: 5px; background: <?php echo $theme['color']; ?>;"></div>
                         </div>
-                    </label>
+                        <span><?php echo $theme['name']; ?></span>
+                        <div class="theme-check-icon"><i data-lucide="check"></i></div>
+                    </div>
                 <?php endforeach; ?>
             </div>
 
@@ -158,24 +153,20 @@ $current_theme = $company['theme'] ?? 'gold-black';
                 <p>Escolha um tema específico que será aplicado apenas à sua página de login pública.</p>
             </div>
 
-            <div class="theme-grid">
+            <div class="theme-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px;">
                 <?php 
                 $current_login_theme = $company['login_theme'] ?? 'gold-black';
                 foreach ($themes as $slug => $theme): 
                     $isSelected = ($slug === $current_login_theme);
                 ?>
-                    <label class="theme-card-label">
-                        <input type="radio" name="login_theme" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?> style="display: none;">
-                        <div class="theme-card-ui">
-                            <div class="theme-card-preview" style="background: <?php echo $theme['bg']; ?>;">
-                                <div class="theme-card-accent" style="background: <?php echo $theme['color']; ?>; box-shadow: 0 0 15px <?php echo $theme['color']; ?>88;"></div>
-                            </div>
-                            <div class="text-center">
-                                <span class="theme-card-name"><?php echo $theme['name']; ?></span>
-                            </div>
-                            <div class="theme-check-icon"><i data-lucide="check"></i></div>
+                    <div class="selectable-card <?php echo $isSelected ? 'active' : ''; ?>" onclick="toggleSelectableCard(this, 'login_theme_<?php echo $slug; ?>')">
+                        <input type="radio" name="login_theme" id="login_theme_<?php echo $slug; ?>" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?>>
+                        <div class="theme-card-preview" style="background: <?php echo $theme['bg']; ?>; width: 100%; height: 60px; border-radius: 8px; position: relative;">
+                            <div style="position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; border-radius: 5px; background: <?php echo $theme['color']; ?>;"></div>
                         </div>
-                    </label>
+                        <span><?php echo $theme['name']; ?></span>
+                        <div class="theme-check-icon"><i data-lucide="check"></i></div>
+                    </div>
                 <?php endforeach; ?>
             </div>
 

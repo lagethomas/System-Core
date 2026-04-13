@@ -313,7 +313,9 @@ class CompanyRepository {
         
         if ($specificCompanyId) {
             // Check if there is already a pending invoice to update, OR if it's near expiration
-            $has_pending = $this->pdo->query("SELECT 1 FROM cp_invoices WHERE company_id = $specificCompanyId AND status = 'pending' AND type = 'recurring' LIMIT 1")->fetchColumn();
+            $stmt_pending = $this->pdo->prepare("SELECT 1 FROM cp_invoices WHERE company_id = ? AND status = 'pending' AND type = 'recurring' LIMIT 1");
+            $stmt_pending->execute([$specificCompanyId]);
+            $has_pending = $stmt_pending->fetchColumn();
             
             if ($has_pending) {
                 $ids = [$specificCompanyId];

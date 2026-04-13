@@ -14,21 +14,52 @@ class SettingsController extends Controller {
         
         global $pdo;
         require_once __DIR__ . '/../../../includes/helpers/ThemeHelper.php';
-        require_once __DIR__ . '/../../../includes/repositories/LogRepository.php';
-        $logRepo = new \LogRepository($pdo);
         
         $active_tab = $_GET['tab'] ?? 'general';
 
-        // Process POST
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // CSRF Check
-            require_once __DIR__ . '/../../../includes/helpers/CSRF.php';
-            if (!\CSRF::verifyToken($_POST['csrf_token'] ?? '')) {
-                header("Location: " . SITE_URL . "/settings?msg=error_csrf");
-                exit;
-            }
+        // Fetch Current Settings
+        $stmt = $pdo->prepare("SELECT setting_key, setting_value FROM cp_settings");
+        $stmt->execute();
+        $settings = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-            if (isset($_POST['save_general']) || isset($_POST['remove_logo']) || isset($_POST['remove_login_bg'])) {
+        // Fetch Migrations for the Migrations Tab (Rule 52)
+        $migrations = [];
+        if ($active_tab === 'migrations') {
+            try {
+                $stmt = $pdo->prepare("SELECT * FROM cp_migrations ORDER BY id DESC");
+                $stmt->execute();
+                $migrations = $stmt->fetchAll();
+            } catch (\Exception $e) {
+                // Table might not exist yet if no migrations run
+            }
+        }
+
+        $this->render('admin/settings', [
+            'settings' => $settings,
+            'active_tab' => $active_tab,
+            'migrations' => $migrations
+        ]);
+    }
+
+    /**
+     * AJAX-First Save Endpoint (Rule 8)
+     */
+    public function save(): void {
+        Auth::requireAdmin();
+        global $pdo;
+        
+        require_once __DIR__ . '/../../../includes/helpers/CSRF.php';
+        if (!\CSRF::verifyToken($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['success' => false, 'message' => 'Erro de segurança (CSRF).']);
+            exit;
+        }
+
+        require_once __DIR__ . '/../../../includes/repositories/LogRepository.php';
+        $logRepo = new \LogRepository($pdo);
+        $tab = $_POST['tab'] ?? '';
+
+        try {
+            if ($tab === 'general') {
                 $keys = ['system_name', 'enable_system_logs'];
                 
                 // Fetch existing settings for file cleanup
@@ -76,33 +107,14 @@ class SettingsController extends Controller {
                     $stmt->execute();
                 }
 
-                Cache::delete('platform_settings');
-                
-                // NOTIFICATION (Rule 39)
-                try {
-                    require_once __DIR__ . '/../../../includes/repositories/NotificationRepository.php';
-                    $notifRepo = new \NotificationRepository($pdo);
-                    $notifRepo->create([
-                        'user_id' => 1,
-                        'title'   => '⚙️ Configurações Atualizadas',
-                        'message' => 'As configurações gerais do sistema foram modificadas.',
-                        'link'    => SITE_URL . '/admin/settings?tab=general',
-                        'type'    => 'info'
-                    ]);
-                } catch (\Exception $e) {}
-
                 $logRepo->create([
                     'user_id' => $_SESSION['user_id'] ?? 0,
                     'action' => 'Settings Updated',
-                    'description' => 'Configurações Gerais/Identidade do sistema atualizadas.',
+                    'description' => 'Configurações Gerais/Identidade atualizadas.',
                     'ip_address' => $_SERVER['REMOTE_ADDR'] ?? ''
                 ]);
-                
-                header("Location: " . SITE_URL . "/settings?tab=general&msg=saved");
-                exit;
-            }
 
-            if (isset($_POST['save_theme'])) {
+            } elseif ($tab === 'themes') {
                 $theme = $_POST['system_theme'] ?? 'gold-black';
                 $login_theme = $_POST['system_login_theme'] ?? 'gold-black';
 
@@ -110,20 +122,14 @@ class SettingsController extends Controller {
                 $stmt->execute(['system_theme', $theme, $theme]);
                 $stmt->execute(['system_login_theme', $login_theme, $login_theme]);
 
-                Cache::delete('platform_settings');
-                
                 $logRepo->create([
                     'user_id' => $_SESSION['user_id'] ?? 0,
                     'action' => 'Theme Updated',
-                    'description' => 'Tema do sistema alterado para: ' . $theme . ' | Login: ' . $login_theme,
+                    'description' => 'Tema global alterado.',
                     'ip_address' => $_SERVER['REMOTE_ADDR'] ?? ''
                 ]);
 
-                header("Location: " . SITE_URL . "/settings?tab=themes&msg=updated");
-                exit;
-            }
-
-            if (isset($_POST['save_security'])) {
+            } elseif ($tab === 'security') {
                 $keys = [
                     'security_max_attempts', 'security_lockout_time', 'security_strong_password', 
                     'security_session_timeout', 'security_ip_lockout', 'security_single_session',
@@ -136,58 +142,52 @@ class SettingsController extends Controller {
                     $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
                     $stmt->execute([$key, $val, $val]);
                 }
-                // Sync Blocked IPs table (Rule 39)
+
                 if (isset($_POST['security_blocked_ips'])) {
-                    try {
-                        $ips = explode("\n", str_replace("\r", "", $_POST['security_blocked_ips']));
-                        $ips = array_filter(array_map('trim', $ips));
-                        
-                        $pdo->exec("DELETE FROM cp_blocked_ips");
-                        if (!empty($ips)) {
-                            $stmt = $pdo->prepare("INSERT INTO cp_blocked_ips (ip_address, reason) VALUES (?, 'Bloqueio Manual')");
-                            foreach (array_unique($ips) as $ip) {
-                                if (!empty($ip)) $stmt->execute([$ip]);
-                            }
-                        }
-                    } catch (\PDOException $e) {
-                        // Migration may not have been run
+                    $ips = explode("\n", str_replace("\r", "", $_POST['security_blocked_ips']));
+                    $ips = array_filter(array_map('trim', $ips));
+                    $pdo->exec("DELETE FROM cp_blocked_ips");
+                    $stmt = $pdo->prepare("INSERT INTO cp_blocked_ips (ip_address, reason) VALUES (?, 'Bloqueio Manual')");
+                    foreach (array_unique($ips) as $ip) {
+                        if (!empty($ip)) $stmt->execute([$ip]);
                     }
                 }
-                Cache::delete('platform_settings');
-
-                // NOTIFICATION (Rule 39)
-                try {
-                    require_once __DIR__ . '/../../../includes/repositories/NotificationRepository.php';
-                    $notifRepo = new \NotificationRepository($pdo);
-                    $notifRepo->create([
-                        'user_id' => 1,
-                        'title'   => '🛡️ Segurança Atualizada',
-                        'message' => 'As políticas de segurança e IPs bloqueados foram modificados.',
-                        'link'    => SITE_URL . '/admin/settings?tab=security',
-                        'type'    => 'warning'
-                    ]);
-                } catch (\Exception $e) {}
 
                 $logRepo->create([
                     'user_id' => $_SESSION['user_id'] ?? 0,
-                    'action' => 'Security Settings Updated',
-                    'description' => 'Políticas de segurança e lista de IPs bloqueados atualizadas.',
+                    'action' => 'Security Updated',
+                    'description' => 'Configurações de segurança atualizadas.',
                     'ip_address' => $_SERVER['REMOTE_ADDR'] ?? ''
                 ]);
-
-                header("Location: " . SITE_URL . "/settings?tab=security&msg=saved");
-                exit;
             }
+
+            Cache::delete('platform_settings');
+            echo json_encode(['success' => true, 'message' => 'Configurações salvas com sucesso!']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Erro ao salvar: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Migration Runner (Rule 52)
+     */
+    public function runMigrations(): void {
+        Auth::requireAdmin();
+        $token = $_ENV['DB_MIGRATION_TOKEN'] ?? '';
+        
+        // Internal call to the migration script
+        $migrationFile = __DIR__ . '/../../../public/migration/migrar.php';
+        if (!file_exists($migrationFile)) {
+            echo json_encode(['success' => false, 'message' => 'Script de migração não encontrado.']);
+            return;
         }
 
-        // Fetch Current Settings
-        $stmt = $pdo->prepare("SELECT setting_key, setting_value FROM cp_settings");
-        $stmt->execute();
-        $settings = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+        // We simulate the web request or call it with the token
+        $_GET['token'] = $token;
+        ob_start();
+        require $migrationFile;
+        $output = ob_get_clean();
 
-        $this->render('admin/settings', [
-            'settings' => $settings,
-            'active_tab' => $active_tab
-        ]);
+        echo json_encode(['success' => true, 'message' => 'Processo de migração concluído.', 'output' => $output]);
     }
 }

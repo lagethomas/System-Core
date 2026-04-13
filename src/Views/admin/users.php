@@ -8,7 +8,7 @@
     <p>Controle quem tem acesso ao sistema e seus níveis de permissão.</p>
 </div>
 
-<div class="user-list-card">
+<div class="card user-list-card">
     <div class="user-list-header">
         <h3>Lista de Usuários</h3>
         <button class="btn-primary" onclick="openUserModal()">
