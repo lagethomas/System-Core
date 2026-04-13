@@ -104,14 +104,18 @@ class SettingsController extends Controller {
 
             if (isset($_POST['save_theme'])) {
                 $theme = $_POST['system_theme'] ?? 'gold-black';
-                $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES ('system_theme', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
-                $stmt->execute([$theme, $theme]);
+                $login_theme = $_POST['system_login_theme'] ?? 'gold-black';
+
+                $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+                $stmt->execute(['system_theme', $theme, $theme]);
+                $stmt->execute(['system_login_theme', $login_theme, $login_theme]);
+
                 Cache::delete('platform_settings');
                 
                 $logRepo->create([
                     'user_id' => $_SESSION['user_id'] ?? 0,
                     'action' => 'Theme Updated',
-                    'description' => 'Tema do sistema alterado para: ' . $theme,
+                    'description' => 'Tema do sistema alterado para: ' . $theme . ' | Login: ' . $login_theme,
                     'ip_address' => $_SERVER['REMOTE_ADDR'] ?? ''
                 ]);
 

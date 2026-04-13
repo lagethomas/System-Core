@@ -988,6 +988,19 @@ body {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Table Card Uniformity (Minimum height for small tables) */
+.card:has(.table-responsive), 
+.card-table {
+    min-height: 45vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:has(.table-responsive) .table-responsive,
+.card-table .table-responsive {
+    flex: 1;
+}
+
 .card:hover {
     border-color: rgba(var(--primary-rgb), 0.3);
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);

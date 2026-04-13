@@ -142,6 +142,7 @@ CREATE TABLE IF NOT EXISTS `cp_companies` (
     `state` VARCHAR(50) DEFAULT NULL,
     `theme_color` VARCHAR(50) DEFAULT '#2563eb',
     `theme` VARCHAR(50) DEFAULT 'default',
+    `login_theme` VARCHAR(50) DEFAULT NULL,
     `plan_id` INT DEFAULT NULL,
     `partner_id` INT DEFAULT NULL,
     `base_price` DECIMAL(10,2) DEFAULT 40.00,
@@ -223,7 +224,8 @@ INSERT IGNORE INTO `cp_settings` (`setting_key`, `setting_value`) VALUES
 ('security_log_days', '30'),
 ('security_log_limit', '10000'),
 ('system_logo', NULL),
-('login_background', NULL);
+('login_background', NULL),
+('system_login_theme', 'gold-black');
 
 -- Record that migrations up to #004 are part of base schema
 INSERT IGNORE INTO `cp_migrations` (`migration_id`, `title`) VALUES 
@@ -232,6 +234,7 @@ INSERT IGNORE INTO `cp_migrations` (`migration_id`, `title`) VALUES
 (3, 'Add heartbeat for single session enforcement'),
 (4, 'Add Visual Theme settings'),
 (5, 'Add Email Confirmations Table'),
-(6, 'Add Security Infrastructure (Login Attempts & Blocked IPs)');
+(6, 'Add Security Infrastructure (Login Attempts & Blocked IPs)'),
+(12, 'Add individual login theme support to companies and settings');
 
 SET FOREIGN_KEY_CHECKS = 1;

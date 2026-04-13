@@ -145,6 +145,35 @@
                 <?php endforeach; ?>
             </div>
 
+            <div class="settings-header-box mt-5">
+                <h5><i data-lucide="monitor" class="text-primary"></i> Tema Global da Tela de Login</h5>
+                <p>Escolha o tema padrão que será aplicado à página de login global e empresas sem tema próprio.</p>
+            </div>
+
+            <div class="theme-grid">
+                <?php 
+                $current_login_theme = $settings['system_login_theme'] ?? 'gold-black';
+                
+                foreach ($themes as $slug => $theme): 
+                    $isSelected = ($slug === $current_login_theme);
+                ?>
+                    <label class="theme-card-label">
+                        <input type="radio" name="system_login_theme" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?> style="display: none;">
+                        <div class="theme-card-ui">
+                            <div class="theme-card-preview" style="background: <?php echo $theme['bg']; ?>;">
+                                <div class="theme-card-accent" style="background: <?php echo $theme['color']; ?>; box-shadow: 0 0 15px <?php echo $theme['color']; ?>88;"></div>
+                            </div>
+                            <div class="text-center">
+                                <span class="theme-card-name"><?php echo $theme['name']; ?></span>
+                            </div>
+                            <div class="theme-check-icon">
+                                <i data-lucide="check"></i>
+                            </div>
+                        </div>
+                    </label>
+                <?php endforeach; ?>
+            </div>
+
             <div class="settings-footer-section">
                 <button type="submit" name="save_theme" class="btn-primary settings-save-btn">
                     <i data-lucide="save"></i> Aplicar Tema

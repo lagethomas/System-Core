@@ -52,8 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Rule 34: CSS External Stylesheets -->
     <link rel="stylesheet" href="assets/css/style.css?v=<?php echo (string)time(); ?>">
     <link rel="stylesheet" href="assets/css/modules/auth.css?v=<?php echo (string)time(); ?>">
+    <link rel="stylesheet" href="assets/css/components/popups.css?v=<?php echo (string)time(); ?>">
     <?php 
-        $theme_slug = $platform_settings['system_theme'] ?? 'gold-black';
+        $theme_slug = $platform_settings['system_login_theme'] ?? ($platform_settings['system_theme'] ?? 'gold-black');
         echo '<link rel="stylesheet" href="assets/css/theme/' . $theme_slug . '.css?v=' . (string)time() . '">';
     ?>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -137,11 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Error Feedback via Rule 97 (notify helper from ui-core)
-            <?php if ($error): ?>
-            if (typeof window.notify === 'function') {
-                window.notify("<?php echo addslashes($error); ?>", "error");
-            }
-            <?php endif; ?>
+            // Removed redundant toast notification
         });
 
         // Form Submission Logic

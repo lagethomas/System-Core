@@ -51,6 +51,7 @@ class CompanySettingsController extends Controller {
             'document' => isset($_POST['document']) ? trim($_POST['document']) : ($company['document'] ?? ''),
             'custom_domain' => isset($_POST['custom_domain']) ? trim($_POST['custom_domain']) : ($company['custom_domain'] ?? ''),
             'theme' => isset($_POST['theme']) ? $_POST['theme'] : ($company['theme'] ?? 'gold-black'),
+            'login_theme' => isset($_POST['login_theme']) ? $_POST['login_theme'] : ($company['login_theme'] ?? 'gold-black'),
         ];
 
         // Inherit theme_color from selected theme primary color

@@ -174,12 +174,14 @@ class LoginController extends Controller {
         $system_logo      = ($company && !empty($company['logo'])) ? $company['logo'] : ($settings['system_logo'] ?? '');
         $login_background = ($company && !empty($company['background_image'])) ? $company['background_image'] : ($settings['login_background'] ?? '');
         
-        // Prioritize company theme if available
+        // Prioritize specific login theme
         $theme_slug = 'gold-black';
-        if ($company && !empty($company['theme'])) {
+        if ($company && !empty($company['login_theme'])) {
+            $theme_slug = $company['login_theme'];
+        } elseif ($company && !empty($company['theme'])) {
             $theme_slug = $company['theme'];
         } else {
-            $theme_slug = $settings['system_theme'] ?? 'gold-black';
+            $theme_slug = $settings['system_login_theme'] ?? ($settings['system_theme'] ?? 'gold-black');
         }
         $theme_slug = htmlspecialchars($theme_slug);
 

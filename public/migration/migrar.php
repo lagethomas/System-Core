@@ -83,7 +83,8 @@ try {
             'sql' => [
                 "INSERT IGNORE INTO `cp_settings` (`setting_key`, `setting_value`) VALUES 
                 ('system_logo', NULL),
-                ('login_background', NULL);"
+                ('login_background', NULL),
+                ('system_login_theme', 'gold-black');"
             ]
         ],
         [
@@ -158,8 +159,9 @@ try {
                     `custom_domain` VARCHAR(255) DEFAULT NULL,
                     `phone` VARCHAR(50) DEFAULT NULL,
                     `email` VARCHAR(255) DEFAULT NULL,
-                    `theme_color` VARCHAR(50) DEFAULT '#d4af37',
-                    `theme` VARCHAR(50) DEFAULT 'gold-black',
+                    `theme_color` VARCHAR(50) DEFAULT '#2563eb',
+                    `theme` VARCHAR(50) DEFAULT 'default',
+                    `login_theme` VARCHAR(50) DEFAULT NULL,
                     `plan_id` INT DEFAULT NULL,
                     `partner_id` INT DEFAULT NULL,
                     `peak_users_count` INT DEFAULT 0,
@@ -210,6 +212,14 @@ try {
             'sql' => [
                 "ALTER TABLE `cp_companies` ADD COLUMN IF NOT EXISTS `logo` VARCHAR(255) DEFAULT NULL AFTER `theme`;",
                 "ALTER TABLE `cp_companies` ADD COLUMN IF NOT EXISTS `background_image` VARCHAR(255) DEFAULT NULL AFTER `logo`;"
+            ]
+        ],
+        [
+            'id' => 12,
+            'title' => 'Add individual login theme support to companies and settings',
+            'sql' => [
+                "ALTER TABLE `cp_companies` ADD COLUMN IF NOT EXISTS `login_theme` VARCHAR(50) DEFAULT NULL AFTER `theme`;",
+                "INSERT IGNORE INTO `cp_settings` (`setting_key`, `setting_value`) VALUES ('system_login_theme', 'gold-black');"
             ]
         ]
     ];

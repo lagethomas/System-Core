@@ -8,6 +8,7 @@
     <!-- Rule 34: CSS External Stylesheets -->
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=<?php echo $v; ?>">
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/modules/auth.css?v=<?php echo $v; ?>">
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/components/popups.css?v=<?php echo $v; ?>">
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/theme/<?php echo $theme_slug; ?>.css?v=<?php echo $v; ?>">
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -37,7 +38,7 @@
         <div class="auth-overlay"></div>
     <?php endif; ?>
 
-    <div class="auth-card <?php echo !empty($settings['login_background']) ? 'glassmorphism' : ''; ?>">
+        <div class="auth-card <?php echo !empty($settings['login_background']) ? 'glassmorphism' : ''; ?>">
         <div class="auth-header">
             <div class="auth-logo-box">
                 <?php 
@@ -118,11 +119,7 @@
             }
 
             // Rule 97: Global Notifications via UI Core
-            <?php if (!empty($error)): ?>
-            if (typeof window.notify === 'function') {
-                window.notify("<?php echo addslashes($error); ?>", "error");
-            }
-            <?php endif; ?>
+            // Removed redundant toast notification (Rule: only use inline alerts on login)
         });
 
         // Rule 35: Form Interactivity
