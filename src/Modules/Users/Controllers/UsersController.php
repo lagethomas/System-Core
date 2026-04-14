@@ -21,8 +21,9 @@ class UsersController extends Controller {
         require_once __DIR__ . '/../../../../includes/repositories/UserRepository.php';
         $userRepo = new \UserRepository($pdo);
         
+        global $platform_settings;
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $perPage = 10;
+        $perPage = (int)($platform_settings['items_per_page'] ?? 10);
         $search = $_GET['search'] ?? '';
         $idFilter = isset($_GET['id']) ? (int)$_GET['id'] : null;
 
@@ -98,18 +99,6 @@ class UsersController extends Controller {
             require_once __DIR__ . '/../../../../includes/logs.php';
             \Logger::log($id ? 'edit_user' : 'create_user', $id ? "Editou o usuário $name" : "Criou o usuário $name");
             
-            // Notification logic
-            try {
-                if (class_exists(\App\Helpers\Notification::class)) {
-                    \App\Helpers\Notification::create([
-                        'user_id' => 1,
-                        'title'   => '👤 Usuário ' . ($id ? 'Atualizado' : 'Criado'),
-                        'message' => "O usuário $name foi salvo com sucesso.",
-                        'link'    => SITE_URL . '/admin/users',
-                        'type'    => 'info'
-                    ]);
-                }
-            } catch (\Exception $e) {}
 
             $this->jsonResponse(['success' => true, 'message' => 'Usuário salvo com sucesso!', 'redirect' => 'users']);
         } catch (\Exception $e) {
@@ -156,18 +145,6 @@ class UsersController extends Controller {
             require_once __DIR__ . '/../../../../includes/logs.php';
             \Logger::log('delete_user', "Usuário " . (string)$id . " removido.");
 
-            // Notification logic
-            try {
-                if (class_exists(\App\Helpers\Notification::class)) {
-                    \App\Helpers\Notification::create([
-                        'user_id' => 1,
-                        'title'   => '👤 Usuário Removido',
-                        'message' => "Um usuário (ID " . (string)$id . ") foi excluído do sistema.",
-                        'link'    => SITE_URL . '/admin/users',
-                        'type'    => 'danger'
-                    ]);
-                }
-            } catch (\Exception $e) {}
             
             $this->jsonResponse(['success' => true, 'message' => 'Usuário removido.']);
         } catch (\Exception $e) {
@@ -231,15 +208,6 @@ class UsersController extends Controller {
                     require_once __DIR__ . '/../../../../includes/logs.php';
                     \Logger::log('security_email', "Dados de recuperação/vínculo enviados para o e-mail {$user['email']} (Usuário: {$user['name']}).");
                     
-                    if (class_exists(\App\Helpers\Notification::class)) {
-                        \App\Helpers\Notification::create([
-                            'user_id' => 1,
-                            'title'   => '📧 Credenciais Enviadas',
-                            'message' => "Link de acesso enviado para: {$user['email']}",
-                            'link'    => SITE_URL . '/admin/logs',
-                            'type'    => 'info'
-                        ]);
-                    }
                 } catch (\Exception $e) {}
                 
                 $this->jsonResponse(['success' => true, 'message' => 'Dados de acesso enviados para o e-mail: ' . $user['email']]);

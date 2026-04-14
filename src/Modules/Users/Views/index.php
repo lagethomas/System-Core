@@ -85,7 +85,7 @@
 <script>
 function openUserModal(data = null) {
     const html = `
-        <form onsubmit="saveUser(event, this)">
+        <form action="<?php echo SITE_URL; ?>/api/admin/users/save" method="POST" class="ajax-form">
             <input type="hidden" name="id" value="${data ? data.id : ''}">
             
             <div class="floating-group">
@@ -186,32 +186,11 @@ function suggestUsername(name) {
     input.value = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '.').replace(/\.+/g, '.').replace(/^\.|\.$/g, '');
 }
 
-async function saveUser(e, form) {
-    e.preventDefault();
-    const submitBtn = form.querySelector('button[type="submit"]');
-    if (submitBtn) submitBtn.disabled = true;
-
-    try {
-        const formData = new FormData(form);
-        const res = await fetch('<?php echo SITE_URL; ?>/api/admin/users/save', {
-            method: 'POST',
-            body: formData
-        });
-        const result = await res.json();
-        if (result.success) {
-            UI.showToast('Usuário salvo com sucesso!');
-            UI.closeModal();
-            // A refresh here might still be needed for complex table updates, 
-            // but the user explicitly asked for no refresh.
-        } else {
-            UI.showToast(result.message || 'Erro ao salvar', 'error');
-            if (submitBtn) submitBtn.disabled = false;
-        }
-    } catch (error) {
-        UI.showToast('Erro de conexão', 'error');
-        if (submitBtn) submitBtn.disabled = false;
+document.addEventListener('ajaxSuccess', (e) => {
+    if (e.target.action.includes('/api/admin/users/save')) {
+        // window.location.reload(); // Deixando comentado pois o usuário pediu sem refresh nas mutações
     }
-}
+});
 
 async function sendAccess(id) {
     if (await UI.confirm('Deseja realmente gerar e enviar novos dados de acesso para este usuário por e-mail? A senha atual dele será alterada.', {
@@ -224,9 +203,6 @@ async function sendAccess(id) {
         formData.append('id', id);
 
         const res = await UI.request('<?php echo SITE_URL; ?>/api/admin/users/send-access', formData);
-        if (res && res.success) {
-            UI.showToast('Dados de acesso enviados!');
-        }
     }
 }
 
@@ -237,7 +213,6 @@ async function deleteUser(id) {
         
         const res = await UI.request('<?php echo SITE_URL; ?>/api/admin/users/delete', formData);
         if (res && res.success) {
-            UI.showToast('Usuário removido');
             const row = document.querySelector(`button[onclick*="deleteUser(${id})"]`)?.closest('tr');
             if (row) {
                 row.style.transition = 'all 0.4s ease';

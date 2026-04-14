@@ -99,15 +99,6 @@ class SettingsController extends Controller {
 
         Database::update('cp_companies', $data, 'id = :id', ['id' => $company_id]);
         
-        try {
-            if (class_exists(\App\Helpers\Notification::class)) {
-                $user_id = (int)($_SESSION['user_id'] ?? 0);
-                $msg = "Configurações da empresa atualizadas.";
-                \App\Helpers\Notification::forCompany((int)$company_id, 'Configurações Alteradas', $msg, "/app/company-settings", 'info', $user_id);
-            }
-        } catch (\Exception $e) {
-            error_log("Failed to send notification: " . $e->getMessage());
-        }
 
         $this->jsonResponse(['success' => true, 'message' => 'Configurações salvas com sucesso!']);
     }

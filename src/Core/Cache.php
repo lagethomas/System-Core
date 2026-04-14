@@ -8,15 +8,21 @@ namespace App\Core;
  */
 class Cache {
     public static function delete(string $key): void {
-        // Simple placeholder for cache invalidation
-        // In a real scenario, this would clear Redis/Memcached or file cache.
+        if (class_exists('\Cache')) {
+            \Cache::delete($key);
+        }
     }
 
     public static function get(string $key) {
+        if (class_exists('\Cache')) {
+            return \Cache::get($key);
+        }
         return null;
     }
 
     public static function set(string $key, $value, int $ttl = 3600): void {
-        // Placeholder
+        if (class_exists('\Cache')) {
+            \Cache::set($key, $value, $ttl);
+        }
     }
 }

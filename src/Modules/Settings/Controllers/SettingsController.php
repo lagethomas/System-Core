@@ -49,7 +49,7 @@ class SettingsController extends Controller {
 
         try {
             if ($tab === 'general') {
-                $keys = ['system_name', 'enable_system_logs'];
+                $keys = ['system_name', 'enable_system_logs', 'items_per_page'];
                 
                 // Fetch existing settings for file cleanup
                 $stmt = $pdo->prepare("SELECT setting_key, setting_value FROM cp_settings WHERE setting_key IN ('system_logo', 'login_background')");
@@ -104,12 +104,18 @@ class SettingsController extends Controller {
                 ]);
 
             } elseif ($tab === 'themes') {
-                $theme = $_POST['system_theme'] ?? 'gold-black';
-                $login_theme = $_POST['system_login_theme'] ?? 'gold-black';
+                $theme = $_POST['system_theme'] ?? '';
+                $login_theme = $_POST['system_login_theme'] ?? '';
 
-                $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
-                $stmt->execute(['system_theme', $theme, $theme]);
-                $stmt->execute(['system_login_theme', $login_theme, $login_theme]);
+                if ($theme) {
+                    $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES ('system_theme', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+                    $stmt->execute([$theme, $theme]);
+                }
+                
+                if ($login_theme) {
+                    $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES ('system_login_theme', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+                    $stmt->execute([$login_theme, $login_theme]);
+                }
 
                 $logRepo->create([
                     'user_id' => (int)($_SESSION['user_id'] ?? 0),

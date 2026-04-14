@@ -36,8 +36,10 @@ class CompaniesController extends Controller {
         $countSql = "SELECT COUNT(*) as total FROM cp_companies";
         if ($idFilter) $countSql .= " WHERE id = $idFilter";
 
+        global $platform_settings;
+        $perPage = (int)($platform_settings['items_per_page'] ?? 25);
         $totalItems = (int)Database::fetch($countSql)['total'];
-        $pagination = Pagination::getParams($totalItems, 25);
+        $pagination = Pagination::getParams($totalItems, $perPage);
 
         $sql = "
             SELECT c.*, 

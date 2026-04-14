@@ -79,6 +79,9 @@ if (typeof UI !== 'undefined') {
                     if (result.error !== 'expired' && result.error !== 'duplicate') {
                         this.showToast(result.message || 'Erro ao processar requisição', result.type || 'error');
                     }
+                } else {
+                    // Success toast (Rule: centralize feedback)
+                    this.showToast(result.message || 'Operação realizada com sucesso', result.type || 'success');
                 }
                 return result;
             } else {
@@ -128,7 +131,6 @@ document.addEventListener('submit', async (e) => {
         }
 
         if (result && result.success) {
-            UI.showToast(result.message || 'Operação realizada com sucesso', result.type || 'success');
             form.dispatchEvent(new CustomEvent('ajaxSuccess', { detail: result }));
             if (result.noClose || (result.data && result.data.noClose)) return;
             UI.closeModal();

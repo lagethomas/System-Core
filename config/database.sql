@@ -222,7 +222,8 @@ INSERT IGNORE INTO `cp_settings` (`setting_key`, `setting_value`) VALUES
 ('security_session_timeout', '30'),
 ('security_ip_lockout', '0'),
 ('security_log_days', '30'),
-('security_log_limit', '10000'),
+('security_log_limit', '500'),
+('items_per_page', '25'),
 ('system_logo', NULL),
 ('login_background', NULL),
 ('system_login_theme', 'gold-black');

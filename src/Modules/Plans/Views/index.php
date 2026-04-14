@@ -64,7 +64,7 @@ $v = (string)time();
 <script>
 function openPlanModal(data = null) {
     const html = `
-        <form onsubmit="savePlan(event, this)">
+        <form action="<?php echo SITE_URL; ?>/api/admin/plans/save" method="POST" class="ajax-form" data-no-reload="true">
             <input type="hidden" name="nonce" value="<?php echo $nonces['save']; ?>">
             <input type="hidden" name="id" value="${data ? data.id : ''}">
             
@@ -108,57 +108,22 @@ function openPlanModal(data = null) {
     if(window.lucide) lucide.createIcons();
 }
 
-async function savePlan(e, form) {
-    e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    let originalText = '';
-    
-    if (btn) {
-        originalText = btn.innerHTML;
-        btn.innerHTML = '<i data-lucide="loader" class="animate-spin icon-sm mr-2"></i> Salvando...';
-        btn.disabled = true;
-        if(window.lucide) lucide.createIcons();
+document.addEventListener('ajaxSuccess', (e) => {
+    if (e.target.action.includes('/api/admin/plans/save')) {
+        setTimeout(() => window.location.reload(), 800);
     }
-
-    try {
-        const formData = new FormData(form);
-        const response = await fetch('<?php echo SITE_URL; ?>/api/admin/plans/save', {
-            method: 'POST',
-            body: formData
-        });
-        const result = await response.json();
-        
-        if (result.success) {
-            UI.showToast('Pacote salvo com sucesso!');
-            UI.closeModal();
-        } else {
-            UI.showToast(result.message || 'Erro ao salvar', 'error');
-        }
-    } catch (error) {
-        UI.showToast('Erro de conexão', 'error');
-    } finally {
-        if (btn) {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            if(window.lucide) lucide.createIcons();
-        }
-    }
-}
+});
 
 async function deletePlan(id) {
     if (await UI.confirm('Deseja realmente excluir este pacote? Empresas associadas ficarão sem pacote definido.')) {
         try {
             const formData = new FormData();
             formData.append('id', id);
+            formData.append('nonce', '<?php echo $nonces['delete']; ?>');
             
-            const response = await fetch('<?php echo SITE_URL; ?>/api/admin/plans/delete', {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
+            const result = await UI.request('<?php echo SITE_URL; ?>/api/admin/plans/delete', formData);
             
             if (result && result.success) {
-                UI.showToast('Pacote removido');
                 const row = document.querySelector(`button[onclick*="deletePlan(${id})"]`)?.closest('tr');
                 if (row) {
                     row.style.transition = 'all 0.4s ease';
@@ -166,12 +131,8 @@ async function deletePlan(id) {
                     row.style.transform = 'translateX(20px)';
                     setTimeout(() => row.remove(), 400);
                 }
-            } else {
-                UI.showToast(result.message || 'Erro ao excluir', 'error');
             }
-        } catch (error) {
-            UI.showToast('Erro de conexão', 'error');
-        }
+        } catch (error) {}
     }
 }
 </script>

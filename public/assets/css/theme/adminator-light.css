@@ -298,3 +298,6 @@ body {
 .pagination-item.active span{
     color: #fff !important;
 }
+input:checked+.slider:before{
+    background-color: #FFF !important;
+}

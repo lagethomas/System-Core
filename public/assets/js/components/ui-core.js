@@ -91,7 +91,7 @@ window.closeModal = function(id) {
     }
 };
 
-const UI = {
+window.UI = {
     modal: document.getElementById('global-modal'),
     modalTitle: document.getElementById('modal-title'),
     modalBody: document.getElementById('modal-body'),
@@ -327,5 +327,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 });
 
-window.UI = UI;
 window.handleGlobalSearch = UI.handleGlobalSearch;

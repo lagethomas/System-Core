@@ -30,8 +30,9 @@ class LogsController extends Controller {
             'action' => $action_filter
         ];
 
+        global $platform_settings;
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $perPage = 25;
+        $perPage = (int)($platform_settings['items_per_page'] ?? 25);
         
         $totalLogs = $logRepo->countAll($filters);
         $logs = $logRepo->getPaginated($page, $perPage, $filters);

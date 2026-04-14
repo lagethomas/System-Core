@@ -102,7 +102,8 @@ $platform_settings = Cache::get('platform_settings');
 if ($platform_settings === null) {
     try {
         $stmt = $pdo->query("SELECT setting_key, setting_value FROM cp_settings");
-        $platform_settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        $raw_settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        $platform_settings = array_change_key_case($raw_settings, CASE_LOWER);
         Cache::set('platform_settings', $platform_settings, 300); // 5 min TTL
     } catch (\Exception $e) {
         $platform_settings = [];

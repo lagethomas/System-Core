@@ -38,10 +38,7 @@ $page_titles = [
     'company-settings' => 'Configurações da Empresa'
 ];
 
-// Fetch Notifications
-$notifRepo = new NotificationRepository($pdo);
-$unread_notifications = $user_id ? $notifRepo->getUnreadByUser($user_id) : [];
-$unread_count = count($unread_notifications);
+$unread_count = 0;
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -56,8 +53,8 @@ $unread_count = count($unread_notifications);
     $system_name = $platform_settings['system_name'] ?? 'SaaSFlow Core';
     $system_logo = $platform_settings['system_logo'] ?? '';
 
-    // --- COMPANY BRANDING OVERRIDE (Rule 39 / User Request) ---
-    if (Auth::isLoggedIn()) {
+    // --- COMPANY BRANDING OVERRIDE: only for non-admin (company) users ---
+    if (Auth::isLoggedIn() && !Auth::isAdmin()) {
         $company_id = Auth::companyId();
         if ($company_id) {
             try {
@@ -65,7 +62,6 @@ $unread_count = count($unread_notifications);
                 if ($comp) {
                     $system_name = $comp['name'];
                     if (!empty($comp['logo'])) {
-                        // If it starts with / or http, use it as is. Otherwise prepended by uploads/logos (for old system compatibility)
                         if (strpos($comp['logo'], '/') === 0 || strpos($comp['logo'], 'http') === 0) {
                             $system_logo = $comp['logo'];
                         } else {
@@ -90,8 +86,6 @@ $unread_count = count($unread_notifications);
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/main-footer.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/popups.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/toasts.css'); ?>">
-    <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/switches.css'); ?>">
-    <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/badges.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/global-search.css'); ?>">
 
     
@@ -226,7 +220,7 @@ $unread_count = count($unread_notifications);
 
                 <div class="top-nav-right">
                     <!-- Global Search -->
-                    <div class="global-search-container" id="global-search">
+                    <div class="modern-search-container" id="global-search">
                         <div class="search-input-wrapper">
                             <i data-lucide="search" class="search-icon"></i>
                             <input type="text" id="global-search-input" placeholder="Buscar no sistema..." autocomplete="off">
@@ -243,61 +237,23 @@ $unread_count = count($unread_notifications);
                         <i data-lucide="clock"></i>
                         <span id="timer-count">--:--</span>
                     </div>
-
                     <!-- Notificações -->
-                    <div class="notif-trigger" id="notif-trigger">
+                    <div class="notif-trigger">
                         <i data-lucide="bell"></i>
-                        <?php if ($unread_count > 0): ?>
-                            <span class="notif-badge"><?php echo (string)$unread_count; ?></span>
-                        <?php endif; ?>
                     </div>
 
                     <div class="notification-dropdown" id="notif-dropdown">
                         <div class="notif-header">
                             <span>Notificações</span>
-                            <?php if ($unread_count > 0): ?>
-                                <button onclick="markAllRead()" class="btn-mark-read">Marcar todas como lidas</button>
-                            <?php endif; ?>
                         </div>
                         <div class="notif-list">
-                            <?php if (empty($unread_notifications)): ?>
-                                <div class="notif-empty">
-                                    <i data-lucide="bell-off"></i>
-                                    <span>Nenhuma nova notificação</span>
-                                </div>
-                            <?php else: ?>
-                                <?php foreach ($unread_notifications as $notif): ?>
-                                    <div class="notif-item-wrapper" id="notif-<?php echo $notif['id']; ?>">
-                                        <a href="<?php echo $notif['link'] ?: '#'; ?>" class="notif-item">
-                                            <div class="notif-icon <?php echo htmlspecialchars($notif['type'] ?? 'info'); ?>">
-                                                <?php 
-                                                // Icon mapping by type (Lucide names)
-                                                $icon = 'info';
-                                                switch($notif['type'] ?? '') {
-                                                    case 'success': $icon = 'check-circle'; break;
-                                                    case 'warning': $icon = 'alert-triangle'; break;
-                                                    case 'danger':  $icon = 'alert-circle'; break;
-                                                }
-                                                ?>
-                                                <i data-lucide="<?php echo $icon; ?>"></i>
-                                            </div>
-                                            <div class="notif-content">
-                                                <span class="notif-title"><?php echo htmlspecialchars($notif['title']); ?></span>
-                                                <span class="notif-text"><?php echo htmlspecialchars($notif['message']); ?></span>
-                                                <span class="notif-time"><?php echo date('d/m H:i', strtotime($notif['created_at'])); ?></span>
-                                            </div>
-                                        </a>
-                                        <button onclick="markRead(event, <?php echo $notif['id']; ?>)" class="notif-close-btn" title="Marcar como lido">
-                                            <i data-lucide="x"></i>
-                                        </button>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </div>
-                        <div class="notif-footer">
-                            <a href="#">Ver todas as notificações</a>
+                            <div class="notif-empty">
+                                <i data-lucide="bell-off"></i>
+                                <span>Nenhuma nova notificação</span>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </header>
             <div class="page-content">
@@ -350,7 +306,7 @@ $unread_count = count($unread_notifications);
 
         // Close on click outside
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.global-search-container')) {
+            if (!e.target.closest('.modern-search-container')) {
                 searchResults.classList.remove('active');
             }
         });
@@ -419,10 +375,13 @@ document.getElementById('user-profile-trigger').addEventListener('click', functi
 });
 
 // Dropdown de notificações
-document.getElementById('notif-trigger').addEventListener('click', function(e) {
-    e.stopPropagation();
-    document.getElementById('notif-dropdown').classList.toggle('active');
-});
+const notifTrigger = document.querySelector('.notif-trigger');
+if (notifTrigger) {
+    notifTrigger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.getElementById('notif-dropdown').classList.toggle('active');
+    });
+}
 
 // Fechar dropdowns ao clicar fora
 document.addEventListener('click', function() {
@@ -438,129 +397,5 @@ document.addEventListener('click', function() {
 function handleLogout(e) {
     // Redirect immediately as requested by user
     window.location.href = e.currentTarget.href;
-}
-
-async function refreshNotifications() {
-    try {
-        const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/unread');
-        const data = await res.json();
-        
-        if (data.success) {
-            updateNotificationUI(data.notifications);
-        }
-    } catch (e) {
-        console.error('Erro ao carregar notificações:', e);
-    }
-}
-
-function updateNotificationUI(notifications) {
-    const list = document.querySelector('.notif-list');
-    const badge = document.querySelector('.notif-badge');
-    const trigger = document.getElementById('notif-trigger');
-    const header = document.querySelector('.notif-header');
-    
-    // Update Badge
-    if (notifications.length > 0) {
-        if (badge) {
-            badge.textContent = notifications.length;
-        } else {
-            const newBadge = document.createElement('span');
-            newBadge.className = 'notif-badge';
-            newBadge.textContent = notifications.length;
-            trigger.appendChild(newBadge);
-        }
-        
-        // Ensure "Mark All Read" button exists
-        if (!header.querySelector('.btn-mark-read')) {
-            const btn = document.createElement('button');
-            btn.onclick = markAllRead;
-            btn.className = 'btn-mark-read';
-            btn.textContent = 'Marcar todas como lidas';
-            header.appendChild(btn);
-        }
-    } else {
-        if (badge) badge.remove();
-        const btn = header.querySelector('.btn-mark-read');
-        if (btn) btn.remove();
-    }
-
-    // Update List
-    if (notifications.length === 0) {
-        list.innerHTML = `
-            <div class="notif-empty">
-                <i data-lucide="bell-off"></i>
-                <span>Nenhuma nova notificação</span>
-            </div>
-        `;
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-    } else {
-        let html = '';
-        notifications.forEach(notif => {
-            html += `
-                <div class="notif-item-wrapper" id="notif-${notif.id}">
-                    <a href="${notif.link || '#'}" class="notif-item">
-                        <div class="notif-icon ${notif.type || 'info'}">
-                            <i class="${notif.icon}"></i>
-                        </div>
-                        <div class="notif-content">
-                            <span class="notif-title">${notif.title}</span>
-                            <span class="notif-text">${notif.message}</span>
-                            <span class="notif-time">${notif.time_ago}</span>
-                        </div>
-                    </a>
-                    <button onclick="markRead(event, ${notif.id})" class="notif-close-btn" title="Marcar como lido">
-                        <i data-lucide="x"></i>
-                    </button>
-                </div>
-            `;
-        });
-        list.innerHTML = html;
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-    }
-}
-
-// Iniciar Polling (15 segundos)
-setInterval(refreshNotifications, 15000);
-
-async function markRead(event, id) {
-    if (event) event.stopPropagation();
-    const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/read/' + id, { method: 'POST' });
-    if (res.ok) {
-        const el = document.getElementById('notif-' + id);
-        if (el) {
-            el.style.opacity = '0';
-            el.style.transform = 'translateX(20px)';
-            setTimeout(() => {
-                el.remove();
-                // Check if empty
-                const list = document.querySelector('.notif-list');
-                if (list && list.children.length === 0) {
-                    list.innerHTML = `
-                        <div class="notif-empty">
-                            <i data-lucide="bell-off"></i>
-                            <span>Nenhuma nova notificação</span>
-                        </div>
-                    `;
-                    if (typeof lucide !== 'undefined') lucide.createIcons();
-                    // Update badge
-                    const badge = document.querySelector('.notif-badge');
-                    if (badge) badge.remove();
-                } else {
-                    // Update badge count
-                    const badge = document.querySelector('.notif-badge');
-                    if (badge) {
-                        const count = parseInt(badge.textContent) - 1;
-                        if (count <= 0) badge.remove();
-                        else badge.textContent = count;
-                    }
-                }
-            }, 300);
-        }
-    }
-}
-
-async function markAllRead() {
-    const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/read_all', { method: 'POST' });
-    if (res.ok) window.location.reload();
 }
 </script>

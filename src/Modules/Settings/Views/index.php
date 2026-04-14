@@ -6,7 +6,6 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/CS
 require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/ThemeHelper.php';
 $v = (string)time();
 ?>
-<link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/modules/settings.css?v=<?php echo $v; ?>">
 
 <div class="settings-tab-nav">
     <a href="?tab=general" class="nav-link-tab <?php echo $active_tab === 'general' ? 'active' : ''; ?>">
@@ -23,7 +22,7 @@ $v = (string)time();
 <div class="card card-settings">
     <!-- General Settings Tab -->
     <?php if ($active_tab === 'general'): ?>
-        <form id="form-general" onsubmit="saveSettings(event, 'general')">
+        <form id="form-general" action="<?php echo SITE_URL ?>/api/admin/settings/save" method="POST" class="ajax-form" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
             <input type="hidden" name="tab" value="general">
             
@@ -47,6 +46,12 @@ $v = (string)time();
                         <input type="checkbox" name="enable_system_logs" value="1" <?php echo ($settings['enable_system_logs'] ?? '0') === '1' ? 'checked' : ''; ?>>
                         <span class="slider"></span>
                     </label>
+                </div>
+
+                <div class="floating-group">
+                    <input type="number" name="items_per_page" value="<?php echo htmlspecialchars($settings['items_per_page'] ?? '25'); ?>" class="form-control" placeholder=" " required min="5" max="100">
+                    <label class="floating-label">Itens por Página (Tabelas)</label>
+                    <small class="text-muted font-xs">Padrão do sistema: 25 itens</small>
                 </div>
             </div>
 
@@ -95,7 +100,7 @@ $v = (string)time();
 
     <!-- Themes Tab -->
     <?php elseif ($active_tab === 'themes'): ?>
-        <form id="form-themes" onsubmit="saveSettings(event, 'themes')">
+        <form id="form-themes" action="<?php echo SITE_URL ?>/api/admin/settings/save" method="POST" class="ajax-form">
             <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
             <input type="hidden" name="tab" value="themes">
             
@@ -164,7 +169,7 @@ $v = (string)time();
 
     <!-- Security Tab -->
     <?php elseif ($active_tab === 'security'): ?>
-        <form id="form-security" onsubmit="saveSettings(event, 'security')">
+        <form id="form-security" action="<?php echo SITE_URL ?>/api/admin/settings/save" method="POST" class="ajax-form">
             <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
             <input type="hidden" name="tab" value="security">
             
@@ -185,6 +190,11 @@ $v = (string)time();
                 <div class="floating-group">
                     <input type="number" name="security_session_timeout" value="<?php echo $settings['security_session_timeout'] ?? '120'; ?>" class="form-control" placeholder=" " required>
                     <label class="floating-label">Inatividade (minutos)</label>
+                </div>
+                <div class="floating-group">
+                    <input type="number" name="security_log_limit" value="<?php echo $settings['security_log_limit'] ?? '500'; ?>" class="form-control" placeholder=" " required min="100">
+                    <label class="floating-label">Limite de Logs Globais</label>
+                    <small class="text-muted font-xs">O sistema deletará os mais antigos ao atingir este limite.</small>
                 </div>
             </div>
 
@@ -214,29 +224,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if(window.lucide) lucide.createIcons();
 });
 
-async function saveSettings(e, tab) {
-    e.preventDefault();
-    const btn = e.target.querySelector('.settings-save-btn');
-    if (btn) btn.disabled = true;
-
-    try {
-        const formData = new FormData(e.target);
-        const res = await fetch('<?php echo SITE_URL ?>/api/admin/settings/save', {
-            method: 'POST',
-            body: formData
-        });
-        const result = await res.json();
-        if (result.success) {
-            UI.showToast(result.message);
-        } else {
-            UI.showToast(result.message || 'Erro ao salvar', 'error');
-        }
-    } catch (error) {
-        UI.showToast('Erro de conexão', 'error');
-    } finally {
-        if (btn) btn.disabled = false;
-    }
-}
+// Settings success handler (replaces manual logic)
+document.addEventListener('ajaxSuccess', (e) => {
+    // Custom logic if needed
+});
 
 function previewImage(input, previewId) {
     if (input.files && input.files[0]) {

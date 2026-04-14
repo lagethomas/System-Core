@@ -23,13 +23,16 @@ class PlansController extends Controller {
         
         $idFilter = !empty($_GET['id']) ? (int)$_GET['id'] : null;
 
+        global $platform_settings;
+        $perPage = (int)($platform_settings['items_per_page'] ?? 25);
+
         if ($idFilter) {
             $plan = $planRepo->getById($idFilter);
             $plans = $plan ? [$plan] : [];
-            $pagination = Pagination::getParams(count($plans), 25);
+            $pagination = Pagination::getParams(count($plans), $perPage);
         } else {
             $totalItems = $planRepo->countAll();
-            $pagination = Pagination::getParams($totalItems, 25);
+            $pagination = Pagination::getParams($totalItems, $perPage);
             $plans = $planRepo->getAll($pagination['limit'], $pagination['offset']);
         }
 

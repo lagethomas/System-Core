@@ -118,7 +118,7 @@ function openCompanyModal(data = null) {
     const planOptions = plans.map(p => `<option value="${p.id}" ${data && data.plan_id == p.id ? 'selected' : ''}>${p.name}</option>`).join('');
 
     const html = `
-        <form onsubmit="saveCompany(event, this)">
+        <form action="<?php echo SITE_URL; ?>/api/admin/companies/save" method="POST" class="ajax-form">
             <input type="hidden" name="nonce" value="<?php echo $nonces['save']; ?>">
             <input type="hidden" name="id" value="${data ? data.id : ''}">
             
@@ -207,43 +207,11 @@ function suggestCompanySlug(name) {
         .replace(/^-|-$/g, '');
 }
 
-async function saveCompany(e, form) {
-    e.preventDefault();
-    const submitBtn = form.querySelector('button[type="submit"]');
-    let originalText = '';
-    
-    if (submitBtn) {
-        originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i data-lucide="loader" class="animate-spin icon-sm mr-2"></i> Salvando...';
-        submitBtn.disabled = true;
-        if(window.lucide) lucide.createIcons();
+document.addEventListener('ajaxSuccess', (e) => {
+    if (e.target.action.includes('/api/admin/companies/save')) {
+        window.location.reload(); 
     }
-
-    try {
-        const formData = new FormData(form);
-        const response = await fetch('<?php echo SITE_URL; ?>/api/admin/companies/save', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await response.json();
-
-        if (result.success) {
-            UI.showToast('Empresa salva com sucesso!');
-            UI.closeModal();
-        } else {
-            UI.showToast(result.message || 'Erro ao salvar', 'error');
-        }
-    } catch (error) {
-        UI.showToast('Erro de conexão', 'error');
-    } finally {
-        if (submitBtn) {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-            if(window.lucide) lucide.createIcons();
-        }
-    }
-}
+});
 
 async function deleteCompany(id) {
     if (await UI.confirm('Deseja realmente excluir esta empresa?')) {
@@ -252,7 +220,6 @@ async function deleteCompany(id) {
             nonce: '<?php echo $nonces["delete"]; ?>' 
         });
         if (result && result.success) {
-            UI.showToast('Empresa removida');
             const row = document.querySelector(`button[onclick*="deleteCompany(${id})"]`)?.closest('tr');
             if (row) {
                 row.style.transition = 'all 0.4s ease';
