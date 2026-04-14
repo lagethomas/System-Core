@@ -69,7 +69,7 @@ class PlansController extends Controller {
 
         try {
             $planRepo->save($data);
-            $this->jsonResponse(['success' => true, 'message' => 'Plano salvo com sucesso.']);
+            $this->jsonResponse(['success' => true, 'message' => 'Plano salvo com sucesso.', 'noReload' => true]);
         } catch (\Exception $e) {
             $this->jsonResponse(['success' => false, 'message' => 'Erro ao salvar plano: ' . $e->getMessage()], 500);
         }
@@ -84,7 +84,7 @@ class PlansController extends Controller {
             require_once __DIR__ . '/../../../../includes/repositories/PlanRepository.php';
             $planRepo = new \PlanRepository($pdo);
             $planRepo->delete($id);
-            $this->jsonResponse(['success' => true, 'message' => 'Plano removido com sucesso.']);
+            $this->jsonResponse(['success' => true, 'message' => 'Plano removido com sucesso.', 'noReload' => true]);
         } else {
             $this->jsonResponse(['success' => false, 'message' => 'ID inválido.'], 400);
         }

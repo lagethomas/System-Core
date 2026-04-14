@@ -129,7 +129,7 @@ class CompaniesController extends Controller {
             $stmt->execute([$companyId, $owner_id]);
         }
 
-        $this->jsonResponse(['success' => true, 'message' => 'Empresa salva com sucesso!']);
+        $this->jsonResponse(['success' => true, 'message' => 'Empresa salva com sucesso!', 'noReload' => true]);
     }
 
     public function delete(): void {
@@ -142,7 +142,7 @@ class CompaniesController extends Controller {
         $id = !empty($_POST['id']) ? (int)$_POST['id'] : null;
         if ($id) {
             $companyRepo->deleteCompanyData($id);
-            $this->jsonResponse(['success' => true, 'message' => 'Empresa removida.']);
+            $this->jsonResponse(['success' => true, 'message' => 'Empresa removida.', 'noReload' => true]);
         } else {
             $this->jsonResponse(['success' => false, 'message' => 'ID inválido.'], 400);
         }

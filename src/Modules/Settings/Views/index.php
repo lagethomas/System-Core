@@ -224,9 +224,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if(window.lucide) lucide.createIcons();
 });
 
-// Settings success handler (replaces manual logic)
+// Settings success handler - Handles dynamic theme switching without reload
 document.addEventListener('ajaxSuccess', (e) => {
-    // Custom logic if needed
+    const result = e.detail;
+    
+    // Only proceed if it was a theme update
+    const form = document.querySelector('.ajax-form[action*="settings/save"]');
+    if (!form) return;
+
+    const formData = new FormData(form);
+    const tab = formData.get('tab');
+    
+    if (tab === 'themes') {
+        const newTheme = formData.get('system_theme');
+        if (newTheme) {
+            // Find theme link in head and update it
+            const themeLink = document.querySelector('link[href*="/assets/css/theme/"]');
+            if (themeLink) {
+                const baseUrl = themeLink.href.split('/assets/css/theme/')[0];
+                const version = new Date().getTime(); // Cache bust
+                themeLink.href = `${baseUrl}/assets/css/theme/${newTheme}.css?v=${version}`;
+            }
+        }
+    }
 });
 
 function previewImage(input, previewId) {

@@ -52,7 +52,7 @@ class IntegrationsController extends Controller {
             require_once __DIR__ . '/../../../../includes/logs.php';
             \Logger::log('settings_update', 'Atualizou as configurações de integração de e-mail (SMTP).');
             
-            $this->jsonResponse(['success' => true, 'message' => 'Configurações de e-mail salvas com sucesso!']);
+            $this->jsonResponse(['success' => true, 'message' => 'Configurações de e-mail salvas com sucesso!', 'noReload' => true]);
         } else {
             $this->jsonResponse(['success' => false, 'message' => 'Tipo de integração inválido.'], 400);
         }
@@ -91,7 +91,7 @@ class IntegrationsController extends Controller {
                 require_once __DIR__ . '/../../../../includes/logs.php';
                 \Logger::log('security_email', 'Teste de configuração SMTP realizado com sucesso para: ' . $email);
                 
-                $this->jsonResponse(['success' => true, 'message' => 'E-mail de teste enviado com sucesso! Verifique sua caixa de entrada.']);
+                $this->jsonResponse(['success' => true, 'message' => 'E-mail de teste enviado com sucesso! Verifique sua caixa de entrada.', 'noReload' => true]);
             } else {
                 $this->jsonResponse(['success' => false, 'message' => 'Falha ao enviar e-mail de teste. Verifique suas credenciais SMTP.'], 500);
             }

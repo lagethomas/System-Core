@@ -132,7 +132,11 @@ class ProfileController extends Controller {
             require_once __DIR__ . '/../../../../includes/logs.php';
             \Logger::log('edit_profile', "Usuário atualizou seus dados cadastrais." . ($emailChanged ? " (Troca de e-mail iniciada)" : ""));
 
-            $this->jsonResponse(['success' => true, 'message' => 'Perfil atualizado com sucesso!' . $emailConfirmationMsg]);
+            $this->jsonResponse([
+                'success' => true, 
+                'message' => 'Perfil atualizado com sucesso!' . $emailConfirmationMsg,
+                'noReload' => true
+            ]);
         } catch (\Exception $e) {
             $this->jsonResponse(['success' => false, 'message' => 'Erro: ' . $e->getMessage()], 500);
         }

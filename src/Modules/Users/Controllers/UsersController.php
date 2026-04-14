@@ -100,7 +100,11 @@ class UsersController extends Controller {
             \Logger::log($id ? 'edit_user' : 'create_user', $id ? "Editou o usuário $name" : "Criou o usuário $name");
             
 
-            $this->jsonResponse(['success' => true, 'message' => 'Usuário salvo com sucesso!', 'redirect' => 'users']);
+            $this->jsonResponse([
+                'success' => true, 
+                'message' => 'Usuário salvo com sucesso!',
+                'noReload' => true
+            ]);
         } catch (\Exception $e) {
             $this->jsonResponse(['success' => false, 'message' => 'Erro: ' . $e->getMessage()], 500);
         }
@@ -140,13 +144,18 @@ class UsersController extends Controller {
                 }
             }
 
-            $userRepo->delete($id);
-            
             require_once __DIR__ . '/../../../../includes/logs.php';
             \Logger::log('delete_user', "Usuário " . (string)$id . " removido.");
 
-            
-            $this->jsonResponse(['success' => true, 'message' => 'Usuário removido.']);
+            if ($id && $userRepo->delete($id)) {
+                $this->jsonResponse([
+                    'success' => true, 
+                    'message' => 'Usuário removido.',
+                    'noReload' => true
+                ]);
+            } else {
+                $this->jsonResponse(['success' => false, 'message' => 'Erro ao remover usuário.'], 500);
+            }
         } catch (\Exception $e) {
             $this->jsonResponse(['success' => false, 'message' => 'Erro: ' . $e->getMessage()], 500);
         }

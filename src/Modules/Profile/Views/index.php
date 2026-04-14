@@ -17,9 +17,9 @@
         </div>
     </div>
 
-    <form onsubmit="saveProfile(event, this)">
+    <form action="<?php echo SITE_URL; ?>/api/profile/save" method="POST" class="ajax-form" enctype="multipart/form-data">
         <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display: none;" onchange="previewAvatar(this)">
-        
+        <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
         <div class="form-grid-2">
             <div class="floating-group">
                 <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($user['name']); ?>" required placeholder=" ">
@@ -98,29 +98,25 @@
 </div>
 
 <script>
-async function saveProfile(e, form) {
-    e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    if (btn) btn.disabled = true;
+// Profile dynamic updates
+document.addEventListener('ajaxSuccess', (e) => {
+    const result = e.detail;
+    if (e.target.action.includes('/api/profile/save') && result.success) {
+        const formData = new FormData(e.target);
+        const name = formData.get('name');
+        
+        // Update header name
+        const headerName = document.querySelector('.user-info .user-name');
+        if (headerName && name) headerName.textContent = name;
 
-    try {
-        const formData = new FormData(form);
-        const res = await fetch('<?php echo SITE_URL; ?>/api/profile/save', {
-            method: 'POST',
-            body: formData
-        });
-        const result = await res.json();
-        if (result.success) {
-            UI.showToast(result.message);
-        } else {
-            UI.showToast(result.message || 'Erro ao salvar', 'error');
+        // Update avatar in header if preview exists
+        const preview = document.getElementById('avatar-preview');
+        const headerAvatar = document.querySelector('.user-profile-img img');
+        if (headerAvatar && preview.style.backgroundImage) {
+            headerAvatar.src = preview.style.backgroundImage.slice(5, -2);
         }
-    } catch (e) {
-        UI.showToast('Erro de conexão', 'error');
-    } finally {
-        if (btn) btn.disabled = false;
     }
-}
+});
 
 function previewAvatar(input) {
     if (input.files && input.files[0]) {

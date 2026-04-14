@@ -147,7 +147,11 @@ class SettingsController extends Controller {
             }
 
             Cache::delete('platform_settings');
-            $this->jsonResponse(['success' => true, 'message' => 'Configurações salvas com sucesso!']);
+            $this->jsonResponse([
+                'success' => true, 
+                'message' => 'Configurações salvas com sucesso!',
+                'noReload' => true
+            ]);
         } catch (\Exception $e) {
             $this->jsonResponse(['success' => false, 'message' => 'Erro ao salvar: ' . $e->getMessage()], 500);
         }
