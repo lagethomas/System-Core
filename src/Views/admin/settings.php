@@ -14,9 +14,7 @@
     <a href="?tab=security" class="nav-link-tab <?php echo $active_tab === 'security' ? 'active' : ''; ?>">
         <i data-lucide="shield"></i> Segurança
     </a>
-    <a href="?tab=migrations" class="nav-link-tab <?php echo $active_tab === 'migrations' ? 'active' : ''; ?>">
-        <i data-lucide="database"></i> Migrations
-    </a>
+
 </div>
 
 <div class="card settings-main-card">
@@ -201,50 +199,6 @@
                 </button>
             </div>
         </form>
-
-    <!-- Migrations Tab (Rule 52) -->
-    <?php elseif ($active_tab === 'migrations'): ?>
-        <div class="settings-header-box">
-            <h5><i data-lucide="database" class="text-primary"></i> Migrations & Banco de Dados</h5>
-            <p>Gerencie atualizações estruturais e histórico de migrações.</p>
-        </div>
-
-        <div class="alert alert-warning mb-4" style="background: rgba(var(--warning-rgb), 0.1); border-color: rgba(var(--warning-rgb), 0.2); color: var(--warning); padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px;">
-            <i data-lucide="alert-triangle" style="width: 24px; height: 24px; flex-shrink: 0;"></i>
-            <div>
-                <b class="d-block mb-1">Ação Crítica:</b>
-                Sincronize o banco de dados com as últimas definições de código. Este processo é idempotente e seguro para execução repetida.
-            </div>
-            <button class="btn-primary ml-auto" onclick="runMigrations(this)" style="background: var(--warning); color: #000; border: none; font-weight: 800;">
-                <i data-lucide="refresh-cw" class="mr-2"></i> Executar Migrações
-            </button>
-        </div>
-
-        <div class="section-title mb-3">Histórico de Migrações</div>
-        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-            <table class="premium-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Versão</th>
-                        <th>Descrição</th>
-                        <th>Executado em</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($migrations)): ?>
-                        <tr><td colspan="4" class="text-center p-4">Nenhuma migração registrada no banco.</td></tr>
-                    <?php else: foreach ($migrations as $m): ?>
-                        <tr>
-                            <td class="fw-bold">#<?php echo $m['id']; ?></td>
-                            <td><span class="badge" style="background: rgba(var(--primary-rgb), 0.1); color: var(--primary);">v<?php echo $m['version']; ?></span></td>
-                            <td><?php echo htmlspecialchars($m['description'] ?? 'Sem descrição'); ?></td>
-                            <td class="text-muted"><?php echo date('d/m/Y H:i', strtotime($m['executed_at'])); ?></td>
-                        </tr>
-                    <?php endforeach; endif; ?>
-                </tbody>
-            </table>
-        </div>
     <?php endif; ?>
 </div>
 

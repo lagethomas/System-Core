@@ -991,7 +991,7 @@ body {
 /* Table Card Uniformity (Minimum height for small tables) */
 .card:has(.table-responsive), 
 .card-table {
-    min-height: 45vh;
+    min-height: 65vh;
     display: flex;
     flex-direction: column;
 }

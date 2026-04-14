@@ -22,22 +22,11 @@ class SettingsController extends Controller {
         $stmt->execute();
         $settings = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-        // Fetch Migrations for the Migrations Tab (Rule 52)
-        $migrations = [];
-        if ($active_tab === 'migrations') {
-            try {
-                $stmt = $pdo->prepare("SELECT * FROM cp_migrations ORDER BY id DESC");
-                $stmt->execute();
-                $migrations = $stmt->fetchAll();
-            } catch (\Exception $e) {
-                // Table might not exist yet if no migrations run
-            }
-        }
+
 
         $this->render('admin/settings', [
             'settings' => $settings,
-            'active_tab' => $active_tab,
-            'migrations' => $migrations
+            'active_tab' => $active_tab
         ]);
     }
 
@@ -168,26 +157,5 @@ class SettingsController extends Controller {
         }
     }
 
-    /**
-     * Migration Runner (Rule 52)
-     */
-    public function runMigrations(): void {
-        Auth::requireAdmin();
-        $token = $_ENV['DB_MIGRATION_TOKEN'] ?? '';
-        
-        // Internal call to the migration script
-        $migrationFile = __DIR__ . '/../../../public/migration/migrar.php';
-        if (!file_exists($migrationFile)) {
-            echo json_encode(['success' => false, 'message' => 'Script de migração não encontrado.']);
-            return;
-        }
 
-        // We simulate the web request or call it with the token
-        $_GET['token'] = $token;
-        ob_start();
-        require $migrationFile;
-        $output = ob_get_clean();
-
-        echo json_encode(['success' => true, 'message' => 'Processo de migração concluído.', 'output' => $output]);
-    }
 }
