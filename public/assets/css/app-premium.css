@@ -485,29 +485,28 @@ body {
 
 .floating-group .form-control {
     background: transparent !important;
-    border: none !important;
-    border-bottom: 1px solid var(--border) !important;
-    border-radius: 0 !important;
-    padding: 14px 0 8px 0 !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    padding: 14px 16px !important;
     font-size: 15px !important;
     color: var(--text-main) !important;
     box-shadow: none !important;
-    transition: border-bottom-color 0.3s ease, color 0.3s ease;
+    transition: var(--transition-smooth);
     width: 100%;
-    height: auto !important;
+    height: 52px !important;
 }
 
 .floating-group .form-control:focus {
-    border-bottom-color: var(--primary) !important;
+    border-color: var(--primary) !important;
 }
 
 .floating-group .floating-label {
     position: absolute;
-    top: 14px;
-    left: 0;
+    top: 17px;
+    left: 16px;
     color: var(--text-muted);
     pointer-events: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     font-size: 14px;
     font-weight: 500;
 }
@@ -516,18 +515,23 @@ body {
 .floating-group .form-control:focus ~ .floating-label,
 .floating-group .form-control:not(:placeholder-shown) ~ .floating-label {
     top: -10px;
-    font-size: 10px;
+    left: 12px;
+    font-size: 11px;
     color: var(--primary);
     font-weight: 800;
+    background: var(--bg-card);
+    padding: 0 5px;
     text-transform: uppercase;
     letter-spacing: 1px;
+    z-index: 10;
 }
 
 /* Specific handling for icons inside floating groups */
 .floating-group .input-icon {
     position: absolute;
-    right: 0;
-    top: 14px;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
     color: var(--text-muted);
     font-size: 18px;
     transition: color 0.3s ease;
@@ -539,9 +543,14 @@ body {
 
 /* Adjustment for password toggle and generators */
 .floating-group .password-toggle-wrapper {
+    position: relative;
     display: flex;
     align-items: center;
     width: 100%;
+}
+
+.floating-group .password-toggle-wrapper .form-control {
+    padding-right: 90px !important;
 }
 
 .floating-group .btn-password-toggle,
@@ -568,8 +577,9 @@ body {
 
 .floating-actions {
     position: absolute;
-    right: 0;
-    top: 14px;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
     gap: 8px;
     z-index: 10;

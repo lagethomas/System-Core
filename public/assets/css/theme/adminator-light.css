@@ -262,7 +262,6 @@ body {
 /* 8. Authentication Overrides */
 .auth-card {
     border-radius: 4px !important;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05) !important;
 }
 
 .auth-title {

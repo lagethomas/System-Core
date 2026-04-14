@@ -5,7 +5,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #0f172a;
+    background-color: var(--bg-dark);
     background-image: var(--auth-bg, none);
     background-size: cover;
     background-position: center;
@@ -18,7 +18,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
+    background: var(--auth-overlay-bg, radial-gradient(circle at center, rgba(var(--black-rgb), 0.1) 0%, rgba(var(--black-rgb), 0.8) 100%));
     pointer-events: none;
     z-index: 1;
 }
@@ -31,6 +31,9 @@
     border-radius: 24px;
     position: relative;
     z-index: 10;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    box-shadow: none !important;
 }
 
 .auth-header {
@@ -65,21 +68,21 @@
 }
 
 .auth-title {
-    color: #fff;
+    color: var(--primary);
     font-weight: 800;
     font-size: 24px;
     margin-bottom: 8px;
 }
 
 .auth-subtitle {
-    color: rgba(255,255,255,0.6);
+    color: var(--text-muted);
     font-size: 14px;
 }
 
 .auth-alert-error {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    color: #fca5a5;
+    background: rgba(var(--accent-rgb), 0.1);
+    border: 1px solid rgba(var(--accent-rgb), 0.2);
+    color: var(--danger);
     padding: 15px;
     border-radius: 12px;
     margin-bottom: 25px;
@@ -89,18 +92,32 @@
     font-size: 13px;
 }
 
-.auth-form .floating-group input {
-    background: rgba(0,0,0,0.3);
-    border-color: rgba(255,255,255,0.1);
-    color: #fff;
+.auth-form .floating-group .form-control {
+    background: var(--bg-surface) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-main) !important;
+    border-radius: 12px !important;
+}
+
+.auth-form .floating-group .form-control:focus {
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
 }
 
 .auth-form .floating-group .floating-label {
-    color: rgba(255,255,255,0.4);
+    color: var(--text-muted);
+    background: transparent;
+}
+
+.auth-form .floating-group .form-control:focus ~ .floating-label,
+.auth-form .floating-group .form-control:not(:placeholder-shown) ~ .floating-label {
+    background: var(--bg-card) !important;
+    color: var(--primary);
+    padding: 0 5px;
 }
 
 .auth-form .btn-password-toggle {
-    color: rgba(255,255,255,0.5);
+    color: var(--text-muted);
 }
 
 .btn-auth-submit {
@@ -115,11 +132,22 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+    background: var(--primary);
+    color: var(--text-on-primary);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.btn-auth-submit:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: none !important;
 }
 
 .auth-session-warn {
-    background: rgba(245, 158, 11, 0.1);
-    border: 1px solid rgba(245, 158, 11, 0.2);
+    background: rgba(var(--warning-rgb, 245, 158, 11), 0.1);
+    border: 1px solid rgba(var(--warning-rgb, 245, 158, 11), 0.2);
     border-radius: 16px;
     padding: 20px;
     margin-top: 30px;
@@ -127,7 +155,7 @@
 }
 
 .auth-session-warn-text {
-    color: #fbbf24;
+    color: var(--warning);
     font-size: 13px;
     margin-bottom: 15px;
     font-weight: 600;
@@ -135,13 +163,13 @@
 
 /* Confirmation Page */
 .confirm-card {
-    background: #1e293b;
+    background: var(--bg-card);
     padding: 50px;
     border-radius: 24px;
     text-align: center;
     max-width: 480px;
-    border: 1px solid #334155;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    border: 1px solid var(--border);
+    box-shadow: none !important;
 }
 
 .confirm-icon-circle {
@@ -155,15 +183,15 @@
 }
 
 .confirm-icon-circle.success {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e;
-    border: 2px solid rgba(34, 197, 94, 0.3);
+    background: rgba(var(--success-rgb, 34, 197, 94), 0.1);
+    color: var(--success);
+    border: 2px solid rgba(var(--success-rgb, 34, 197, 94), 0.3);
 }
 
 .confirm-icon-circle.error {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-    border: 2px solid rgba(239, 68, 68, 0.3);
+    background: rgba(var(--danger-rgb, 239, 68, 68), 0.1);
+    color: var(--danger);
+    border: 2px solid rgba(var(--danger-rgb, 239, 68, 68), 0.3);
 }
 
 .confirm-title {
@@ -171,10 +199,11 @@
     font-weight: 800;
     font-size: 28px;
     letter-spacing: -0.5px;
+    color: var(--text-main);
 }
 
 .confirm-text {
-    color: #94a3b8;
+    color: var(--text-muted);
     line-height: 1.6;
     font-size: 15px;
 }
