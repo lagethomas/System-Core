@@ -291,3 +291,10 @@ body {
 .auth-subtitle {
     color: #6b7280 !important;
 }
+.modal-footer{
+    background: #fff !important;
+}
+
+.pagination-item.active span{
+    color: #fff !important;
+}

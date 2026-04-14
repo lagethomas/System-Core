@@ -1,0 +1,40 @@
+/* Plans Module Styles */
+
+.plan-name-cell {
+    font-weight: 800;
+    color: var(--text-main);
+    font-size: 15px;
+}
+
+.plan-pricing {
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.plan-badge {
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 50px;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.plan-badge i {
+    width: 12px !important;
+    height: 12px !important;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}

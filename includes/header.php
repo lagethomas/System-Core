@@ -26,22 +26,16 @@ if (empty($route) || $route === 'index.php') {
 $route_parts = explode('/', $route);
 $current_page = end($route_parts);
 $page_titles = [
-    'dashboard.php' => 'Painel de Controle',
     'dashboard' => 'Painel de Controle',
-    'users.php' => 'Usuários',
     'users' => 'Usuários',
-    'logs.php' => 'Logs Globais',
     'logs' => 'Logs Globais',
-    'settings.php' => 'Configurações',
     'settings' => 'Configurações',
-    'profile.php' => 'Meu Perfil',
     'profile' => 'Meu Perfil',
-    'integrations.php' => 'Integrações',
     'integrations' => 'Integrações',
     'companies' => 'Empresas Clientes',
-    'company_details' => 'Detalhes da Empresa',
+    'details' => 'Detalhes da Empresa',
     'plans' => 'Pacotes de Assinatura',
-    'company_settings' => 'Configurações da Empresa'
+    'company-settings' => 'Configurações da Empresa'
 ];
 
 // Fetch Notifications
@@ -95,6 +89,7 @@ $unread_count = count($unread_notifications);
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/page-content.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/main-footer.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/popups.css'); ?>">
+    <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/toasts.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/switches.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/badges.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/global-search.css'); ?>">
@@ -150,14 +145,14 @@ $unread_count = count($unread_notifications);
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li class="<?php echo ($current_page == 'dashboard.php' || $current_page == 'dashboard') ? 'active' : ''; ?>">
+                    <li class="<?php echo ($current_page == 'dashboard') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/dashboard">
                             <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
                         </a>
                     </li>
                     
                     <?php if (Auth::isAdmin()): ?>
-                    <li class="<?php echo ($current_page == 'companies' || $current_page == 'companies.php' || $current_page == 'company_details') ? 'active' : ''; ?>">
+                    <li class="<?php echo ($current_page == 'companies' || $current_page == 'details') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/admin/companies">
                             <i data-lucide="building-2"></i> <span>Empresas</span>
                         </a>
@@ -167,22 +162,22 @@ $unread_count = count($unread_notifications);
                             <i data-lucide="package"></i> <span>Planos</span>
                         </a>
                     </li>
-                    <li class="<?php echo ($current_page == 'users.php' || $current_page == 'users') ? 'active' : ''; ?>">
+                    <li class="<?php echo ($current_page == 'users') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/users">
                             <i data-lucide="users"></i> <span>Usuários</span>
                         </a>
                     </li>
-                    <li class="<?php echo ($current_page == 'integrations.php' || $current_page == 'integrations') ? 'active' : ''; ?>">
+                    <li class="<?php echo ($current_page == 'integrations') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/integrations">
                             <i data-lucide="plug"></i> <span>Integrações</span>
                         </a>
                     </li>
-                    <li class="<?php echo ($current_page == 'logs.php' || $current_page == 'logs') ? 'active' : ''; ?>">
+                    <li class="<?php echo ($current_page == 'logs') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/logs">
                             <i data-lucide="terminal"></i> <span>Logs Globais</span>
                         </a>
                     </li>
-                    <li class="<?php echo ($current_page == 'settings.php' || $current_page == 'settings') ? 'active' : ''; ?>">
+                    <li class="<?php echo ($current_page == 'settings') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/settings">
                             <i data-lucide="settings"></i> <span>Configurações</span>
                         </a>
@@ -190,7 +185,7 @@ $unread_count = count($unread_notifications);
                     <?php endif; ?>
 
                     <?php if (Auth::isOwner()): ?>
-                    <li class="<?php echo ($current_page == 'company_settings') ? 'active' : ''; ?>">
+                    <li class="<?php echo ($current_page == 'company-settings') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/app/company-settings">
                             <i data-lucide="building"></i> <span>Minha Empresa</span>
                         </a>

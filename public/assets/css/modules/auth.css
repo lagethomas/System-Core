@@ -1,49 +1,36 @@
-/* Auth Module CSS */
-:root {
-    --bg-auth: var(--bg-dark, #0a0a0c);
-    --auth-card-bg: var(--bg-surface, #111114);
-    --auth-card-border: var(--border, rgba(255, 255, 255, 0.1));
-    --auth-overlay-bg: rgba(0, 0, 0, 0.4);
-    --auth-overlay-dark-bg: rgb(0 0 0 / 63%);
-    
-}
+/* Auth Module Styles */
 
-body.auth-wrapper {
-    background: radial-gradient(circle at center, #1b1e23 0%, #080808 100%) !important;
+.auth-wrapper {
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    margin: 0;
-    font-family: 'Outfit', 'Inter', sans-serif;
-    color: var(--text-main, #fff);
+    background-color: #0f172a;
+    background-image: var(--auth-bg, none);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
-/* Premium Gold Palette (inspired by the target) */
-:root {
-    --login-primary: #e6c152; /* Mustard Gold */
-    --login-primary-hover: #d4af37;
-    --login-card-bg: #121316;
-    --login-input-bg: #1a1a1a;
-    --login-border: rgba(255, 255, 255, 0.08);
+.auth-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
+    pointer-events: none;
+    z-index: 1;
 }
 
 .auth-card {
-    background: var(--login-card-bg);
-    padding: 50px 40px;
-    border-radius: 24px;
     width: 100%;
-    max-width: 440px;
-    border: 1px solid var(--login-border);
-    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7);
+    max-width: 420px;
+    margin: 20px;
+    padding: 45px;
+    border-radius: 24px;
     position: relative;
-    z-index: 1;
-    transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-.auth-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.8), 0 0 20px rgba(230, 193, 82, 0.05);
+    z-index: 10;
 }
 
 .auth-header {
@@ -52,261 +39,142 @@ body.auth-wrapper {
 }
 
 .auth-logo-box {
-    width: 72px;
-    height: 72px;
-    background: rgba(230, 193, 82, 0.05); /* very subtle gold tint */
-    border: 2px solid var(--login-primary); /* gold border */
-    border-radius: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 80px;
+    height: 80px;
     margin: 0 auto 20px;
-    transition: all 0.3s ease;
-    padding: 12px;
-}
-
-.auth-logo-box i {
-    color: var(--login-primary);
-    width: 36px !important;
-    height: 36px !important;
-}
-
-.auth-title {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    color: #fff;
-}
-
-.auth-subtitle {
-    color: #94a3b8;
-    font-size: 16px;
-    margin-top: 10px;
-    font-weight: 400;
-}
-
-.auth-label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: #f1f5f9;
-    margin-bottom: 10px;
-    letter-spacing: 0.01em;
-}
-
-.alert-error {
-    background: rgba(var(--danger-rgb, 239, 68, 68), 0.1);
-    color: var(--danger, #ef4444);
-    padding: 14px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-    font-size: 14px;
-    border: 1px solid rgba(var(--danger-rgb, 239, 68, 68), 0.2);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    animation: slideIn 0.3s ease;
-}
-
-.btn-primary:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-.mt-4 {
-    margin-top: 1.5rem !important;
-}
-
-.mr-2 {
-    margin-right: 0.5rem !important;
-}
-
-.ml-2 {
-    margin-left: 0.5rem !important;
-}
-
-.btn-loader i {
-    font-size: 1.1rem;
-}
-
-.password-toggle-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.btn-password-toggle {
-    position: absolute;
-    right: 14px;
-    background: transparent;
-    border: none;
-    color: var(--text-muted, #94a3b8);
-    cursor: pointer;
-    padding: 8px;
+    background: rgba(var(--primary-rgb), 0.1);
+    border: 1px solid rgba(var(--primary-rgb), 0.2);
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 10;
-}
-
-.btn-password-toggle:hover {
-    color: var(--primary);
-}
-
-.btn-password-toggle i {
-    width: 18px !important;
-    height: 18px !important;
-}
-
-.form-control.pr-10 {
-    padding-right: 50px !important;
-}
-
-/* ---------------------------------------------------------
-   Rule 34: Avoid Inline Styles - Helper Classes
-   --------------------------------------------------------- */
-
-body.auth-wrapper.has-bg {
-    background-repeat: no-repeat !important;
-    background-position: center center !important;
-    background-attachment: fixed !important;
-    background-size: cover !important;
-}
-
-.auth-overlay {
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: var(--auth-overlay-dark-bg); 
-    z-index: 0;
-}
-
-.auth-card.glassmorphism {
-    backdrop-filter: blur(12px); 
-    background: var(--auth-card-bg); 
-    border: 1px solid var(--auth-card-border);
+    overflow: hidden;
 }
 
 .auth-logo-box img {
-    max-width: 100%; 
-    max-height: 100%; 
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
+    padding: 10px;
 }
 
-/* ─────────────────────────────────────────────────────────
-   Session Warning & Animations
-   ───────────────────────────────────────────────────────── */
-
-/* ─────────────────────────────────────────────────────────
-   Premium Overrides for Login Components
-   ───────────────────────────────────────────────────────── */
-
-.auth-wrapper .form-control {
-    background: var(--login-input-bg) !important;
-    border: 1px solid var(--login-border) !important;
-    border-radius: 14px !important;
-    padding: 14px 18px !important;
-    color: #fff !important;
-    font-size: 15px !important;
+.auth-logo-box .icon-lg {
+    width: 40px;
+    height: 40px;
+    color: var(--primary);
 }
 
-.auth-wrapper .form-control:focus {
-    border-color: var(--login-primary) !important;
-    background: rgba(230, 193, 82, 0.03) !important;
-    box-shadow: 0 0 0 4px rgba(230, 193, 82, 0.1) !important;
+.auth-title {
+    color: #fff;
+    font-weight: 800;
+    font-size: 24px;
+    margin-bottom: 8px;
 }
 
-.auth-wrapper .form-control::placeholder {
-    color: #555 !important;
+.auth-subtitle {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
 }
 
-.auth-wrapper .btn-primary {
-    background: var(--login-primary) !important;
-    color: #000 !important;
-    font-weight: 800 !important;
-    border-radius: 14px !important;
-    padding: 16px !important;
-    font-size: 16px !important;
-    border: none !important;
+.auth-alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.auth-form .floating-group input {
+    background: rgba(0,0,0,0.3);
+    border-color: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+.auth-form .floating-group .floating-label {
+    color: rgba(255,255,255,0.4);
+}
+
+.auth-form .btn-password-toggle {
+    color: rgba(255,255,255,0.5);
+}
+
+.btn-auth-submit {
     width: 100%;
+    height: 52px;
+    margin-top: 35px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.5px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
 }
 
-.auth-wrapper .btn-primary i {
-    color: #000 !important;
-    width: 18px;
-    height: 18px;
+.auth-session-warn {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 30px;
+    text-align: center;
 }
 
-.auth-wrapper .btn-primary:hover {
-    background: var(--login-primary-hover) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(230, 193, 82, 0.3);
+.auth-session-warn-text {
+    color: #fbbf24;
+    font-size: 13px;
+    margin-bottom: 15px;
+    font-weight: 600;
 }
 
-.auth-wrapper .btn-password-toggle {
-    color: #666;
+/* Confirmation Page */
+.confirm-card {
+    background: #1e293b;
+    padding: 50px;
+    border-radius: 24px;
+    text-align: center;
+    max-width: 480px;
+    border: 1px solid #334155;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
 }
 
-.auth-wrapper .btn-password-toggle:hover {
-    color: var(--login-primary);
+.confirm-icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-@keyframes slideIn {
-    from { opacity: 0; transform: translateY(-8px); }
-    to   { opacity: 1; transform: translateY(0); }
+.confirm-icon-circle.success {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+    border: 2px solid rgba(34, 197, 94, 0.3);
 }
 
-
-.alert-session-bottom {
-    margin-top: 25px; 
-    padding: 16px; 
-    background: rgba(var(--danger-rgb, 220, 38, 38), 0.1); 
-    border-radius: 12px; 
-    border: 1px solid rgba(var(--danger-rgb, 220, 38, 38), 0.2); 
-    color: var(--danger, #ef4444); 
-    font-size: 0.85rem; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 12px; 
-    animation: slideIn 0.3s ease;
+.confirm-icon-circle.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 2px solid rgba(239, 68, 68, 0.3);
 }
 
-.alert-session-bottom .alert-header {
-    display: flex; 
-    align-items: center; 
-    gap: 12px;
+.confirm-title {
+    margin-top: 0;
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.5px;
 }
 
-.alert-session-bottom .alert-header i {
-    font-size: 1.25rem;
-}
-
-.btn-danger-soft {
-    background: var(--danger, #ef4444); 
-    border: none; 
-    color: white; 
-    padding: 12px; 
-    border-radius: 8px; 
-    cursor: pointer; 
-    font-size: 0.85rem; 
-    font-weight: 700; 
-    transition: all 0.2s;
-    width: 100%;
-}
-
-.btn-danger-soft:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(var(--danger-rgb, 220, 38, 38), 0.3);
+.confirm-text {
+    color: #94a3b8;
+    line-height: 1.6;
+    font-size: 15px;
 }

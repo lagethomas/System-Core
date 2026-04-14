@@ -71,7 +71,10 @@ class Router {
                 // Extract parameters (named groups)
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
 
-                $controllerName = "App\\Controllers\\" . $route['handler']['controller'];
+                $controllerInput = $route['handler']['controller'];
+                $controllerName = str_starts_with($controllerInput, 'App\\') 
+                    ? $controllerInput 
+                    : "App\\Controllers\\" . $controllerInput;
                 $methodName = $route['handler']['method'];
 
                 if (class_exists($controllerName)) {

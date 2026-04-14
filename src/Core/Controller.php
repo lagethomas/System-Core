@@ -14,18 +14,29 @@ class Controller {
     protected function render(string $view, array $data = [], bool $withLayout = true): void {
         global $pdo, $platform_settings, $current_page;
         
-        // Make essential globals available in view
+        // --- Modular View Logic (Passo 1) ---
+        $callingNamespace = (new \ReflectionClass($this))->getNamespaceName();
+        $isModular = str_starts_with($callingNamespace, 'App\Modules\\');
+        
+        if ($isModular) {
+            $parts = explode('\\', $callingNamespace);
+            $moduleName = $parts[2]; // App\Modules\{Dashboard}\...
+            $viewPath = __DIR__ . "/../Modules/{$moduleName}/Views/" . $view . ".php";
+        } else {
+            $viewPath = __DIR__ . "/../Views/" . $view . ".php";
+        }
+        
+        if (!file_exists($viewPath)) {
+            die("View $view not found at $viewPath");
+        }
+        // ------------------------------------
+
         $data['pdo'] = $pdo;
         $data['platform_settings'] = $platform_settings;
         $data['current_page'] = $current_page;
         $data['SITE_URL'] = SITE_URL;
 
         extract($data);
-        $viewPath = __DIR__ . "/../Views/" . $view . ".php";
-        
-        if (!file_exists($viewPath)) {
-            die("View $view not found at $viewPath");
-        }
 
         if ($withLayout) {
             require_once __DIR__ . '/../../includes/header.php';

@@ -1,7 +1,6 @@
 /* ==============================================================
    POPUPS & MODALS COMPONENT
    Standardized Popups for Desktop and Mobile
-   Colors are inherited from the theme variables.
    ============================================================== */
 
 /* Modal Overlay */
@@ -29,11 +28,11 @@
 
 /* Modal Content Box */
 .modal-content {
-    background: var(--bg-surface) !important;
+    background: var(--bg-card) !important;
     border: 1px solid var(--border) !important;
     width: 100% !important;
-    max-width: 550px !important;
-    border-radius: var(--radius) !important;
+    max-width: 550px; /* Default MD */
+    border-radius: 20px !important;
     padding: 0 !important;
     position: relative !important;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
@@ -49,6 +48,12 @@
     transform: translateY(0);
 }
 
+/* Modal Sizes */
+.modal-content.modal-sm { max-width: 400px !important; }
+.modal-content.modal-md { max-width: 550px !important; }
+.modal-content.modal-lg { max-width: 800px !important; }
+.modal-content.modal-xl { max-width: 1100px !important; }
+
 /* Modal Header */
 .modal-header {
     display: flex !important;
@@ -56,196 +61,78 @@
     align-items: center !important;
     padding: 20px 24px !important;
     border-bottom: 1px solid var(--border) !important;
-    background: var(--bg-sidebar);
+    background: rgba(var(--primary-rgb), 0.03);
     flex-shrink: 0 !important;
 }
 
 .modal-header h3 {
     margin: 0;
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .close-modal {
-    background: none;
+    background: rgba(255, 255, 255, 0.05);
     border: none;
     color: var(--text-muted);
-    font-size: 28px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    line-height: 1;
-    transition: var(--transition);
+    transition: all 0.3s;
 }
 
 .close-modal:hover {
+    background: rgba(var(--accent-rgb), 0.1);
     color: var(--accent);
     transform: rotate(90deg);
 }
 
 /* Modal Body */
 #modal-body {
-    padding: 24px !important;
+    padding: 30px !important;
     overflow-y: auto !important;
     flex: 1 !important;
-    -webkit-overflow-scrolling: touch !important;
+    background: var(--bg-card) !important;
 }
 
 /* Modal Footer */
 .modal-footer {
-    padding: 20px 24px !important;
+    padding: 20px 30px !important;
     border-top: 1px solid var(--border) !important;
-    background: var(--bg-sidebar) !important;
+    background: var(--bg-sidebar);
     flex-shrink: 0 !important;
     display: flex !important;
     justify-content: flex-end !important;
     gap: 15px !important;
 }
 
-/* Toast Notifications */
-.toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 30000;
+/* Forms inside modals */
+/* Alert inside modals */
+.alert-premium {
+    background: rgba(var(--primary-rgb), 0.05);
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+    color: var(--text-main);
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.5;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    pointer-events: none;
+    gap: 12px;
+    margin-top: 25px;
 }
 
-.toast {
-    pointer-events: auto;
-    background: rgba(var(--bg-sidebar-rgb, 20, 22, 28), 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-left: 5px solid var(--primary);
-    padding: 16px 22px;
-    border-radius: 14px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    min-width: 320px;
-    max-width: 450px;
-    position: relative;
-    overflow: hidden;
-    animation: toastSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-.toast i {
-    font-size: 22px;
+.alert-premium i {
+    color: var(--primary);
     flex-shrink: 0;
-    filter: drop-shadow(0 0 8px currentColor);
 }
 
-.toast-message {
-    flex: 1;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.4;
-}
-
-.toast-close {
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 22px;
-    cursor: pointer;
-    padding: 0 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.2s;
-    line-height: 1;
-    margin-left: 10px;
-}
-
-.toast-close:hover {
-    color: #fff;
-    transform: scale(1.1);
-}
-
-.toast::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03));
-    pointer-events: none;
-}
-
-.toast i {
-    font-size: 22px;
-    flex-shrink: 0;
-    filter: drop-shadow(0 0 8px currentColor);
-}
-
-.toast.error {
-    border-left-color: #ff4d4d;
-    background: rgba(35, 15, 15, 0.9);
-}
-
-.toast.error i {
-    color: #ff4d4d;
-}
-
-.toast.warning {
-    border-left-color: #f59e0b;
-    background: rgba(30, 24, 15, 0.9);
-}
-
-.toast.warning i {
-    color: #f59e0b;
-}
-
-.toast.success {
-    border-left-color: #10B981;
-    background: rgba(15, 30, 25, 0.9);
-}
-
-.toast.success i {
-    color: #10B981;
-}
-
-@keyframes toastSlideIn {
-    from {
-        opacity: 0;
-        transform: translateX(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes toastSlideOut {
-    from {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-}
-
-/* Generic Animations */
-@keyframes modalSlideIn {
-    from {
-        transform: translateY(30px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
 
 /* ==============================================================
    MOBILE POPUP RESPONSIVENESS
@@ -253,44 +140,33 @@
 
 @media (max-width: 768px) {
     .modal-overlay {
-        padding: 15px !important;
+        padding: 0 !important;
+        align-items: flex-end !important;
     }
 
     .modal-content {
         max-width: 100% !important;
         width: 100% !important;
-        height: auto !important;
-        max-height: 90vh !important;
-        border-radius: 20px !important;
-        transform: translateY(20px);
+        margin: 0 !important;
+        border-radius: 25px 25px 0 0 !important;
+        max-height: 95vh !important;
+        transform: translateY(100%);
     }
 
     .modal-overlay.active .modal-content {
         transform: translateY(0);
     }
 
-    .modal-header {
-        position: sticky !important;
-        top: 0 !important;
-        z-index: 10 !important;
+    #modal-body {
+        padding: 25px 20px !important;
     }
 
     .modal-footer {
-        position: sticky !important;
-        bottom: 0 !important;
-        z-index: 10 !important;
-        padding: 15px 20px !important;
-        background: var(--bg-sidebar) !important;
+        padding: 20px !important;
+        flex-direction: column-reverse;
     }
 
-    .toast-container {
-        top: auto;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
-    }
-
-    .toast {
-        min-width: auto;
+    .modal-footer button {
+        width: 100% !important;
     }
 }

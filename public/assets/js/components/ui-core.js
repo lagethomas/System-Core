@@ -27,17 +27,31 @@ window.notify = function(msg, type = 'success') {
     toast.innerHTML = `
         <i data-lucide="${iconName}"></i>
         <div class="toast-message">${msg}</div>
-        <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+        <button class="toast-close" onclick="UI.removeToast(this)">
+            <i data-lucide="x"></i>
+        </button>
+        <div class="toast-progress">
+            <div class="toast-progress-bar"></div>
+        </div>
     `;
 
     container.appendChild(toast);
     if (window.lucide) lucide.createIcons();
 
-    // Auto-remove after 4 seconds
+    // Animate progress bar
+    const bar = toast.querySelector('.toast-progress-bar');
+    if (bar) {
+        bar.style.transition = 'transform 3s linear';
+        setTimeout(() => {
+            bar.style.transform = 'scaleX(0)';
+        }, 10);
+    }
+
+    // Auto-remove after 3 seconds
     setTimeout(() => {
         toast.style.animation = 'toastSlideOut 0.4s forwards';
         setTimeout(() => toast.remove(), 400);
-    }, 4000);
+    }, 3000);
 };
 
 /**
@@ -90,6 +104,14 @@ const UI = {
 
     confirm(msg, options = {}) {
         return window.confirmAction(options.title || 'Confirmar', msg, options.type || 'warning', options.confirmText);
+    },
+    
+    removeToast(btn) {
+        const toast = btn.closest('.toast');
+        if (toast) {
+            toast.style.animation = 'toastSlideOut 0.4s forwards';
+            setTimeout(() => toast.remove(), 400);
+        }
     },
 
     showModal(title, html, size = '') {
@@ -278,6 +300,22 @@ const UI = {
             }
             document.body.removeChild(textArea);
         });
+    },
+
+    generatePassword(targetId) {
+        const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+        let password = "";
+        for (let i = 0; i < 12; i++) {
+            password += charset.charAt(Math.floor(Math.random() * charset.length));
+        }
+        const input = document.getElementById(targetId);
+        if (input) {
+            input.value = password;
+            input.type = 'text'; // Show it so they can see it
+            window.notify('Senha gerada com sucesso!', 'info');
+            // Trigger floating label if hidden
+            input.dispatchEvent(new Event('input'));
+        }
     }
 };
 
