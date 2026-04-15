@@ -76,7 +76,7 @@ class SettingsController extends Controller {
                         $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES ('system_logo', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
                         $stmt->execute([$newLogo, $newLogo]);
                     }
-                } elseif (isset($_POST['remove_logo'])) {
+                } elseif (isset($_POST['remove_logo']) && $_POST['remove_logo'] === '1') {
                     if (!empty($existing['system_logo'])) \ImageHelper::safeDelete($existing['system_logo'], $logoDir);
                     $stmt = $pdo->prepare("UPDATE cp_settings SET setting_value = NULL WHERE setting_key = 'system_logo'");
                     $stmt->execute();
@@ -90,7 +90,7 @@ class SettingsController extends Controller {
                         $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES ('login_background', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
                         $stmt->execute([$newBg, $newBg]);
                     }
-                } elseif (isset($_POST['remove_login_bg'])) {
+                } elseif (isset($_POST['remove_login_bg']) && $_POST['remove_login_bg'] === '1') {
                     if (!empty($existing['login_background'])) \ImageHelper::safeDelete($existing['login_background'], $bgDir);
                     $stmt = $pdo->prepare("UPDATE cp_settings SET setting_value = NULL WHERE setting_key = 'login_background'");
                     $stmt->execute();
@@ -128,11 +128,12 @@ class SettingsController extends Controller {
                 $keys = [
                     'security_max_attempts', 'security_lockout_time', 'security_strong_password', 
                     'security_session_timeout', 'security_ip_lockout', 'security_single_session',
-                    'security_log_days', 'security_log_limit'
+                    'security_log_days', 'security_log_limit', 'security_enable_logs'
                 ];
                 foreach ($keys as $key) {
                     $val = trim((string)($_POST[$key] ?? ''));
-                    if ($key === 'security_strong_password' || $key === 'security_ip_lockout' || $key === 'security_single_session') $val = isset($_POST[$key]) ? '1' : '0';
+                    $checkboxKeys = ['security_strong_password', 'security_ip_lockout', 'security_single_session', 'security_enable_logs'];
+                    if (in_array($key, $checkboxKeys)) $val = isset($_POST[$key]) ? '1' : '0';
                     
                     $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
                     $stmt->execute([$key, $val, $val]);

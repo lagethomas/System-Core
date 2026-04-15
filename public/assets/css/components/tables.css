@@ -1,0 +1,65 @@
+/* ==============================================================
+   TABLES COMPONENT
+   Standardized data grids and status indicators
+   ============================================================== */
+
+.premium-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.premium-table th {
+    text-align: left;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.premium-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+/* Empty Table State Helper */
+.premium-table .no-results {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-muted);
+}
+
+/* Status Badges within Tables */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-active, .status-success {
+    background: rgba(0, 255, 127, 0.1);
+    color: var(--success);
+}
+
+.status-pending, .status-warning {
+    background: rgba(255, 165, 0, 0.1);
+    color: var(--warning);
+}
+
+.status-cancelled, .status-danger, .status-error {
+    background: rgba(var(--accent-rgb), 0.1);
+    color: var(--danger);
+}
+
+.status-info {
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+}
+
+/* Responsiveness helper */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}

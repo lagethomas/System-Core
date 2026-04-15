@@ -12,6 +12,12 @@ class LogRepository {
      * Create a log entry
      */
     public function create(array $data): bool {
+        // Global check: If logging is disabled in security settings, return true without saving
+        global $platform_settings;
+        if (isset($platform_settings['security_enable_logs']) && $platform_settings['security_enable_logs'] === '0') {
+            return true;
+        }
+
         $stmt = $this->pdo->prepare("INSERT INTO cp_logs (user_id, action, description, ip_address) VALUES (?, ?, ?, ?)");
         return $stmt->execute([
             $data['user_id'] ?? 0,

@@ -129,7 +129,7 @@ function openCompanyModal(data = null) {
 
             <div class="floating-group mt-4">
                 <input type="text" name="slug" id="company_slug" class="form-control" value="${data ? data.slug : ''}" required placeholder=" ">
-                <label class="floating-label">Slug (URL do Porta)</label>
+                <label class="floating-label">Slug (URL do Portal)</label>
                 <small class="text-muted" style="font-size: 10px; margin-top: 4px; display: block;">Acessível em: <?php echo SITE_URL; ?>/sua-slug</small>
             </div>
 
@@ -157,17 +157,17 @@ function openCompanyModal(data = null) {
                 <label class="floating-label">Proprietário (Responsável)</label>
             </div>
 
-            <div class="form-grid-3 mt-4">
+            <div class="form-grid-2 mt-4">
                 <div class="floating-group">
                     <select name="plan_id" class="form-control" required placeholder=" ">
                         <option value="">Selecione um plano...</option>
                         ${planOptions}
                     </select>
-                    <label class="floating-label">Plano Associado</label>
+                    <label class="floating-label">Plano</label>
                 </div>
                 <div class="floating-group">
                     <input type="date" name="expires_at" class="form-control" value="${data ? (data.expires_at ? data.expires_at.split(' ')[0] : '') : ''}" placeholder=" ">
-                    <label class="floating-label">Vencimento do Acesso</label>
+                    <label class="floating-label">Expiração</label>
                 </div>
                 <div class="floating-group">
                     <select name="active" class="form-control" placeholder=" ">

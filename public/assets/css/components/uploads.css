@@ -1,0 +1,158 @@
+/* ==============================================================
+   UPLOADS / FILE INPUT COMPONENT
+   Premium styling for single and multiple file uploads
+   ============================================================== */
+
+.upload-group {
+    position: relative;
+    width: 100%;
+}
+
+/* Base Upload Field */
+.upload-field {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    transition: var(--transition);
+    cursor: pointer;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* Hidden File Input */
+.upload-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* Upload Field States */
+.upload-field:hover {
+    border-color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.05);
+}
+
+.upload-field:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.1);
+}
+
+.upload-field.drag-over {
+    border-color: var(--success);
+    background: rgba(var(--success-rgb), 0.05);
+    transform: scale(1.01);
+}
+
+/* Icon & Content styling */
+.upload-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    transition: var(--transition);
+}
+
+.upload-field:hover .upload-icon {
+    transform: translateY(-5px);
+    background: var(--primary);
+    color: var(--white);
+    box-shadow: 0 10px 20px rgba(var(--primary-rgb), 0.3);
+}
+
+.upload-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 5px;
+    display: block;
+}
+
+.upload-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    display: block;
+}
+
+/* Multi-file Preview List */
+.upload-preview-list {
+    margin-top: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.upload-preview-item {
+    position: relative;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: fadeIn 0.3s ease;
+}
+
+.upload-preview-thumb {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.upload-preview-info {
+    font-size: 11px;
+    color: var(--text-muted);
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.upload-preview-remove {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--danger);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+}
+
+.upload-preview-remove:hover {
+    transform: scale(1.1);
+    background: #ff0000;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -58,9 +58,13 @@ $v = (string)time();
             <div class="form-grid-2 mt-5 gap-md">
                 <div>
                     <label class="settings-upload-label">Logotipo da Plataforma</label>
+                    <input type="hidden" name="remove_logo" id="logo-remove-flag" value="0">
                     <div id="preview-logo" class="upload-selector" onclick="document.getElementById('logo-upload').click()">
                         <?php if (!empty($settings['system_logo'])): ?>
-                            <img src="<?php echo SITE_URL; ?>/uploads/logos/<?php echo $settings['system_logo']; ?>" class="preview-img">
+                            <img src="<?php echo SITE_URL; ?>/uploads/logos/<?php echo $settings['system_logo']; ?>" class="preview-img" id="img-logo">
+                            <button type="button" class="btn-remove-image" onclick="removeImage(event, 'preview-logo', 'logo-remove-flag', 'logo-upload')" title="Remover Logo">
+                                <i data-lucide="x"></i>
+                            </button>
                         <?php else: ?>
                             <div class="upload-empty">
                                 <i data-lucide="image" class="icon-lucide"></i>
@@ -69,15 +73,19 @@ $v = (string)time();
                         <?php endif; ?>
                         <div class="upload-overlay"><i data-lucide="upload-cloud"></i> <span>Alterar Logo</span></div>
                     </div>
-                    <input type="file" id="logo-upload" name="system_logo" accept="image/*" onchange="previewImage(this, 'preview-logo')" style="display: none;">
+                    <input type="file" id="logo-upload" name="system_logo" accept="image/*" onchange="previewImage(this, 'preview-logo', 'logo-remove-flag')" style="display: none;">
                     <p class="font-xs text-muted mt-2 italic">* Recomendado: Fundo transparente (PNG/SVG)</p>
                 </div>
 
                 <div>
                     <label class="settings-upload-label">Wallpaper da Tela de Login</label>
+                    <input type="hidden" name="remove_login_bg" id="bg-remove-flag" value="0">
                     <div id="preview-bg" class="upload-selector" onclick="document.getElementById('bg-upload').click()">
                         <?php if (!empty($settings['login_background'])): ?>
-                            <img src="<?php echo SITE_URL; ?>/uploads/backgrounds/<?php echo $settings['login_background']; ?>" class="preview-img object-cover">
+                            <img src="<?php echo SITE_URL; ?>/uploads/backgrounds/<?php echo $settings['login_background']; ?>" class="preview-img object-cover" id="img-bg">
+                            <button type="button" class="btn-remove-image" onclick="removeImage(event, 'preview-bg', 'bg-remove-flag', 'bg-upload')" title="Remover Fundo">
+                                <i data-lucide="x"></i>
+                            </button>
                         <?php else: ?>
                             <div class="upload-empty">
                                 <i data-lucide="monitor" class="icon-lucide"></i>
@@ -86,7 +94,7 @@ $v = (string)time();
                         <?php endif; ?>
                         <div class="upload-overlay"><i data-lucide="upload-cloud"></i> <span>Alterar Fundo</span></div>
                     </div>
-                    <input type="file" id="bg-upload" name="login_background" accept="image/*" onchange="previewImage(this, 'preview-bg')" style="display: none;">
+                    <input type="file" id="bg-upload" name="login_background" accept="image/*" onchange="previewImage(this, 'preview-bg', 'bg-remove-flag')" style="display: none;">
                     <p class="font-xs text-muted mt-2 italic">* Recomendado: 1920x1080 (JPG/WebP)</p>
                 </div>
             </div>
@@ -198,15 +206,28 @@ $v = (string)time();
                 </div>
             </div>
 
-            <div class="switch-container mt-4">
-                <div>
-                    <span class="switch-label">Sessão Única por Conta</span>
-                    <small class="text-muted font-xs">Impedir múltiplos acessos simultâneos com as mesmas credenciais</small>
+            <div class="form-grid-2 gap-md mt-4">
+                <div class="switch-container">
+                    <div>
+                        <span class="switch-label">Sessão Única por Conta</span>
+                        <small class="text-muted font-xs">Impedir múltiplos acessos simultâneos</small>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="security_single_session" value="1" <?php echo ($settings['security_single_session'] ?? '0') === '1' ? 'checked' : ''; ?>>
+                        <span class="slider"></span>
+                    </label>
                 </div>
-                <label class="switch">
-                    <input type="checkbox" name="security_single_session" value="1" <?php echo ($settings['security_single_session'] ?? '0') === '1' ? 'checked' : ''; ?>>
-                    <span class="slider"></span>
-                </label>
+
+                <div class="switch-container">
+                    <div>
+                        <span class="switch-label">Gravação de Logs Globais</span>
+                        <small class="text-muted font-xs">Registrar atividades críticas de segurança</small>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="security_enable_logs" value="1" <?php echo ($settings['security_enable_logs'] ?? '1') === '1' ? 'checked' : ''; ?>>
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
 
             <div class="settings-footer">
@@ -249,16 +270,54 @@ document.addEventListener('ajaxSuccess', (e) => {
     }
 });
 
-function previewImage(input, previewId) {
+function previewImage(input, previewId, flagId) {
     if (input.files && input.files[0]) {
+        // Clear removal flag if a new file is chosen
+        if (flagId) document.getElementById(flagId).value = "0";
+
         const reader = new FileReader();
         reader.onload = function(e) {
             const preview = document.getElementById(previewId);
             const isBg = previewId === 'preview-bg';
-            preview.innerHTML = `<img src="${e.target.result}" class="preview-img ${isBg ? 'object-cover' : ''}"> <div class="upload-overlay"><i data-lucide="upload-cloud"></i> <span>Alterar Logo</span></div>`;
+            const btnTitle = isBg ? 'Remover Fundo' : 'Remover Logo';
+            const overlayText = isBg ? 'Alterar Fundo' : 'Alterar Logo';
+
+            preview.innerHTML = `
+                <img src="${e.target.result}" class="preview-img ${isBg ? 'object-cover' : ''}"> 
+                <button type="button" class="btn-remove-image" onclick="removeImage(event, '${previewId}', '${flagId}', '${input.id}')" title="${btnTitle}">
+                    <i data-lucide="x"></i>
+                </button>
+                <div class="upload-overlay"><i data-lucide="upload-cloud"></i> <span>${overlayText}</span></div>
+            `;
             if(window.lucide) lucide.createIcons();
         }
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+function removeImage(event, previewId, flagId, inputId) {
+    event.stopPropagation();
+    
+    // Set removal flag
+    if (flagId) document.getElementById(flagId).value = "1";
+    
+    // Clear file input
+    if (inputId) document.getElementById(inputId).value = "";
+    
+    // Update UI
+    const preview = document.getElementById(previewId);
+    const isBg = previewId === 'preview-bg';
+    const icon = isBg ? 'monitor' : 'image';
+    const text = isBg ? 'Selecionar Wallpaper' : 'Selecionar Imagem';
+    const overlayText = isBg ? 'Alterar Fundo' : 'Alterar Logo';
+
+    preview.innerHTML = `
+        <div class="upload-empty">
+            <i data-lucide="${icon}" class="icon-lucide"></i>
+            <span>${text}</span>
+        </div>
+        <div class="upload-overlay"><i data-lucide="upload-cloud"></i> <span>${overlayText}</span></div>
+    `;
+    if(window.lucide) lucide.createIcons();
 }
 </script>

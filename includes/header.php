@@ -81,12 +81,20 @@ $unread_count = 0;
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/style.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/app-premium.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/theme/' . $theme_slug . '.css'); ?>">
-    <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/notifications.css'); ?>">
-    <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/page-content.css'); ?>">
-    <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/main-footer.css'); ?>">
-    <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/popups.css'); ?>">
-    <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/toasts.css'); ?>">
-    <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/components/global-search.css'); ?>">
+    
+    <?php 
+    // Core CSS Components Registry (Modular loading)
+    $core_components = [
+        'page-content', 'buttons', 'tables', 'cards', 'forms', 'alerts', 
+        'uploads', 'scroll', 'tom-select-custom', 'notifications', 
+        'main-footer', 'popups', 'toasts', 'global-search', 'switches'
+    ];
+
+    foreach ($core_components as $component) {
+        $asset_path = "/assets/css/components/{$component}.css";
+        echo '    <link rel="stylesheet" href="' . \App\Core\Controller::asset($asset_path) . '">' . PHP_EOL;
+    }
+    ?>
 
     
     <?php 
@@ -133,9 +141,6 @@ $unread_count = 0;
                     </div>
                     <span><?php echo htmlspecialchars($system_name); ?></span>
                 </a>
-                <button class="sidebar-collapse-toggle" id="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" title="Encolher Menu">
-                    <i data-lucide="chevrons-left"></i>
-                </button>
             </div>
             <nav class="sidebar-nav">
                 <ul>
@@ -214,6 +219,9 @@ $unread_count = 0;
                 <div class="top-bar-left">
                     <button class="menu-toggle" onclick="toggleSidebar()">
                         <i data-lucide="menu"></i>
+                    </button>
+                    <button class="sidebar-collapse-toggle" id="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" title="Encolher Menu">
+                        <i data-lucide="chevrons-left"></i>
                     </button>
                     <h2 class="page-title" id="page-title"><?php echo $page_titles[$current_page] ?? 'Início'; ?></h2>
                 </div>

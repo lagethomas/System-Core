@@ -156,6 +156,41 @@
     transform: translateY(0);
 }
 
+.btn-remove-image {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 77, 77, 0.1);
+    border: 1px solid rgba(255, 77, 77, 0.2);
+    color: #ff4d4d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.upload-selector:hover .btn-remove-image {
+    opacity: 1;
+}
+
+.btn-remove-image:hover {
+    background: #ff4d4d;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
+}
+
+.upload-selector .preview-img.empty {
+    display: none;
+}
+
 /* Theme Cards */
 .theme-section-header {
     display: flex;
