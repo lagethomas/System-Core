@@ -115,7 +115,7 @@ function openUserModal(data = null) {
                         <option value="administrador" ${data && data.role === 'administrador' ? 'selected' : ''}>Administrador</option>
                         <option value="proprietario" ${data && data.role === 'proprietario' ? 'selected' : ''}>Proprietário</option>
                     </select>
-                    <label class="floating-label">Papel / Nível de Acesso</label>
+                    <label class="floating-label">Permissão</label>
                 </div>
             </div>
 

@@ -30,49 +30,29 @@ $current_theme = $company['theme'] ?? 'gold-black';
             </div>
             
             <div class="form-grid-5 mb-4">
-                <!-- Nome Card -->
-                <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i data-lucide="info"></i> Nome</label>
-                    <div class="form-group mt-2">
-                        <input type="text" name="name" value="<?php echo htmlspecialchars($company['name'] ?? ''); ?>" class="form-control" placeholder="ex: Minha Empresa" required>
-                    </div>
-                    <small class="text-muted d-block mt-auto pt-2">Nome fantasia exibido no painel.</small>
+                <div class="floating-group">
+                    <input type="text" name="name" value="<?php echo htmlspecialchars($company['name'] ?? ''); ?>" class="form-control" placeholder=" " required>
+                    <label class="floating-label">Nome da Empresa</label>
                 </div>
 
-                <!-- Document Card -->
-                <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i data-lucide="contact"></i> Documento</label>
-                    <div class="form-group mt-2">
-                        <input type="text" name="document" value="<?php echo htmlspecialchars($company['document'] ?? ''); ?>" class="form-control mask-cnpj" placeholder="00.000.000/0000-00">
-                    </div>
-                    <small class="text-muted d-block mt-auto pt-2">CNPJ ou CPF da sua empresa.</small>
+                <div class="floating-group">
+                    <input type="text" name="document" value="<?php echo htmlspecialchars($company['document'] ?? ''); ?>" class="form-control mask-cnpj" placeholder=" ">
+                    <label class="floating-label">CNPJ / CPF</label>
                 </div>
 
-                <!-- Email Card -->
-                <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i data-lucide="mail"></i> E-mail</label>
-                    <div class="form-group mt-2">
-                        <input type="email" name="email" value="<?php echo htmlspecialchars($company['email'] ?? ''); ?>" class="form-control" placeholder="contato@empresa.com">
-                    </div>
-                    <small class="text-muted d-block mt-auto pt-2">E-mail principal para contatos.</small>
+                <div class="floating-group">
+                    <input type="email" name="email" value="<?php echo htmlspecialchars($company['email'] ?? ''); ?>" class="form-control" placeholder=" ">
+                    <label class="floating-label">E-mail de Contato</label>
                 </div>
 
-                <!-- WhatsApp Card -->
-                <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i data-lucide="phone"></i> WhatsApp</label>
-                    <div class="form-group mt-2">
-                        <input type="text" name="phone" value="<?php echo htmlspecialchars($company['phone'] ?? ''); ?>" class="form-control mask-phone" placeholder="(00) 00000-0000">
-                    </div>
-                    <small class="text-muted d-block mt-auto pt-2">Número de contato direto.</small>
+                <div class="floating-group">
+                    <input type="text" name="phone" value="<?php echo htmlspecialchars($company['phone'] ?? ''); ?>" class="form-control mask-phone" placeholder=" ">
+                    <label class="floating-label">WhatsApp</label>
                 </div>
 
-                <!-- Custom Domain Card -->
-                <div class="upload-box-wrapper p-3">
-                    <label class="upload-label"><i data-lucide="globe"></i> Domínio Personalizado</label>
-                    <div class="form-group mt-2">
-                        <input type="text" name="custom_domain" value="<?php echo htmlspecialchars($company['custom_domain'] ?? ''); ?>" class="form-control" placeholder="ex: orcamento.empresa.com.br">
-                    </div>
-                    <small class="text-muted d-block mt-auto pt-2">Aponta seu domínio (CNAME) para este portal.</small>
+                <div class="floating-group">
+                    <input type="text" name="custom_domain" value="<?php echo htmlspecialchars($company['custom_domain'] ?? ''); ?>" class="form-control" placeholder=" ">
+                    <label class="floating-label">Domínio Personalizado</label>
                 </div>
             </div>
 
