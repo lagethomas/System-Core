@@ -122,6 +122,14 @@ class LogRepository {
     /**
      * Cleanup logs based on retention settings (Rule 39)
      */
+    /**
+     * Delete all logs from the database
+     */
+    public function truncate(): bool {
+        $stmt = $this->pdo->prepare("TRUNCATE TABLE cp_logs");
+        return $stmt->execute();
+    }
+
     public function cleanup(int $days, int $limit): void {
         // 1. Delete by age
         $stmt = $this->pdo->prepare("DELETE FROM cp_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL ? DAY)");

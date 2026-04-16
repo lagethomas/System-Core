@@ -1,0 +1,60 @@
+/* ==============================================================
+   TABS / NAVIGATION COMPONENT
+   Standardized premium tab navigation for all system modules
+   ============================================================== */
+
+.tab-navigation {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 30px;
+    background: rgba(var(--white-rgb), 0.03);
+    padding: 6px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    width: fit-content;
+}
+
+.nav-link-tab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 22px;
+    border-radius: 10px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    transition: var(--transition, all 0.3s ease);
+    border: 1px solid transparent;
+}
+
+.nav-link-tab:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-link-tab.active {
+    color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.08);
+    border-color: rgba(var(--primary-rgb), 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link-tab i {
+    opacity: 0.7;
+    transition: var(--transition, all 0.3s ease);
+}
+
+.nav-link-tab.active i {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Light Theme Tweak */
+body.light-theme .tab-navigation {
+    background: #f1f5f9;
+}
+
+body.light-theme .nav-link-tab:hover {
+    background: #e2e8f0;
+}

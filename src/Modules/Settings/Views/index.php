@@ -7,7 +7,7 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
 $v = (string)time();
 ?>
 
-<div class="settings-tab-nav">
+<div class="tab-navigation">
     <a href="?tab=general" class="nav-link-tab <?php echo $active_tab === 'general' ? 'active' : ''; ?>">
         <i data-lucide="settings" class="icon-lucide icon-sm"></i> Geral
     </a>
@@ -117,55 +117,81 @@ $v = (string)time();
                 <p class="settings-subtitle">Escolha a paleta de cores que melhor define sua marca.</p>
             </div>
 
-            <div class="theme-section">
-                <div class="theme-section-header">
-                    <div class="theme-accent-indicator bg-primary"></div>
-                    <h5 class="text-main fw-800 m-0">Painel Administrativo</h5>
-                </div>
-                
-                <div class="theme-grid">
-                    <?php 
-                    $themes = ThemeHelper::getAvailableThemes();
-                    $current_theme = $settings['system_theme'] ?? 'gold-black';
-                    foreach ($themes as $slug => $theme): 
-                        $isSelected = ($slug === $current_theme);
-                    ?>
-                        <div class="selectable-card <?php echo $isSelected ? 'active' : ''; ?>" onclick="toggleSelectableCard(this, 'theme_<?php echo $slug; ?>')">
-                            <input type="radio" name="system_theme" id="theme_<?php echo $slug; ?>" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?> class="hidden">
-                            <div class="theme-preview-box" style="--preview-bg: <?php echo $theme['bg']; ?>;">
-                                <div class="theme-accent-strip" style="--preview-accent: <?php echo $theme['color']; ?>;"></div>
+            <div class="accordion-container mt-4">
+                <!-- System Theme Section -->
+                <details class="settings-accordion" open>
+                    <summary class="accordion-header">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-circle-box-sm bg-primary-glass text-primary">
+                                <i data-lucide="layout" class="icon-sm"></i>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <span class="fw-800 font-sm text-main"><?php echo $theme['name']; ?></span>
-                                <div class="theme-status-icon"><i data-lucide="check-circle-2"></i></div>
+                            <div>
+                                <h5 class="m-0 fw-800 text-main font-sm">Aparência do Painel Administrativo</h5>
+                                <p class="text-muted font-xs m-0">Define as cores de toda a interface interna do sistema.</p>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                </div>
+                        <i data-lucide="chevron-down" class="accordion-chevron"></i>
+                    </summary>
+                    <div class="accordion-content">
+                        <div class="theme-grid">
+                            <?php 
+                            $themes = ThemeHelper::getAvailableThemes();
+                            $current_theme = $settings['system_theme'] ?? 'gold-black';
+                            foreach ($themes as $slug => $theme): 
+                                $isSelected = ($slug === $current_theme);
+                            ?>
+                                <div class="selectable-card <?php echo $isSelected ? 'active' : ''; ?>" onclick="toggleSelectableCard(this, 'theme_<?php echo $slug; ?>')">
+                                    <input type="radio" name="system_theme" id="theme_<?php echo $slug; ?>" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?> class="hidden">
+                                    
+                                    <div class="theme-status-icon"><i data-lucide="check"></i></div>
+                                    
+                                    <div class="theme-preview-box" style="--preview-bg: <?php echo $theme['bg']; ?>;">
+                                        <div class="theme-center-dot" style="--preview-accent: <?php echo $theme['color']; ?>;"></div>
+                                    </div>
+                                    
+                                    <span class="theme-name"><?php echo $theme['name']; ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </details>
 
-                <div class="theme-section-header">
-                    <div class="theme-accent-indicator bg-muted"></div>
-                    <h5 class="text-main fw-800 m-0">Página de Acesso (Login)</h5>
-                </div>
-                
-                <div class="theme-grid">
-                    <?php 
-                    $current_login_theme = $settings['system_login_theme'] ?? 'gold-black';
-                    foreach ($themes as $slug => $theme): 
-                        $isSelected = ($slug === $current_login_theme);
-                    ?>
-                        <div class="selectable-card <?php echo $isSelected ? 'active' : ''; ?>" onclick="toggleSelectableCard(this, 'login_theme_<?php echo $slug; ?>')">
-                            <input type="radio" name="system_login_theme" id="login_theme_<?php echo $slug; ?>" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?> class="hidden">
-                            <div class="theme-preview-box" style="--preview-bg: <?php echo $theme['bg']; ?>;">
-                                <div class="theme-accent-strip" style="--preview-accent: <?php echo $theme['color']; ?>;"></div>
+                <!-- Login Theme Section -->
+                <details class="settings-accordion mt-3">
+                    <summary class="accordion-header">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-circle-box-sm bg-accent-glass text-muted">
+                                <i data-lucide="log-in" class="icon-sm"></i>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <span class="fw-800 font-sm text-main"><?php echo $theme['name']; ?></span>
-                                <div class="theme-status-icon"><i data-lucide="check-circle-2"></i></div>
+                            <div>
+                                <h5 class="m-0 fw-800 text-main font-sm">Aparência da Tela de Login</h5>
+                                <p class="text-muted font-xs m-0">Personalize o tema que seus clientes verão ao acessar.</p>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                </div>
+                        <i data-lucide="chevron-down" class="accordion-chevron"></i>
+                    </summary>
+                    <div class="accordion-content">
+                        <div class="theme-grid">
+                            <?php 
+                            $current_login_theme = $settings['system_login_theme'] ?? 'gold-black';
+                            foreach ($themes as $slug => $theme): 
+                                $isSelected = ($slug === $current_login_theme);
+                            ?>
+                                <div class="selectable-card <?php echo $isSelected ? 'active' : ''; ?>" onclick="toggleSelectableCard(this, 'login_theme_<?php echo $slug; ?>')">
+                                    <input type="radio" name="system_login_theme" id="login_theme_<?php echo $slug; ?>" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?> class="hidden">
+                                    
+                                    <div class="theme-status-icon"><i data-lucide="check"></i></div>
+                                    
+                                    <div class="theme-preview-box" style="--preview-bg: <?php echo $theme['bg']; ?>;">
+                                        <div class="theme-center-dot" style="--preview-accent: <?php echo $theme['color']; ?>;"></div>
+                                    </div>
+                                    
+                                    <span class="theme-name"><?php echo $theme['name']; ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </details>
             </div>
 
             <div class="settings-footer">

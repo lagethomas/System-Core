@@ -57,7 +57,9 @@ class LogsController extends Controller {
         
         try {
             $pdo = Database::getInstance();
-            $pdo->exec("TRUNCATE TABLE cp_logs");
+            require_once __DIR__ . '/../../../../includes/repositories/LogRepository.php';
+            $logRepo = new \LogRepository($pdo);
+            $logRepo->truncate();
             
             require_once __DIR__ . '/../../../../includes/logs.php';
             \Logger::log('logs_purge', 'O histórico de logs do sistema foi limpo pelo administrador.');

@@ -7,6 +7,9 @@
 
 <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=<?php echo $v; ?>">
 <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/app-premium.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/components/forms.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/components/buttons.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/components/cards.css?v=<?php echo $v; ?>">
 <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/modules/auth.css?v=<?php echo $v; ?>">
 <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/theme/<?php echo $theme_slug; ?>.css?v=<?php echo $v; ?>">
 
@@ -62,7 +65,7 @@
 </div>
 </div>
 
-<button type="submit" class="btn-primary btn-auth-submit" id="btnLogin">
+<button type="submit" class="btn-primary btn-block btn-auth-submit" id="btnLogin">
 <span class="btn-text">ACESSAR PAINEL</span>
 <i data-lucide="arrow-right" class="icon-sm"></i>
 </button>
@@ -70,7 +73,7 @@
 <?php if ($warn_session): ?>
 <div class="auth-session-warn">
 <p class="auth-session-warn-text">Detectamos uma sessão ativa em outro local.</p>
-<button type="submit" name="force_login" value="1" class="btn-secondary" style="border-color: rgba(245, 158, 11, 0.3); color: #fbbf24; width: auto !important; padding: 10px 20px;">
+<button type="submit" name="force_login" value="1" class="btn-secondary btn-block">
 Limpar Sessão e Entrar Agora
 </button>
 </div>

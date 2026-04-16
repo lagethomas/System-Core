@@ -1,0 +1,67 @@
+/* ==============================================================
+   ACCORDION COMPONENT
+   Standardized premium accordion layout using <details> / <summary>
+   ============================================================== */
+
+.accordion-container {
+    background: rgba(0,0,0,0.1);
+    border-radius: 24px;
+    padding: 8px;
+    border: 1px solid var(--border);
+}
+
+.accordion-item, .settings-accordion {
+    border-radius: 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: var(--transition-smooth, all 0.3s ease);
+}
+
+.accordion-item:not(:last-child), .settings-accordion:not(:last-child) {
+    margin-bottom: 12px;
+}
+
+.accordion-item[open], .settings-accordion[open] {
+    box-shadow: 0 10px 30px -5px rgba(0,0,0,0.2);
+    border-color: rgba(var(--primary-rgb), 0.2);
+}
+
+.accordion-header {
+    padding: 24px;
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: var(--transition-smooth, all 0.3s ease);
+}
+
+.accordion-header::-webkit-details-marker {
+    display: none;
+}
+
+.accordion-header:hover {
+    background: rgba(var(--primary-rgb), 0.02);
+}
+
+.accordion-chevron {
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+}
+
+.accordion-item[open] .accordion-chevron, .settings-accordion[open] .accordion-chevron {
+    transform: rotate(180deg);
+    color: var(--primary);
+}
+
+.accordion-content {
+    padding: 24px;
+    border-top: 1px solid var(--border);
+    animation: accordionSlideDown 0.3s ease-out;
+}
+
+@keyframes accordionSlideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

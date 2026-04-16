@@ -68,3 +68,29 @@ input:checked+.slider:before {
 input:checked+.switch-sm .slider:before {
     transform: translateX(20px);
 }
+
+/* Switch Container (Standardized Wrapper) */
+.switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 16px 20px;
+    background: rgba(var(--primary-rgb), 0.03);
+    border: 1px solid var(--border);
+    border-radius: var(--radius, 12px);
+    transition: var(--transition, all 0.3s ease);
+}
+
+.switch-container:hover {
+    background: rgba(var(--primary-rgb), 0.06);
+    border-color: rgba(var(--primary-rgb), 0.2);
+}
+
+.switch-label {
+    display: block;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-main);
+    margin-bottom: 2px;
+}

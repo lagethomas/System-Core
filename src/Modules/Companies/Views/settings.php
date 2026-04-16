@@ -10,7 +10,7 @@ $current_theme = $company['theme'] ?? 'gold-black';
 
 <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/modules/settings.css?v=<?php echo $v; ?>">
 
-<div class="settings-tab-nav">
+<div class="tab-navigation">
     <a href="?tab=general" class="nav-link-tab <?php echo ($active_tab === 'general' || empty($active_tab)) ? 'active' : ''; ?>">
         <i data-lucide="settings"></i> Geral
     </a>

@@ -5,7 +5,7 @@ $v = (string)time();
 ?>
 <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/modules/integrations.css?v=<?php echo $v; ?>">
 
-<div class="settings-tab-nav">
+<div class="tab-navigation">
     <a href="?tab=email" class="nav-link-tab <?php echo $active_tab === 'email' ? 'active' : ''; ?>">
         <i data-lucide="mail" class="icon-lucide icon-sm"></i> E-mail (SMTP)
     </a>

@@ -13,7 +13,7 @@ $v = (string)time();
 </div>
 
 <div class="welcome-container mb-5">
-    <div class="row align-items-center">
+    <div class="row align-items-center mt-4">
         <div class="col-md-4 text-md-right">
             <div class="date-badge">
                 <i data-lucide="calendar" class="icon-lucide icon-sm mr-2"></i>

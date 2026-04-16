@@ -92,57 +92,17 @@
     font-size: 13px;
 }
 
-.auth-form .floating-group .form-control {
-    background: var(--bg-surface) !important;
-    border: 1px solid var(--border) !important;
-    color: var(--text-main) !important;
-    border-radius: 12px !important;
+.btn-auth-submit {
+    margin-top: 10px;
 }
 
-.auth-form .floating-group .form-control:focus {
-    border-color: var(--primary) !important;
-    color: var(--primary) !important;
-}
-
-.auth-form .floating-group .floating-label {
-    color: var(--text-muted);
-    background: transparent;
+.auth-form .floating-group {
+    margin-bottom: 25px;
 }
 
 .auth-form .floating-group .form-control:focus ~ .floating-label,
 .auth-form .floating-group .form-control:not(:placeholder-shown) ~ .floating-label {
-    background: var(--bg-card) !important;
-    color: var(--primary);
-    padding: 0 5px;
-}
-
-.auth-form .btn-password-toggle {
-    color: var(--text-muted);
-}
-
-.btn-auth-submit {
-    width: 100%;
-    height: 52px;
-    margin-top: 35px;
-    border-radius: 12px;
-    font-weight: 800;
-    font-size: 15px;
-    letter-spacing: 0.5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background: var(--primary);
-    color: var(--text-on-primary);
-    border: none;
-    cursor: pointer;
-    transition: var(--transition-smooth);
-}
-
-.btn-auth-submit:hover {
-    background: var(--primary-light);
-    transform: translateY(-2px);
-    box-shadow: none !important;
+    background: var(--bg-card) !important; /* Dynamic background to mask the border */
 }
 
 .auth-session-warn {

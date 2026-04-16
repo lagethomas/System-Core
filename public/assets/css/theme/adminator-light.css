@@ -300,3 +300,7 @@ body {
 input:checked+.slider:before{
     background-color: #FFF !important;
 }
+.auth-form .floating-group .form-control:focus ~ .floating-label,
+.auth-form .floating-group .form-control:not(:placeholder-shown) ~ .floating-label {
+    background-color: #FFF !important;
+}

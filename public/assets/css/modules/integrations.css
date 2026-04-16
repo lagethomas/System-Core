@@ -1,40 +1,5 @@
 /* Integrations Module Styles */
 
-.settings-tab-nav {
-    margin-bottom: 30px;
-    display: flex;
-    gap: 15px;
-    border-bottom: 1px solid var(--border);
-}
-
-.nav-link-tab {
-    padding: 12px 20px;
-    text-decoration: none;
-    color: var(--text-muted);
-    font-weight: 600;
-    font-size: 14px;
-    position: relative;
-    border-radius: 8px 8px 0 0;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.nav-link-tab.active {
-    color: var(--primary) !important;
-}
-
-.nav-link-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--primary);
-}
-
 .integration-header {
     display: flex;
     align-items: center;

@@ -9,6 +9,14 @@
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.glassmorphism {
+    background: rgba(15, 17, 21, 0.45) !important;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
 .btn-dark, .btn-secondary {
     display: inline-flex;
     align-items: center;
@@ -122,6 +130,20 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     border: 1px solid var(--border);
 }
+
+.icon-circle-box-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.bg-primary-glass { background: rgba(var(--primary-rgb), 0.1) !important; }
+.bg-accent-glass { background: rgba(var(--accent-rgb), 0.1) !important; }
+
 
 /* Timeline & History */
 .section-full-width {

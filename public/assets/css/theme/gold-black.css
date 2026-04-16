@@ -32,3 +32,4 @@
     /* Effects */
     --calendar-filter: invert(1) brightness(1.2);
 }
+.slider:before{ background-color: #fff !important;}

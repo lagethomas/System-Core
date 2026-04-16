@@ -209,7 +209,7 @@ function suggestCompanySlug(name) {
 
 document.addEventListener('ajaxSuccess', (e) => {
     if (e.target.action.includes('/api/admin/companies/save')) {
-        window.location.reload(); 
+        // window.location.reload(); 
     }
 });
 

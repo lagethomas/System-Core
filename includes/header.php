@@ -85,9 +85,10 @@ $unread_count = 0;
     <?php 
     // Core CSS Components Registry (Modular loading)
     $core_components = [
-        'page-content', 'buttons', 'tables', 'cards', 'forms', 'alerts', 
-        'uploads', 'scroll', 'tom-select-custom', 'notifications', 
-        'main-footer', 'popups', 'toasts', 'global-search', 'switches'
+        'page-content', 'sidebar', 'top-bar', 'buttons', 'tables', 'cards', 
+        'forms', 'alerts', 'uploads', 'scroll', 'tom-select-custom', 
+        'notifications', 'main-footer', 'popups', 'toasts', 
+        'global-search', 'switches', 'utilities', 'pagination', 'tabs', 'accordion'
     ];
 
     foreach ($core_components as $component) {
@@ -204,7 +205,7 @@ $unread_count = 0;
                 </div>
                 <!-- Popup de Perfil/Sair -->
                 <div class="sidebar-user-dropdown" id="user-dropdown">
-                    <a href="<?php echo SITE_URL; ?>/profile" class="btn-secondary" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
+                    <a href="<?php echo SITE_URL; ?>/profile" class="user-dropdown-link">
                         <i data-lucide="user-circle"></i> Meu Perfil
                     </a>
                     <a href="<?php echo SITE_URL; ?>/logout" onclick="handleLogout(event)" class="user-dropdown-item danger">

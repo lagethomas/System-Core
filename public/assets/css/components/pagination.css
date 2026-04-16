@@ -1,0 +1,88 @@
+/* ==============================================================
+   PAGINATION COMPONENT
+   Standardized navigation for data lists
+   ============================================================== */
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+}
+
+.pagination-info {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.pagination-info strong {
+    color: var(--text-main);
+}
+
+.pagination-list {
+    display: flex;
+    list-style: none;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+.pagination-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination-item a, 
+.pagination-item span {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.pagination-item a:hover {
+    background: rgba(var(--primary-rgb), 0.1);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.pagination-item.active span {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.pagination-item.disabled span {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background: transparent;
+}
+
+.pagination-item.nav-btn {
+    font-size: 14px;
+}
+
+.pagination-item.nav-btn i {
+    width: 14px;
+    height: 14px;
+}
+
+@media (max-width: 768px) {
+    .pagination-container {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+}
