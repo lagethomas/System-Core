@@ -10,6 +10,7 @@
 
 /* Flexbox */
 .d-flex { display: flex !important; }
+.flex-column { flex-direction: column !important; }
 .align-items-center { align-items: center !important; }
 .justify-content-between { justify-content: space-between !important; }
 .justify-content-end { justify-content: flex-end !important; }

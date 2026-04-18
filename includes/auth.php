@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Auth compatibility shim (lowercase filename).
  * Some legacy server configs may reference includes/auth.php (lowercase).

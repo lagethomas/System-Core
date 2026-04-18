@@ -8,9 +8,14 @@ $v = (string)time();
 <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/modules/companies.css?v=<?php echo $v; ?>">
 
 <div class="page-header">
-    <div>
-        <h2 class="companies-title">Empresas Clientes</h2>
-        <p class="companies-subtitle">Administre as unidades e negócios cadastrados no SaaS.</p>
+    <div class="flex items-center gap-4">
+        <div class="header-icon-box">
+            <i data-lucide="briefcase"></i>
+        </div>
+        <div>
+            <h2 class="companies-title m-0">Empresas Clientes</h2>
+            <p class="companies-subtitle m-0">Administre as unidades e negócios cadastrados no SaaS.</p>
+        </div>
     </div>
     <div class="page-header-actions">
         <button class="btn-primary" onclick="openCompanyModal()">

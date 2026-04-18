@@ -105,6 +105,33 @@ window.UI = {
     confirm(msg, options = {}) {
         return window.confirmAction(options.title || 'Confirmar', msg, options.type || 'warning', options.confirmText);
     },
+
+    confirmAction(title, text, type = 'warning') {
+        return window.confirmAction(title, text, type);
+    },
+    
+    showLoading() {
+        if (document.getElementById('ui-loading-overlay')) return;
+        const overlay = document.createElement('div');
+        overlay.id = 'ui-loading-overlay';
+        overlay.className = 'loading-overlay-premium';
+        overlay.innerHTML = `
+            <div class="loading-spinner-container">
+                <div class="loading-spinner"></div>
+                <p>Processando...</p>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        setTimeout(() => overlay.classList.add('active'), 10);
+    },
+
+    hideLoading() {
+        const overlay = document.getElementById('ui-loading-overlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+            setTimeout(() => overlay.remove(), 400);
+        }
+    },
     
     removeToast(btn) {
         const toast = btn.closest('.toast');

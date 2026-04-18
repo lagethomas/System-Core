@@ -8,8 +8,8 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     padding: 24px;
-    border-radius: 20px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: var(--radius-lg);
+    transition: var(--transition);
 }
 
 .card:hover {
@@ -30,11 +30,11 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     padding: 24px;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     display: flex;
     align-items: center;
     gap: 20px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: var(--transition);
     position: relative;
     overflow: hidden;
     text-decoration: none;
@@ -55,11 +55,11 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     padding: 24px 28px;
-    border-radius: 24px;
+    border-radius: var(--radius-xl);
     display: flex;
     align-items: center;
     gap: 20px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: var(--transition);
     text-decoration: none;
     position: relative;
     overflow: hidden;
@@ -197,12 +197,12 @@
 .dashboard-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     padding: 24px;
     display: flex;
     flex-direction: column;
     height: 100%;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: var(--transition);
 }
 
 .dashboard-card:hover {
@@ -214,9 +214,9 @@
 .info-block {
     background: rgba(var(--primary-rgb), 0.04);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-md);
     padding: 1.5rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: var(--transition);
 }
 
 .info-block:hover {

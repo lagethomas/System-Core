@@ -1,6 +1,9 @@
 :root {
     /* Layout & Structure */
-    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 24px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     /* Variable Default Fallbacks (will be overridden by themes) */
@@ -19,6 +22,10 @@
     --glass-bg: rgba(255, 255, 255, 0.03);
     --glass-border: rgba(255, 255, 255, 0.1);
     --calendar-filter: invert(1) brightness(1.2);
+    
+    /* Shadow tokens */
+    --card-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+    --card-hover-shadow: 0 15px 40px -10px rgba(0,0,0,0.6);
 
     /* Helper Colors */
     --success: #00ff7f;
@@ -39,11 +46,16 @@
 
 /* Base Body Style */
 body {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
     background-color: var(--bg-dark);
     color: var(--text-main);
     min-height: 100vh;
     overflow-x: hidden;
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6, .stat-value-premium {
+    font-family: 'Outfit', sans-serif;
 }
 
 /* App Skeleton */
@@ -72,11 +84,15 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-/* Lucide Icons Global */
+/* Lucide Icons Global Rule 10 */
 [data-lucide], [data-lucide] svg {
     width: 16px;
     height: 16px;
+    transition: var(--transition);
 }
+
+.icon-sm, .icon-sm svg { width: 14px; height: 14px; }
+.icon-lg, .icon-lg svg { width: 24px; height: 24px; }
 
 /* Accessibility */
 .sr-only {
@@ -89,6 +105,26 @@ body {
     clip: rect(0, 0, 0, 0);
     border: 0;
 }
+
 input[type="radio" i]{
     display: none;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--primary-rgb), 0.3);
 }

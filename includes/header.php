@@ -88,7 +88,7 @@ $unread_count = 0;
         'page-content', 'sidebar', 'top-bar', 'buttons', 'tables', 'cards', 
         'forms', 'alerts', 'uploads', 'scroll', 'tom-select-custom', 
         'notifications', 'main-footer', 'popups', 'toasts', 
-        'global-search', 'switches', 'utilities', 'pagination', 'tabs', 'accordion'
+        'global-search', 'switches', 'utilities', 'pagination', 'tabs', 'accordion', 'badges'
     ];
 
     foreach ($core_components as $component) {
@@ -111,6 +111,8 @@ $unread_count = 0;
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="<?php echo SITE_URL; ?>/assets/img/icon-192.png">
     <script>
+        window.SITE_URL = '<?php echo SITE_URL; ?>';
+        window.CSRF_TOKEN = '<?php echo CSRF::generateToken(); ?>';
         // Expose server-side session timeout so JS timer stays in sync
         window.SESSION_TIMEOUT_MINUTES = <?php echo (string)(int)($platform_settings['security_session_timeout'] ?? 120); ?>;
     </script>
@@ -224,7 +226,6 @@ $unread_count = 0;
                     <button class="sidebar-collapse-toggle" id="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" title="Encolher Menu">
                         <i data-lucide="chevrons-left"></i>
                     </button>
-                    <h2 class="page-title" id="page-title"><?php echo $page_titles[$current_page] ?? 'Início'; ?></h2>
                 </div>
 
                 <div class="top-nav-right">
@@ -246,6 +247,7 @@ $unread_count = 0;
                         <i data-lucide="clock"></i>
                         <span id="timer-count">--:--</span>
                     </div>
+
                     <!-- Notificações -->
                     <div class="notif-trigger">
                         <i data-lucide="bell"></i>

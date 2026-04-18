@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Theme Helper compatibility shim.
  * Delegates to the canonical includes/helpers/ThemeHelper.php.

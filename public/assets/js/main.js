@@ -1,64 +1,7 @@
-/**
- * Main Application Orchestrator
- * Handles layout, sidebar, session management and search.
- */
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Sidebar persistence
-    const sidebar = document.getElementById('sidebar');
-    const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
-    if (isCollapsed && sidebar) {
-        sidebar.classList.add('collapsed');
-        document.body.classList.add('sidebar-collapsed');
-        
-        const btn = document.getElementById('sidebar-toggle-btn');
-        if (btn) {
-            btn.innerHTML = '<i data-lucide="chevrons-right"></i>';
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-    }
-
-    // 2. Initializers
-    if (typeof UI !== 'undefined') {
-        UI.handleUrlMessages();
-        UI.initMasks();
-        UI.initAutocomplete();
-        UI.initPasswordToggles();
-    }
-
-    // 3. Table Responsiveness Wrapper
-    document.querySelectorAll('.premium-table').forEach(table => {
-        if (!table.parentElement.classList.contains('table-responsive')) {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'table-responsive';
-            table.parentNode.insertBefore(wrapper, table);
-            wrapper.appendChild(table);
-        }
-    });
-
-    // 4. Modal Overlay Closer
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal-overlay')) {
-            if (typeof UI !== 'undefined') UI.closeModal();
-        }
-    });
-
-    // 5. Session management + countdown timer
-    if (!window.location.pathname.includes('/login')) {
-        SessionManager.init();
-    }
-
-    // 6. Unregister Service Workers
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(regs => {
-            regs.forEach(r => r.unregister());
-        });
-    }
-});
-
-/* ═══════════════════════════════════════════════════════
+/* -----------------------------------------------------------
    SIDEBAR
-   ═══════════════════════════════════════════════════════ */
-function toggleSidebarCollapse() {
+   ----------------------------------------------------------- */
+window.toggleSidebarCollapse = function() {
     const sidebar = document.getElementById('sidebar');
     if (!sidebar) return;
     sidebar.classList.toggle('collapsed');
@@ -72,71 +15,18 @@ function toggleSidebarCollapse() {
         btn.innerHTML = `<i data-lucide="${isCollapsed ? 'chevrons-right' : 'chevrons-left'}"></i>`;
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }
-}
+};
 
-function toggleSidebar() {
+window.toggleSidebar = function() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.querySelector('.sidebar-overlay');
     if (sidebar) sidebar.classList.toggle('active');
     if (overlay) overlay.classList.toggle('active');
-}
+};
 
-/* ═══════════════════════════════════════════════════════
-   MOBILE SEARCH
-   ═══════════════════════════════════════════════════════ */
-function toggleMobileSearch() {
-    if (window.innerWidth > 768) return;
-    const container = document.getElementById('global-search-container');
-    const topBar    = document.querySelector('.top-bar');
-    const input     = document.getElementById('global-page-search');
-    if (!container || !topBar) return;
-
-    const isOpen = container.classList.toggle('search-open');
-    topBar.classList.toggle('search-active', isOpen);
-
-    if (isOpen) {
-        setTimeout(() => input && input.focus(), 50);
-    } else {
-        clearSearch();
-    }
-}
-
-// Close mobile search when clicking outside
-document.addEventListener('click', (e) => {
-    if (window.innerWidth > 768) return;
-    const container = document.getElementById('global-search-container');
-    if (container && !container.contains(e.target)) {
-        const topBar = document.querySelector('.top-bar');
-        container.classList.remove('search-open');
-        if (topBar) topBar.classList.remove('search-active');
-        clearSearch();
-    }
-});
-
-/* ═══════════════════════════════════════════════════════
-   SEARCH  —  input handler + clear button
-   ═══════════════════════════════════════════════════════ */
-function handleSearchInput(input) {
-    const container = document.getElementById('global-search-container');
-    if (container) container.classList.toggle('has-value', input.value.length > 0);
-    if (typeof UI !== 'undefined') UI.handleGlobalSearch(input.value);
-}
-
-function clearSearch() {
-    const input     = document.getElementById('global-page-search');
-    const container = document.getElementById('global-search-container');
-    if (input)     { input.value = ''; }
-    if (container) { container.classList.remove('has-value'); }
-    if (typeof UI !== 'undefined') UI.handleGlobalSearch('');
-}
-
-/* ═══════════════════════════════════════════════════════
+/* -----------------------------------------------------------
    SESSION MANAGER
-   Controls:
-   - Activity-based pulse (resets server last_activity)
-   - Countdown timer in sidebar
-   - Expired state + disconnect on next interaction
-   ═══════════════════════════════════════════════════════ */
+   ----------------------------------------------------------- */
 const SessionManager = (() => {
     // Will be set from PHP via window.SESSION_TIMEOUT_MINUTES
     const TIMEOUT_MIN    = (window.SESSION_TIMEOUT_MINUTES || 120);
@@ -170,7 +60,8 @@ const SessionManager = (() => {
         }
 
         try {
-            const res = await fetch('/api/auth/pulse', { method: 'POST', body: new FormData() });
+            const pulseUrl = (window.SITE_URL || '') + '/api/auth/pulse';
+            const res = await fetch(pulseUrl, { method: 'POST', body: new FormData() });
             if (!res.ok) {
                 const data = await res.json().catch(() => ({}));
                 if (data.error === 'expired' || data.error === 'duplicate') {
@@ -259,10 +150,62 @@ const SessionManager = (() => {
     return { init };
 })();
 
-/* ═══════════════════════════════════════════════════════
-   DISCONNECT OVERLAY
-   ═══════════════════════════════════════════════════════ */
+/**
+ * Main Application Orchestrator
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Sidebar persistence
+    const sidebar = document.getElementById('sidebar');
+    const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+    if (isCollapsed && sidebar) {
+        sidebar.classList.add('collapsed');
+        document.body.classList.add('sidebar-collapsed');
+        
+        const btn = document.getElementById('sidebar-toggle-btn');
+        if (btn) {
+            btn.innerHTML = '<i data-lucide="chevrons-right"></i>';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+    }
+
+    // 2. Initializers
+    if (typeof UI !== 'undefined') {
+        UI.handleUrlMessages();
+        UI.initMasks();
+        UI.initAutocomplete();
+        UI.initPasswordToggles();
+    }
+
+    // 3. Table Responsiveness Wrapper
+    document.querySelectorAll('.premium-table').forEach(table => {
+        if (!table.parentElement.classList.contains('table-responsive')) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'table-responsive';
+            table.parentNode.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+        }
+    });
+
+    // 4. Modal Overlay Closer
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal-overlay')) {
+            if (typeof UI !== 'undefined') UI.closeModal();
+        }
+    });
+
+    // 5. Session management
+    if (!window.location.pathname.includes('/login')) {
+        SessionManager.init();
+    }
+
+    // 6. Service Workers cleanup
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(regs => {
+            regs.forEach(r => r.unregister());
+        });
+    }
+});
+
 window.showDisconnectOverlay = function(message) {
-    // Redirect immediately as requested by user - removing animations
-    window.location.href = '/logout';
+    window.location.href = (window.SITE_URL || '') + '/logout';
 };

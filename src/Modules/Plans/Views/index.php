@@ -7,9 +7,14 @@ $v = (string)time();
 <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/modules/plans.css?v=<?php echo $v; ?>">
 
 <div class="page-header">
-    <div>
-        <h2 class="text-primary m-0 fw-800">Pacotes de Assinatura</h2>
-        <p class="text-muted small">Defina os planos de cobrança para os seus clientes SaaS.</p>
+    <div class="flex items-center gap-4">
+        <div class="header-icon-box">
+            <i data-lucide="package"></i>
+        </div>
+        <div>
+            <h2 class="text-primary m-0 fw-800">Pacotes de Assinatura</h2>
+            <p class="text-muted small m-0">Defina os planos de cobrança para os seus clientes SaaS.</p>
+        </div>
     </div>
     <div class="page-header-actions">
         <button class="btn-primary" onclick="openPlanModal()">

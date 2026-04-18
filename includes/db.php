@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * DB compatibility shim (lowercase filename).
  * Some legacy server configs or includes may reference includes/db.php (lowercase).

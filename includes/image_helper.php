@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * ImageHelper compatibility shim.
  * Delegates to the canonical includes/helpers/ImageHelper.php.

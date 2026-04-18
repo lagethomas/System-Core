@@ -1,132 +1,148 @@
+<?php declare(strict_types=1); ?>
 <?php
 /** @var array $user */
+$avatarUrl = !empty($user['avatar']) ? SITE_URL . '/uploads/profile/' . $user['avatar'] : null;
+$initials = !empty($user['name']) ? strtoupper(substr($user['name'], 0, 1)) : '?';
 ?>
 
-<div class="card" style="padding: 30px; position: relative;">
-    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 30px;">
-        <div id="avatar-preview" onclick="document.getElementById('profile_picture').click()" 
-             style="width: 100px; height: 100px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: var(--primary); cursor: pointer; position: relative; overflow: hidden; <?php echo !empty($user['avatar']) ? 'background-image: url('.SITE_URL.'/uploads/profile/'.$user['avatar'].'); background-size: cover; background-position: center; color: transparent;' : ''; ?>">
-            <?php echo empty($user['avatar']) ? strtoupper(substr($user['name'], 0, 1)) : ''; ?>
-            <div style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.6); color: #fff; font-size: 10px; padding: 4px 0; text-align: center;">
-                <i data-lucide="camera" style="width: 12px; height: 12px;"></i> EDITAR
-            </div>
+<div class="profile-header mb-8">
+    <div class="flex items-center gap-4">
+        <div class="header-icon-box">
+            <i data-lucide="user"></i>
         </div>
         <div>
-            <h3 style="color: var(--text-main); margin-bottom: 5px;">Meu Perfil</h3>
-            <p style="color: var(--text-muted); font-size: 14px;">Mantenha seus dados atualizados para garantir a segurança da conta.</p>
+            <h2 class="m-0">Meu Perfil</h2>
+            <p class="text-muted m-0">Gerencie suas informações de acesso, dados pessoais e preferências.</p>
         </div>
     </div>
+</div>
 
-    <form action="<?php echo SITE_URL; ?>/api/profile/save" method="POST" class="ajax-form" enctype="multipart/form-data">
-        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display: none;" onchange="previewAvatar(this)">
-        <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
-        <div class="form-grid-2">
-            <div class="floating-group">
-                <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($user['name']); ?>" required placeholder=" ">
-                <label class="floating-label">Nome Completo</label>
+<div class="profile-layout">
+    <div class="profile-sidebar">
+        <!-- Card de Avatar -->
+        <div class="card glassmorphism p-5 text-center mb-4 flex flex-column items-center">
+            <div class="profile-avatar-wrapper mb-4" id="avatar-preview" onclick="document.getElementById('profile_picture').click()" 
+                 style="<?php echo $avatarUrl ? "background-image: url('$avatarUrl');" : ""; ?>">
+                <?php if (!$avatarUrl): ?>
+                    <span class="avatar-initials"><?php echo $initials; ?></span>
+                <?php endif; ?>
+                <div class="avatar-overlay">
+                    <i data-lucide="camera" class="icon-lg"></i>
+                </div>
             </div>
-            <div class="floating-group">
-                <input type="text" class="form-control" value="<?php echo htmlspecialchars($user['username']); ?>" readonly placeholder=" " style="background: rgba(var(--primary-rgb), 0.03); opacity: 0.7;">
-                <label class="floating-label">Usuário (Login)</label>
-            </div>
+            <h3 class="mb-1 fw-800 text-white"><?php echo htmlspecialchars($user['name']); ?></h3>
+            <p class="text-muted small mb-4"><?php echo htmlspecialchars($user['email']); ?></p>
+            <span class="badge bg-primary-glass text-primary px-3 py-2 rounded-pill small fw-700 text-uppercase">
+                <?php echo htmlspecialchars(str_replace('ROLE_', '', $user['role'] ?? 'Membro')); ?>
+            </span>
         </div>
 
-        <div class="form-grid-2">
-            <div class="floating-group">
-                <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>" required placeholder=" ">
-                <label class="floating-label">E-mail</label>
-            </div>
-            <div class="floating-group">
-                <div class="password-toggle-wrapper">
-                    <input type="password" name="password" id="profile-password" class="form-control" placeholder=" ">
-                    <label class="floating-label">Nova Senha (deixe em branco para manter)</label>
-                    <div class="floating-actions">
-                        <button type="button" class="btn-password-toggle" onclick="UI.togglePassword(this, 'profile-password')">
-                            <i data-lucide="eye"></i>
-                        </button>
-                        <button type="button" onclick="UI.generatePassword('profile-password')" class="btn-generate-password" title="Gerar Senha">
-                            <i data-lucide="shuffle"></i>
-                        </button>
-                    </div>
+        <!-- Atalhos/Info -->
+        <div class="card p-4 border-dashed rounded-20 bg-transparent">
+            <h4 class="small fw-800 text-muted text-uppercase tracking-widest mb-4">Estatísticas</h4>
+            <div class="flex flex-column gap-3">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="calendar" class="icon-sm text-primary"></i>
+                    <span class="small">Membro desde <?php echo date('d/m/Y', strtotime($user['created_at'])); ?></span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i data-lucide="shield-check" class="icon-sm text-success"></i>
+                    <span class="small">Perfil Verificado</span>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="form-grid-2">
-            <div class="floating-group">
-                <input type="text" name="phone" class="form-control mask-phone" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" placeholder=" ">
-                <label class="floating-label">Telefone / WhatsApp</label>
-            </div>
-            <div class="floating-group">
-                <input type="text" name="zip_code" class="form-control mask-zip" value="<?php echo htmlspecialchars($user['zip_code'] ?? ''); ?>" placeholder=" " onblur="UI.lookupZip(this.value, 'p-city', 'p-state', 'p-street', 'p-neighborhood')">
-                <label class="floating-label">CEP</label>
-            </div>
-        </div>
+    <div class="profile-main">
+        <div class="card p-5">
+            <form action="<?php echo SITE_URL; ?>/api/profile/save" method="POST" class="ajax-form premium-form" id="profileForm" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
+                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display: none;" onchange="previewAvatar(this)">
+                
+                <h3 class="mb-5 fw-700 text-main">
+                    <i data-lucide="user-cog" class="icon-sm mr-2 text-primary"></i> Informações Básicas
+                </h3>
+                
+                <div class="floating-group mb-4">
+                    <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($user['name']); ?>" placeholder=" " required>
+                    <label class="floating-label">Nome Completo</label>
+                </div>
 
-        <div class="form-grid-2">
-            <div class="floating-group">
-                <input type="text" name="street" id="p-street" class="form-control" value="<?php echo htmlspecialchars($user['street'] ?? ''); ?>" placeholder=" ">
-                <label class="floating-label">Rua / Logradouro</label>
-            </div>
-            <div class="floating-group">
-                <input type="text" name="neighborhood" id="p-neighborhood" class="form-control" value="<?php echo htmlspecialchars($user['neighborhood'] ?? ''); ?>" placeholder=" ">
-                <label class="floating-label">Bairro</label>
-            </div>
-        </div>
+                <div class="form-grid-2 gap-4 mb-4">
+                    <div class="floating-group">
+                        <input type="text" class="form-control text-muted" style="background: rgba(var(--primary-rgb), 0.03);" value="<?php echo htmlspecialchars($user['username']); ?>" placeholder=" " readonly>
+                        <label class="floating-label">Nome de Usuário (Login)</label>
+                    </div>
+                    <div class="floating-group">
+                        <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>" placeholder=" " required>
+                        <label class="floating-label">Endereço de E-mail</label>
+                    </div>
+                </div>
 
-        <div class="form-grid-3">
-            <div class="floating-group">
-                <input type="text" name="city" id="p-city" class="form-control" value="<?php echo htmlspecialchars($user['city'] ?? ''); ?>" placeholder=" ">
-                <label class="floating-label">Cidade</label>
-            </div>
-            <div class="floating-group">
-                <input type="text" name="state" id="p-state" class="form-control" value="<?php echo htmlspecialchars($user['state'] ?? ''); ?>" maxlength="2" placeholder=" ">
-                <label class="floating-label">UF</label>
-            </div>
-            <div class="floating-group">
-                <input type="text" name="address_number" class="form-control" value="<?php echo htmlspecialchars($user['address_number'] ?? ''); ?>" placeholder=" ">
-                <label class="floating-label">Número</label>
-            </div>
-        </div>
+                <div class="form-grid-2 gap-4 mb-5">
+                    <div class="floating-group">
+                        <input type="text" name="phone" id="profile-phone" class="form-control mask-phone" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" placeholder=" ">
+                        <label class="floating-label">Telefone / WhatsApp</label>
+                    </div>
+                    <div class="floating-group">
+                        <div class="password-toggle-wrapper">
+                            <input type="password" name="password" id="profile-password" class="form-control" placeholder=" ">
+                            <label class="floating-label">Nova Senha (deixe vazio para manter)</label>
+                            <div class="floating-actions">
+                                <button type="button" class="btn-password-toggle" onclick="UI.togglePassword(this, 'profile-password')">
+                                    <i data-lucide="eye"></i>
+                                </button>
+                                <button type="button" onclick="UI.generatePassword('profile-password')" class="btn-generate-password" title="Gerar Senha">
+                                    <i data-lucide="shuffle"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <div style="margin-top: 40px; text-align: right;">
-            <button type="submit" class="btn-primary">
-                <i data-lucide="save" class="icon-lucide icon-sm mr-2"></i> Salvar Minhas Alterações
-            </button>
+                <h3 class="mb-5 mt-5 fw-700 text-main">
+                    <i data-lucide="map" class="icon-sm mr-2 text-primary"></i> Endereço e Localização
+                </h3>
+
+                <div class="form-grid-3 gap-4 mb-4">
+                    <div class="floating-group">
+                        <input type="text" name="zip_code" class="form-control mask-zip" value="<?php echo htmlspecialchars($user['zip_code'] ?? ''); ?>" placeholder=" " onblur="UI.lookupZip(this.value, 'p-city', 'p-state', 'p-street', 'p-neighborhood')">
+                        <label class="floating-label">CEP</label>
+                    </div>
+                    <div class="floating-group" style="grid-column: span 2;">
+                        <input type="text" name="street" id="p-street" class="form-control" value="<?php echo htmlspecialchars($user['street'] ?? ''); ?>" placeholder=" ">
+                        <label class="floating-label">Rua / Avenida</label>
+                    </div>
+                </div>
+
+                <div class="form-grid-3 gap-4 mb-5">
+                    <div class="floating-group">
+                        <input type="text" name="address_number" class="form-control" value="<?php echo htmlspecialchars($user['address_number'] ?? ''); ?>" placeholder=" ">
+                        <label class="floating-label">Número</label>
+                    </div>
+                    <div class="floating-group">
+                        <input type="text" name="neighborhood" id="p-neighborhood" class="form-control" value="<?php echo htmlspecialchars($user['neighborhood'] ?? ''); ?>" placeholder=" ">
+                        <label class="floating-label">Bairro</label>
+                    </div>
+                    <div class="floating-group">
+                        <input type="text" name="city" id="p-city" class="form-control" value="<?php echo htmlspecialchars($user['city'] ?? ''); ?>" placeholder=" ">
+                        <label class="floating-label">Cidade</label>
+                    </div>
+                </div>
+
+                <div class="floating-group mb-5">
+                    <input type="text" name="state" id="p-state" class="form-control" value="<?php echo htmlspecialchars($user['state'] ?? ''); ?>" maxlength="2" placeholder=" ">
+                    <label class="floating-label">Estado (UF)</label>
+                </div>
+
+                <div class="pt-5 border-top flex justify-end">
+                    <button type="submit" class="btn-primary" style="padding: 15px 45px; border-radius: 12px; font-weight: 800;">
+                        <i data-lucide="check-circle" class="icon-sm mr-2"></i> Atualizar Meu Perfil
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
-<script>
-// Profile dynamic updates
-document.addEventListener('ajaxSuccess', (e) => {
-    const result = e.detail;
-    if (e.target.action.includes('/api/profile/save') && result.success) {
-        const formData = new FormData(e.target);
-        const name = formData.get('name');
-        
-        // Update header name
-        const headerName = document.querySelector('.user-info .user-name');
-        if (headerName && name) headerName.textContent = name;
-
-        // Update avatar in header if preview exists
-        const preview = document.getElementById('avatar-preview');
-        const headerAvatar = document.querySelector('.user-profile-img img');
-        if (headerAvatar && preview.style.backgroundImage) {
-            headerAvatar.src = preview.style.backgroundImage.slice(5, -2);
-        }
-    }
-});
-
-function previewAvatar(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.getElementById('avatar-preview');
-            preview.style.backgroundImage = `url(${e.target.result})`;
-            preview.style.color = 'transparent';
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-</script>
+<script src="<?php echo SITE_URL; ?>/assets/js/modules/profile.js"></script>

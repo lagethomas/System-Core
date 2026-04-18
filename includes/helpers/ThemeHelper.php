@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Theme Helper - Handles dynamic theme discovery
  */

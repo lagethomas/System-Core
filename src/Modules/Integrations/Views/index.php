@@ -1,32 +1,43 @@
-<?php
+<?php declare(strict_types=1);
 /** @var array $settings */
 /** @var string $active_tab */
-$v = (string)time();
 ?>
-<link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/modules/integrations.css?v=<?php echo $v; ?>">
 
-<div class="tab-navigation">
+<div class="settings-page-header mb-5">
+    <div class="flex items-center gap-4">
+        <div class="header-icon-box">
+            <i data-lucide="plug"></i>
+        </div>
+        <div>
+            <h2 class="m-0">Integrações do Sistema</h2>
+            <p class="text-muted m-0">Conecte serviços externos e automatize processos da plataforma.</p>
+        </div>
+    </div>
+</div>
+
+<div class="tab-navigation mb-4">
     <a href="?tab=email" class="nav-link-tab <?php echo $active_tab === 'email' ? 'active' : ''; ?>">
-        <i data-lucide="mail" class="icon-lucide icon-sm"></i> E-mail (SMTP)
+        <i data-lucide="mail" class="icon-sm"></i> E-mail (SMTP)
     </a>
 </div>
 
-<div class="card user-list-card">
+<div class="card p-5">
     <?php if ($active_tab === 'email'): ?>
-        <form onsubmit="saveIntegration(event, this)">
+        <form action="<?php echo SITE_URL; ?>/api/admin/integrations/save" method="POST" class="ajax-form" data-no-reload="true">
             <input type="hidden" name="type" value="email">
+            <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
 
-            <div class="integration-header">
-                <div class="integration-icon-box">
-                    <i data-lucide="mail"></i>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="header-icon-box" style="width: 48px; height: 48px; border-radius: 12px;">
+                    <i data-lucide="mail" class="icon-sm"></i>
                 </div>
                 <div>
-                    <h3 class="text-main font-md m-0 fw-800">Configurações de E-mail (SMTP)</h3>
+                    <h3 class="text-main m-0 fw-800">Configurações de E-mail (SMTP)</h3>
+                    <p class="text-muted small m-0">Configure o servidor SMTP para o envio de notificações e e-mails do sistema.</p>
                 </div>
             </div>
-            <p class="text-muted font-sm mb-4">Configure o servidor SMTP para o envio de notificações e e-mails do sistema.</p>
             
-            <div class="form-grid-3">
+            <div class="form-grid-3 gap-4 mb-4">
                 <div class="floating-group">
                     <input type="text" name="smtp_host" value="<?php echo htmlspecialchars($settings['smtp_host'] ?? ''); ?>" class="form-control" placeholder=" ">
                     <label class="floating-label">Servidor SMTP (Host)</label>
@@ -45,7 +56,7 @@ $v = (string)time();
                 </div>
             </div>
 
-            <div class="form-grid-2 mt-4">
+            <div class="form-grid-2 gap-4 mb-4">
                 <div class="floating-group">
                     <input type="text" name="smtp_user" value="<?php echo htmlspecialchars($settings['smtp_user'] ?? ''); ?>" class="form-control" placeholder=" ">
                     <label class="floating-label">Usuário SMTP / Login</label>
@@ -63,7 +74,7 @@ $v = (string)time();
                 </div>
             </div>
 
-            <div class="form-grid-2 mt-4">
+            <div class="form-grid-2 gap-4 mb-5">
                 <div class="floating-group">
                     <input type="email" name="smtp_from_email" value="<?php echo htmlspecialchars($settings['smtp_from_email'] ?? ''); ?>" class="form-control" placeholder=" ">
                     <label class="floating-label">E-mail de Envio (Remetente)</label>
@@ -74,69 +85,16 @@ $v = (string)time();
                 </div>
             </div>
 
-            <div class="integration-actions">
-                <button type="submit" class="btn-primary">
-                    <i data-lucide="save" class="icon-lucide icon-sm mr-2"></i> Salvar Integração de E-mail
+            <div class="pt-5 border-top flex justify-end gap-3">
+                <button type="button" onclick="testSmtp()" class="btn-dark" style="padding: 12px 25px; border-radius: 12px;">
+                    <i data-lucide="send" class="icon-sm mr-2"></i> Enviar E-mail Teste
                 </button>
-                <button type="button" onclick="testSmtp()" class="btn-secondary">
-                    <i data-lucide="send" class="icon-lucide icon-sm mr-2"></i> Enviar E-mail Teste
+                <button type="submit" class="btn-primary" style="padding: 12px 30px; border-radius: 12px; font-weight: 700;">
+                    <i data-lucide="save" class="icon-sm mr-2"></i> Salvar Integração
                 </button>
             </div>
         </form>
     <?php endif; ?>
 </div>
 
-<script>
-async function saveIntegration(e, form) {
-    e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    if (btn) btn.disabled = true;
-
-    try {
-        const formData = new FormData(form);
-        const res = await fetch('<?php echo SITE_URL; ?>/api/admin/integrations/save', {
-            method: 'POST',
-            body: formData
-        });
-        const result = await res.json();
-        if (result.success) {
-            UI.showToast('Integração salva com sucesso!');
-        } else {
-            UI.showToast(result.message || 'Erro ao salvar', 'error');
-        }
-    } catch (error) {
-        UI.showToast('Erro de conexão', 'error');
-    } finally {
-        if (btn) btn.disabled = false;
-    }
-}
-
-async function testSmtp() {
-    const email = await UI.prompt('Para qual e-mail deseja enviar o teste?', {
-        title: '📧 Testar Conexão SMTP',
-        placeholder: 'nome@exemplo.com'
-    });
-    
-    if (!email) return;
-
-    UI.showToast('Enviando e-mail de teste...', 'info');
-
-    const formData = new FormData();
-    formData.append('email', email);
-
-    try {
-        const response = await fetch('<?php echo SITE_URL; ?>/api/admin/integrations/test-email', {
-            method: 'POST',
-            body: formData
-        });
-        const data = await response.json();
-        if (data.success) {
-            UI.showToast(data.message, 'success');
-        } else {
-            UI.showToast(data.message || 'Falha no teste.', 'error');
-        }
-    } catch (e) {
-        UI.showToast('Erro ao enviar teste.', 'error');
-    }
-}
-</script>
+<script src="<?php echo SITE_URL; ?>/assets/js/modules/integrations.js"></script>

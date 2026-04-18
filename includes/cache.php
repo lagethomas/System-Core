@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Cache compatibility shim.
  * This file exists to maintain backward compatibility for any legacy code or
