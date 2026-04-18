@@ -3,10 +3,10 @@
 /** @var string $active_tab */
 ?>
 
-<div class="settings-page-header mb-5">
+<div class="settings-page-header">
     <div class="flex items-center gap-4">
-        <div class="header-icon-box">
-            <i data-lucide="plug"></i>
+        <div class="header-icon-box md">
+            <i data-lucide="plug" class="icon-md"></i>
         </div>
         <div>
             <h2 class="m-0">Integrações do Sistema</h2>
@@ -15,7 +15,7 @@
     </div>
 </div>
 
-<div class="tab-navigation mb-4">
+<div class="tab-navigation mb-6">
     <a href="?tab=email" class="nav-link-tab <?php echo $active_tab === 'email' ? 'active' : ''; ?>">
         <i data-lucide="mail" class="icon-sm"></i> E-mail (SMTP)
     </a>
@@ -27,8 +27,8 @@
             <input type="hidden" name="type" value="email">
             <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
 
-            <div class="flex items-center gap-3 mb-4">
-                <div class="header-icon-box" style="width: 48px; height: 48px; border-radius: 12px;">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="header-icon-box md">
                     <i data-lucide="mail" class="icon-sm"></i>
                 </div>
                 <div>
@@ -74,7 +74,7 @@
                 </div>
             </div>
 
-            <div class="form-grid-2 gap-4 mb-5">
+            <div class="form-grid-2 gap-4 mb-6">
                 <div class="floating-group">
                     <input type="email" name="smtp_from_email" value="<?php echo htmlspecialchars($settings['smtp_from_email'] ?? ''); ?>" class="form-control" placeholder=" ">
                     <label class="floating-label">E-mail de Envio (Remetente)</label>
@@ -86,10 +86,10 @@
             </div>
 
             <div class="pt-5 border-top flex justify-end gap-3">
-                <button type="button" onclick="testSmtp()" class="btn-dark" style="padding: 12px 25px; border-radius: 12px;">
+                <button type="button" onclick="testSmtp()" class="btn-dark btn-premium">
                     <i data-lucide="send" class="icon-sm mr-2"></i> Enviar E-mail Teste
                 </button>
-                <button type="submit" class="btn-primary" style="padding: 12px 30px; border-radius: 12px; font-weight: 700;">
+                <button type="submit" class="btn-primary btn-premium">
                     <i data-lucide="save" class="icon-sm mr-2"></i> Salvar Integração
                 </button>
             </div>

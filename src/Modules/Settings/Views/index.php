@@ -6,10 +6,10 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/CS
 require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/ThemeHelper.php';
 ?>
 
-<div class="settings-page-header mb-5">
+<div class="settings-page-header">
     <div class="flex items-center gap-4">
-        <div class="header-icon-box">
-            <i data-lucide="settings"></i>
+        <div class="header-icon-box md">
+            <i data-lucide="settings" class="icon-md"></i>
         </div>
         <div>
             <h2 class="m-0">Configurações do Sistema</h2>
@@ -18,7 +18,7 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
     </div>
 </div>
 
-<div class="tab-navigation mb-4">
+<div class="tab-navigation mb-6">
     <a href="?tab=general" class="nav-link-tab <?php echo $active_tab === 'general' ? 'active' : ''; ?>">
         <i data-lucide="settings" class="icon-sm"></i> Geral
     </a>
@@ -38,7 +38,7 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
             <input type="hidden" name="tab" value="general">
             
             <h3 class="fw-700 text-main mb-1">Configurações Gerais</h3>
-            <p class="text-muted small mb-5">Defina a identidade da sua plataforma e o comportamento do sistema.</p>
+            <p class="text-muted small mb-6">Defina a identidade da sua plataforma e o comportamento do sistema.</p>
             
             <div class="form-grid-2 gap-4">
                 <div class="floating-group">
@@ -63,9 +63,9 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
                 </div>
             </div>
 
-            <div class="form-grid-2 mt-5 gap-4">
+            <div class="form-grid-2 mt-6 gap-4">
                 <div>
-                    <label class="small fw-800 text-muted text-uppercase mb-3 d-block">Logotipo da Plataforma</label>
+                    <label class="settings-upload-label">Logotipo da Plataforma</label>
                     <input type="hidden" name="remove_logo" id="logo-remove-flag" value="0">
                     <div id="preview-logo" class="upload-selector" onclick="document.getElementById('logo-upload').click()">
                         <?php if (!empty($settings['system_logo'])): ?>
@@ -81,11 +81,11 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
                         <?php endif; ?>
                         <div class="upload-overlay"><i data-lucide="upload-cloud"></i> <span>Alterar Logo</span></div>
                     </div>
-                    <input type="file" id="logo-upload" name="system_logo" accept="image/*" onchange="previewImage(this, 'preview-logo', 'logo-remove-flag')" style="display: none;">
+                    <input type="file" id="logo-upload" name="system_logo" accept="image/*" class="d-none" onchange="previewImage(this, 'preview-logo', 'logo-remove-flag')">
                 </div>
 
                 <div>
-                    <label class="small fw-800 text-muted text-uppercase mb-3 d-block">Wallpaper da Tela de Login</label>
+                    <label class="settings-upload-label">Wallpaper da Tela de Login</label>
                     <input type="hidden" name="remove_login_bg" id="bg-remove-flag" value="0">
                     <div id="preview-bg" class="upload-selector" onclick="document.getElementById('bg-upload').click()">
                         <?php if (!empty($settings['login_background'])): ?>
@@ -101,12 +101,12 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
                         <?php endif; ?>
                         <div class="upload-overlay"><i data-lucide="upload-cloud"></i> <span>Alterar Fundo</span></div>
                     </div>
-                    <input type="file" id="bg-upload" name="login_background" accept="image/*" onchange="previewImage(this, 'preview-bg', 'bg-remove-flag')" style="display: none;">
+                    <input type="file" id="bg-upload" name="login_background" accept="image/*" class="d-none" onchange="previewImage(this, 'preview-bg', 'bg-remove-flag')">
                 </div>
             </div>
 
-            <div class="pt-5 mt-5 border-top flex justify-end">
-                <button type="submit" class="btn-primary" style="padding: 15px 40px; border-radius: 12px; font-weight: 800;">
+            <div class="pt-5 mt-6 border-top flex justify-end">
+                <button type="submit" class="btn-primary btn-premium">
                     <i data-lucide="save" class="icon-sm mr-2"></i> Atualizar Configurações Gerais
                 </button>
             </div>
@@ -119,14 +119,14 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
             <input type="hidden" name="tab" value="themes">
             
             <h3 class="fw-700 text-main mb-1">Personalização Visual</h3>
-            <p class="text-muted small mb-5">Escolha a paleta de cores que melhor define sua marca.</p>
+            <p class="text-muted small mb-6">Escolha a paleta de cores que melhor define sua marca.</p>
 
             <div class="accordion-container mt-4">
                 <!-- System Theme Section -->
                 <details class="settings-accordion" open>
                     <summary class="accordion-header">
                         <div class="flex items-center gap-3">
-                            <div class="header-icon-box" style="width: 40px; height: 40px;">
+                            <div class="header-icon-box sm">
                                 <i data-lucide="layout" class="icon-sm"></i>
                             </div>
                             <div>
@@ -145,7 +145,7 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
                                 $isSelected = ($slug === $current_theme);
                             ?>
                                 <div class="selectable-card <?php echo $isSelected ? 'active' : ''; ?>" onclick="toggleSelectableCard(this, 'theme_<?php echo $slug; ?>')">
-                                    <input type="radio" name="system_theme" id="theme_<?php echo $slug; ?>" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?> class="hidden">
+                                    <input type="radio" name="system_theme" id="theme_<?php echo $slug; ?>" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?> class="d-none">
                                     
                                     <div class="theme-status-icon"><i data-lucide="check"></i></div>
                                     
@@ -164,7 +164,7 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
                 <details class="settings-accordion mt-3">
                     <summary class="accordion-header">
                         <div class="flex items-center gap-3">
-                            <div class="header-icon-box" style="width: 40px; height: 40px;">
+                            <div class="header-icon-box sm">
                                 <i data-lucide="log-in" class="icon-sm"></i>
                             </div>
                             <div>
@@ -182,7 +182,7 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
                                 $isSelected = ($slug === $current_login_theme);
                             ?>
                                 <div class="selectable-card <?php echo $isSelected ? 'active' : ''; ?>" onclick="toggleSelectableCard(this, 'login_theme_<?php echo $slug; ?>')">
-                                    <input type="radio" name="system_login_theme" id="login_theme_<?php echo $slug; ?>" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?> class="hidden">
+                                    <input type="radio" name="system_login_theme" id="login_theme_<?php echo $slug; ?>" value="<?php echo $slug; ?>" <?php echo $isSelected ? 'checked' : ''; ?> class="d-none">
                                     
                                     <div class="theme-status-icon"><i data-lucide="check"></i></div>
                                     
@@ -198,8 +198,8 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
                 </details>
             </div>
 
-            <div class="pt-5 mt-5 border-top flex justify-end">
-                <button type="submit" class="btn-primary" style="padding: 15px 40px; border-radius: 12px; font-weight: 800;">
+            <div class="pt-5 mt-6 border-top flex justify-end">
+                <button type="submit" class="btn-primary btn-premium">
                     <i data-lucide="save" class="icon-sm mr-2"></i> Aplicar Alterações Visuais
                 </button>
             </div>
@@ -212,7 +212,7 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
             <input type="hidden" name="tab" value="security">
             
             <h3 class="fw-700 text-main mb-1">Governança & Segurança</h3>
-            <p class="text-muted small mb-5">Configure políticas restritivas para proteger o acesso ao sistema.</p>
+            <p class="text-muted small mb-6">Configure políticas restritivas para proteger o acesso ao sistema.</p>
 
             <div class="form-grid-3 gap-4">
                 <div class="floating-group">
@@ -233,7 +233,7 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
                 </div>
             </div>
 
-            <div class="form-grid-2 gap-4 mt-5">
+            <div class="form-grid-2 gap-4 mt-6">
                 <div class="switch-container">
                     <div>
                         <span class="switch-label fw-700">Sessão Única por Conta</span>
@@ -257,8 +257,8 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
                 </div>
             </div>
 
-            <div class="pt-5 mt-5 border-top flex justify-end">
-                <button type="submit" class="btn-primary" style="padding: 15px 40px; border-radius: 12px; font-weight: 800;">
+            <div class="pt-5 mt-6 border-top flex justify-end">
+                <button type="submit" class="btn-primary btn-premium">
                     <i data-lucide="shield-check" class="icon-sm mr-2"></i> Salvar Políticas de Segurança
                 </button>
             </div>

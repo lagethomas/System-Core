@@ -185,12 +185,21 @@ body {
 /* Logs Filter Specifics */
 .logs-filter-form {
     display: flex;
-    align-items: flex-end;
-    gap: 15px;
+    align-items: center;
+    gap: 12px;
 }
 
 .logs-filter-form .floating-group {
     flex: 1;
+    margin-bottom: 0; /* Integrated version doesn't need bottom margin */
+}
+
+.logs-filter-form button, 
+.logs-filter-form a {
+    height: 54px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (max-width: 992px) {
@@ -409,9 +418,100 @@ body {
 .mb-8 { margin-bottom: 32px !important; }
 .mb-10 { margin-bottom: 40px !important; }
 
+/* Icon Box Variants */
+.header-icon-box.sm { width: 40px; height: 40px; border-radius: 10px; }
+.header-icon-box.md { width: 52px; height: 52px; border-radius: 16px; }
+.header-icon-box.lg { width: 80px; height: 80px; border-radius: 24px; }
+
+/* Layout Utilities */
+.list-none { list-style: none; padding: 0; }
+.rounded-16 { border-radius: 16px !important; }
+.rounded-20 { border-radius: 20px !important; }
+.rounded-24 { border-radius: 24px !important; }
+.bg-card-alt { background: rgba(255, 255, 255, 0.03); }
+.line-height-md { line-height: 1.6; }
+
+/* Buttons Overrides */
+.btn-premium {
+    padding: 12px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+.flex-2 { flex: 2 !important; }
+.flex-3 { flex: 3 !important; }
+.flex-shrink-0 { flex-shrink: 0 !important; }
+
+/* Icon Sizing Standards */
+.icon-xs { width: 12px; height: 12px; }
+.icon-sm { width: 16px; height: 16px; }
+.icon-md { width: 20px; height: 20px; }
+.icon-lg { width: 24px; height: 24px; }
+.icon-xl { width: 32px; height: 32px; }
+
+/* Display Utilities */
+.d-none { display: none !important; }
+.d-flex { display: flex !important; }
+.d-block { display: block !important; }
+.hidden { display: none !important; } /* Alias */
+.invisible { visibility: hidden !important; }
+
+/* Font Utilities */
+.font-xs { font-size: 11px !important; }
+.font-sm { font-size: 13px !important; }
+.font-md { font-size: 18px !important; }
+.font-lg { font-size: 24px !important; }
+.font-mono { font-family: monospace !important; }
+
+/* Grid Utilities */
+.grid-span-2 { grid-column: span 2 !important; }
+.grid-span-3 { grid-column: span 3 !important; }
+
+/* Icon Button Square */
+.icon-btn-square {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.icon-btn-square-lg {
+    width: 54px;
+    height: 54px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
 /* Standardized Page Headers spacing */
-.page-header, .dashboard-header, .profile-header, .logs-header, .users-header {
-    margin-bottom: 35px !important;
+.page-header, 
+.dashboard-header, 
+.profile-header, 
+.logs-header, 
+.users-header, 
+.settings-page-header {
+    margin-bottom: 40px !important;
+}
+
+/* Standardized Page Titles Color */
+.page-header h2, 
+.dashboard-header h2, 
+.profile-header h2, 
+.logs-header h2, 
+.users-header h2, 
+.settings-page-header h2 {
+    color: var(--primary) !important;
+    font-weight: 800 !important;
+}
+
+/* Card Spacing Defaults */
+.card {
+    margin-bottom: 24px !important;
 }
 
 
@@ -419,4 +519,21 @@ body {
 
 
 
+
+/* Danger Glass Button */
+.btn-danger-glass {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-danger-glass:hover {
+    background: #ef4444;
+    color: #fff;
+    border-color: #ef4444;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    transform: translateY(-2px);
+}
 

@@ -5,7 +5,7 @@ $avatarUrl = !empty($user['avatar']) ? SITE_URL . '/uploads/profile/' . $user['a
 $initials = !empty($user['name']) ? strtoupper(substr($user['name'], 0, 1)) : '?';
 ?>
 
-<div class="profile-header mb-8">
+<div class="profile-header">
     <div class="flex items-center gap-4">
         <div class="header-icon-box">
             <i data-lucide="user"></i>
@@ -32,7 +32,7 @@ $initials = !empty($user['name']) ? strtoupper(substr($user['name'], 0, 1)) : '?
             </div>
             <h3 class="mb-1 fw-800 text-white"><?php echo htmlspecialchars($user['name']); ?></h3>
             <p class="text-muted small mb-4"><?php echo htmlspecialchars($user['email']); ?></p>
-            <span class="badge bg-primary-glass text-primary px-3 py-2 rounded-pill small fw-700 text-uppercase">
+            <span class="status-badge status-primary text-uppercase">
                 <?php echo htmlspecialchars(str_replace('ROLE_', '', $user['role'] ?? 'Membro')); ?>
             </span>
         </div>
@@ -57,7 +57,7 @@ $initials = !empty($user['name']) ? strtoupper(substr($user['name'], 0, 1)) : '?
         <div class="card p-5">
             <form action="<?php echo SITE_URL; ?>/api/profile/save" method="POST" class="ajax-form premium-form" id="profileForm" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
-                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display: none;" onchange="previewAvatar(this)">
+                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" class="d-none" onchange="previewAvatar(this)">
                 
                 <h3 class="mb-5 fw-700 text-main">
                     <i data-lucide="user-cog" class="icon-sm mr-2 text-primary"></i> Informações Básicas
@@ -70,7 +70,7 @@ $initials = !empty($user['name']) ? strtoupper(substr($user['name'], 0, 1)) : '?
 
                 <div class="form-grid-2 gap-4 mb-4">
                     <div class="floating-group">
-                        <input type="text" class="form-control text-muted" style="background: rgba(var(--primary-rgb), 0.03);" value="<?php echo htmlspecialchars($user['username']); ?>" placeholder=" " readonly>
+                        <input type="text" class="form-control text-muted bg-card-alt" value="<?php echo htmlspecialchars($user['username']); ?>" placeholder=" " readonly>
                         <label class="floating-label">Nome de Usuário (Login)</label>
                     </div>
                     <div class="floating-group">
@@ -109,7 +109,7 @@ $initials = !empty($user['name']) ? strtoupper(substr($user['name'], 0, 1)) : '?
                         <input type="text" name="zip_code" class="form-control mask-zip" value="<?php echo htmlspecialchars($user['zip_code'] ?? ''); ?>" placeholder=" " onblur="UI.lookupZip(this.value, 'p-city', 'p-state', 'p-street', 'p-neighborhood')">
                         <label class="floating-label">CEP</label>
                     </div>
-                    <div class="floating-group" style="grid-column: span 2;">
+                    <div class="floating-group grid-span-2">
                         <input type="text" name="street" id="p-street" class="form-control" value="<?php echo htmlspecialchars($user['street'] ?? ''); ?>" placeholder=" ">
                         <label class="floating-label">Rua / Avenida</label>
                     </div>
@@ -136,7 +136,7 @@ $initials = !empty($user['name']) ? strtoupper(substr($user['name'], 0, 1)) : '?
                 </div>
 
                 <div class="pt-5 border-top flex justify-end">
-                    <button type="submit" class="btn-primary" style="padding: 15px 45px; border-radius: 12px; font-weight: 800;">
+                    <button type="submit" class="btn-primary btn-premium">
                         <i data-lucide="check-circle" class="icon-sm mr-2"></i> Atualizar Meu Perfil
                     </button>
                 </div>

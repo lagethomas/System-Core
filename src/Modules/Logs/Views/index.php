@@ -8,51 +8,54 @@
 /** @var int $totalLogs */
 ?>
 
-<div class="logs-header mb-5">
-        <div class="flex items-center gap-4">
-            <div class="header-icon-box">
-                <i data-lucide="terminal"></i>
-            </div>
-            <div>
-                <h2 class="m-0">Logs de Auditoria</h2>
-                <p class="text-muted m-0">Histórico detalhado de ações realizadas no sistema.</p>
-            </div>
+<div class="logs-header">
+    <div class="flex items-center gap-4">
+        <div class="header-icon-box md">
+            <i data-lucide="terminal" class="icon-md"></i>
+        </div>
+        <div>
+            <h2 class="m-0">Logs de Auditoria</h2>
+            <p class="text-muted m-0">Histórico detalhado de ações realizadas no sistema.</p>
         </div>
     </div>
 </div>
 
-<div class="card logs-filter-card mb-4 p-4">
-    <form method="GET" class="logs-filter-form flex items-end gap-3">
-        <div class="floating-group">
-            <input type="date" name="start_date" class="form-control" value="<?php echo $start_date; ?>" placeholder=" ">
-            <label class="floating-label">Data Início</label>
-        </div>
-        <div class="floating-group">
-            <input type="date" name="end_date" class="form-control" value="<?php echo $end_date; ?>" placeholder=" ">
-            <label class="floating-label">Data Fim</label>
-        </div>
-        <div class="floating-group" style="flex: 2;">
-            <input type="text" name="action" class="form-control" placeholder=" " value="<?php echo htmlspecialchars($action_filter); ?>">
-            <label class="floating-label">Filtrar por Ação</label>
-        </div>
-        
-        <button type="submit" class="btn-primary" style="height: 48px; padding: 0 25px; border-radius: 12px; flex-shrink: 0;">
-            <i data-lucide="search" class="icon-sm mr-2"></i> Filtrar
-        </button>
-
-        <button type="button" class="btn-danger" onclick="clearLogs()" style="height: 48px; padding: 0 20px; border-radius: 12px; flex-shrink: 0;" title="Limpar todo o histórico">
-            <i data-lucide="trash-2" class="icon-sm mr-2"></i> Limpar Histórico
-        </button>
-        
-        <?php if (!empty($start_date) || !empty($end_date) || !empty($action_filter)): ?>
-            <a href="?" class="btn-dark" title="Limpar Filtros" style="height: 48px; width: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; padding: 0; flex-shrink: 0;">
-                <i data-lucide="x" class="icon-sm"></i>
-            </a>
-        <?php endif; ?>
-    </form>
-</div>
-
 <div class="card user-list-card">
+    <div class="card-header d-flex justify-content-between align-items-center mb-4">
+        <h3 class="m-0">Histórico de Atividades</h3>
+        <button class="btn-danger-glass icon-btn-square" onclick="clearLogs()" title="Limpar todo o histórico">
+            <i data-lucide="trash-2" class="icon-sm"></i>
+        </button>
+    </div>
+
+    <!-- Filtros integrados no card -->
+    <div class="px-5 mb-5">
+        <form method="GET" class="logs-filter-form flex items-center gap-3">
+            <div class="floating-group">
+                <input type="date" name="start_date" class="form-control" value="<?php echo $start_date; ?>" placeholder=" ">
+                <label class="floating-label">Data Início</label>
+            </div>
+            <div class="floating-group">
+                <input type="date" name="end_date" class="form-control" value="<?php echo $end_date; ?>" placeholder=" ">
+                <label class="floating-label">Data Fim</label>
+            </div>
+            <div class="floating-group flex-2">
+                <input type="text" name="action" class="form-control" placeholder=" " value="<?php echo htmlspecialchars($action_filter); ?>">
+                <label class="floating-label">Filtrar por Ação</label>
+            </div>
+            
+            <button type="submit" class="btn-primary btn-premium flex-shrink-0">
+                <i data-lucide="search" class="icon-sm mr-2"></i> Filtrar
+            </button>
+            
+            <?php if (!empty($start_date) || !empty($end_date) || !empty($action_filter)): ?>
+                <a href="?" class="btn-dark btn-premium flex-shrink-0 icon-btn-square-lg" title="Limpar Filtros">
+                    <i data-lucide="x" class="icon-sm"></i>
+                </a>
+            <?php endif; ?>
+        </form>
+    </div>
+
     <div class="table-responsive">
         <table class="premium-table">
             <thead>
@@ -76,14 +79,14 @@
                         <td class="log-user-col small">
                             <?php if ($log['user_name']): ?>
                                 <div class="d-flex align-items-center gap-2">
-                                    <div class="header-icon-box" style="width: 32px; height: 32px; border-radius: 8px;">
+                                    <div class="header-icon-box sm">
                                         <i data-lucide="user" class="icon-sm"></i>
                                     </div>
                                     <?php echo htmlspecialchars($log['user_name']); ?>
                                 </div>
                             <?php else: ?>
                                 <div class="d-flex align-items-center gap-2 text-muted">
-                                    <div class="header-icon-box" style="width: 32px; height: 32px; border-radius: 8px; background: rgba(var(--text-muted-rgb), 0.1);">
+                                    <div class="header-icon-box sm bg-card-alt">
                                         <i data-lucide="cpu" class="icon-sm"></i>
                                     </div>
                                     <span class="log-user-system">Sistema</span>
@@ -109,7 +112,7 @@
     </div>
 
     <!-- Pagination -->
-    <div class="mt-4">
+    <div class="mt-4 p-5 pt-0">
         <?php echo \App\Core\Pagination::render($currentPage, $totalPages, SITE_URL . '/logs', $totalLogs, 25); ?>
     </div>
 </div>

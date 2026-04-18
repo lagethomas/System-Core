@@ -5,7 +5,7 @@
 /** @var bool $is_admin */
 ?>
 
-<div class="dashboard-header mb-8">
+<div class="dashboard-header">
     <div class="flex items-center gap-4">
         <div class="header-icon-box">
             <i data-lucide="layout-dashboard"></i>
@@ -18,7 +18,7 @@
 </div>
 
 <?php if ($is_admin): ?>
-<div class="stats-grid mb-5">
+<div class="stats-grid mb-6">
     <a href="<?php echo SITE_URL; ?>/admin/users" class="stat-card-premium">
         <div class="stat-icon-box blue">
             <i data-lucide="users"></i>
@@ -48,7 +48,7 @@
 
 <div class="dashboard-grid">
     <div class="dashboard-card card p-5">
-        <div class="d-flex justify-content-between align-items-center mb-5">
+        <div class="flex justify-between items-center mb-5">
             <h3 class="m-0 fw-800 text-main font-md">Resumo do Sistema</h3>
             <span class="status-badge status-primary">Módulo Ativo</span>
         </div>
@@ -58,7 +58,7 @@
         </p>
 
         <div class="info-block mb-5">
-            <ul class="info-list" style="list-style: none; padding: 0;">
+            <ul class="info-list list-none">
                 <li class="flex items-center gap-3 small text-muted mb-3">
                     <i data-lucide="check-circle" class="icon-sm text-primary"></i> Controladores Modulares (Namespaces)
                 </li>
@@ -83,21 +83,21 @@
         </div>
         <div class="flex flex-column gap-3">
             <a href="<?php echo SITE_URL; ?>/admin/users" class="card-link-premium p-4 rounded-16 bg-card-alt flex items-center gap-3">
-                <div class="header-icon-box" style="width: 40px; height: 40px; border-radius: 10px;">
+                <div class="header-icon-box sm">
                     <i data-lucide="user-plus" class="icon-sm"></i>
                 </div>
                 <span class="small fw-700">Gerenciar Usuários</span>
                 <i data-lucide="chevron-right" class="icon-sm ml-auto opacity-30"></i>
             </a>
             <a href="<?php echo SITE_URL; ?>/profile" class="card-link-premium p-4 rounded-16 bg-card-alt flex items-center gap-3">
-                <div class="header-icon-box" style="width: 40px; height: 40px; border-radius: 10px;">
+                <div class="header-icon-box sm">
                     <i data-lucide="user-circle" class="icon-sm"></i>
                 </div>
                 <span class="small fw-700">Meu Perfil</span>
                 <i data-lucide="chevron-right" class="icon-sm ml-auto opacity-30"></i>
             </a>
             <a href="<?php echo SITE_URL; ?>/admin/logs" class="card-link-premium p-4 rounded-16 bg-card-alt flex items-center gap-3">
-                <div class="header-icon-box" style="width: 40px; height: 40px; border-radius: 10px;">
+                <div class="header-icon-box sm">
                     <i data-lucide="activity" class="icon-sm"></i>
                 </div>
                 <span class="small fw-700">Logs do Sistema</span>
@@ -108,12 +108,12 @@
 </div>
 <?php else: ?>
     <div class="unauthorized-container text-center py-5">
-        <div class="header-icon-box mx-auto mb-4" style="width: 80px; height: 80px; border-radius: 24px;">
-            <i data-lucide="shield-check" style="width: 40px; height: 40px;"></i>
+        <div class="header-icon-box lg mx-auto mb-4">
+            <i data-lucide="shield-check" class="icon-lg"></i>
         </div>
         <h2 class="fw-800">Acesso Autorizado</h2>
         <p class="text-muted">Bem-vindo ao sistema modular. Utilize o menu lateral para gerenciar sua conta e as ferramentas disponíveis.</p>
-        <a href="<?php echo SITE_URL; ?>/profile" class="btn-primary mt-4" style="padding: 12px 30px; border-radius: 12px;">
+        <a href="<?php echo SITE_URL; ?>/profile" class="btn-primary btn-premium mt-4">
             Ver Meu Perfil <i data-lucide="arrow-right" class="icon-sm ml-2"></i>
         </a>
     </div>
