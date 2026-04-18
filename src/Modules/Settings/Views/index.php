@@ -105,7 +105,7 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
                 </div>
             </div>
 
-            <div class="pt-5 mt-6 border-top flex justify-end">
+            <div class="pt-5 mt-10 border-top flex justify-end">
                 <button type="submit" class="btn-primary btn-premium">
                     <i data-lucide="save" class="icon-sm mr-2"></i> Atualizar Configurações Gerais
                 </button>
@@ -198,7 +198,7 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
                 </details>
             </div>
 
-            <div class="pt-5 mt-6 border-top flex justify-end">
+            <div class="pt-5 mt-10 border-top flex justify-end">
                 <button type="submit" class="btn-primary btn-premium">
                     <i data-lucide="save" class="icon-sm mr-2"></i> Aplicar Alterações Visuais
                 </button>
@@ -257,7 +257,7 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/includes/helpers/Th
                 </div>
             </div>
 
-            <div class="pt-5 mt-6 border-top flex justify-end">
+            <div class="pt-5 mt-10 border-top flex justify-end">
                 <button type="submit" class="btn-primary btn-premium">
                     <i data-lucide="shield-check" class="icon-sm mr-2"></i> Salvar Políticas de Segurança
                 </button>

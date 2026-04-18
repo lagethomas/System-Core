@@ -111,7 +111,7 @@ $current_theme = $company['theme'] ?? 'gold-black';
                 </div>
             </div>
 
-            <div class="pt-5 border-top flex justify-end">
+            <div class="pt-5 mt-10 border-top flex justify-end">
                 <button type="submit" class="btn-primary btn-premium">
                     <i data-lucide="save" class="icon-sm mr-2"></i> Salvar Configurações
                 </button>

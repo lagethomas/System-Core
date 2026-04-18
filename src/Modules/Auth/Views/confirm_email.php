@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css">
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/modules/auth.css">
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/theme/<?php echo $theme; ?>.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/fonts.css">
+    <script src="<?php echo SITE_URL; ?>/assets/vendor/lucide/lucide.min.js"></script>
 </head>
 <body class="auth-wrapper">
     <div class="confirm-card">

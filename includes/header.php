@@ -108,7 +108,7 @@ $unread_count = 0;
     ?>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/fonts.css'); ?>">
     <link rel="icon" type="image/png" href="<?php echo SITE_URL; ?>/assets/img/icon-192.png">
     <script>
         window.SITE_URL = '<?php echo SITE_URL; ?>';

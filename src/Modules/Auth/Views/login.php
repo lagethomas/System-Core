@@ -13,11 +13,11 @@
 <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/modules/auth.css?v=<?php echo $v; ?>">
 <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/theme/<?php echo $theme_slug; ?>.css?v=<?php echo $v; ?>">
 
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/fonts.css?v=<?php echo $v; ?>">
 <link rel="icon" type="image/png" href="<?php echo SITE_URL; ?>/assets/img/icon-192.png">
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
+<script src="<?php echo SITE_URL; ?>/assets/vendor/lucide/lucide.min.js"></script>
 </head>
 <body class="auth-wrapper" <?php if (!empty($login_background)): ?>style="--auth-bg: url('<?php echo (strpos($login_background, '/') === 0 ? SITE_URL . $login_background : SITE_URL . '/uploads/backgrounds/' . $login_background); ?>');"<?php endif; ?>>
 
